@@ -1,0 +1,67 @@
+{% extends 'Customer/base.html' %}
+{% block content %}
+
+<!-- Content Header (Page header) -->
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">Feedbacks</h1>
+
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+    <section class="content">
+        <div class="container-fluid">
+            <section class="content">
+                <div class="card card-warning">
+                    <div class="card-header">
+                        <h3 class="card-title">General Elements</h3>
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                        <form>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <!-- text input -->
+                                    <div class="form-group">
+                                        <label>Title</label>
+                                        <input type="text" class="form-control" placeholder="Enter ...">
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <!-- textarea -->
+                                    <div class="form-group">
+                                        <label>Message:</label>
+                                        <textarea class="form-control" rows="3" placeholder="Enter ..."></textarea>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="form-group">
+                                <label for="exampleSelectRounded0">Rating</label>
+                                <select class="custom-select rounded-0" id="exampleSelectRounded0">
+                                    <option>1</option>
+                                    <option>2</option>
+                                    <option>3</option>
+                                    <option>4</option>
+                                    <option>5</option>
+                                </select>
+                            </div>
+
+                            <button class="btn btn-small btn-primary" type="">Submit</button>
+                        </form>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+        </div>
+</div>
+<!-- /.error-content -->
+</div>
+<!-- /.error-page -->
+</section>
+{% endblock %}

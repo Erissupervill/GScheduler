@@ -1,0 +1,132 @@
+{% extends 'admin/base.html' %}
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+<!-- Font Awesome -->
+<link rel="stylesheet" href="{{ url_for('static', filename='adminlte/plugins/fontawesome-free/css/all.min.css') }}">
+<!-- icheck bootstrap -->
+<link rel="stylesheet"
+    href="{{ url_for('static', filename='adminlte/plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
+<!-- Theme style -->
+<link rel="stylesheet" href="{{ url_for('static', filename='adminlte/dist/css/adminlte.min.css') }}">
+{% block content %}
+
+<!-- Content Header (Page header) -->
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">Feedbacks</h1>
+
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+    <section class="content">
+        <div class="container-fluid">
+            <section class="content">
+                <div class="card card-warning">
+                    <div class="card-header">
+                        <h3 class="card-title">Create User</h3>
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                        {% include 'message.html' %}
+                        <form method="post">
+
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <div class="input-group mb-3">
+                                <input type="text" name="username" class="form-control" placeholder="Username">
+                                <div class="input-group-append">
+                                    <div class="input-group-text">
+                                        <span class="fas fa-user"></span>
+                                    </div>
+                                </div>
+                                {% for error in form.username.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+
+                            <div class="input-group mb-3">
+                                <input type="text" name="email" class="form-control" placeholder="Email">
+                                <div class="input-group-append">
+                                    <div class="input-group-text">
+                                        <span class="fas fa-envelope"></span>
+                                    </div>
+                                </div>
+                                {% for error in form.email.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+
+                            <div class="input-group mb-3">
+                                <input type="text" name="phone_number" class="form-control"
+                                    data-inputmask='"mask": "(99) 99-999-9999"' data-mask
+                                    placeholder="Phone number ex. (09) 99-999-9999">
+                                <div class="input-group-append">
+                                    <div class="input-group-text">
+                                        <span class="fas fa-phone"></span>
+                                    </div>
+                                </div>
+                                {% for error in form.phone_number.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+
+
+                            <div class="input-group mb-3">
+                                <input type="password" name="password" class="form-control" placeholder="Password">
+                                <div class="input-group-append">
+                                    <div class="input-group-text">
+                                        <span class="fas fa-lock"></span>
+                                    </div>
+
+                                </div>
+                                {% for error in form.password.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                            <div class="input-group mb-3">
+                                <input type="password" name="confirmpassword" class="form-control"
+                                    placeholder="Confirm Password">
+                                <div class="input-group-append">
+                                    <div class="input-group-text">
+                                        <span class="fas fa-lock"></span>
+                                    </div>
+
+                                </div>
+                                {% for error in form.confirmpassword.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+
+                            <div class="input-group mb-3">
+                                <select name="role" class="form-control">
+                                    <option value="1">Admin</option>
+                                    <option value="2">Staff</option>
+                                </select>
+                                <div class="input-group-append">
+                                    <div class="input-group-text">
+                                        <span class="fas fa-user"></span>
+                                    </div>
+
+                                </div>
+                                {% for error in form.confirmpassword.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+
+
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-primary btn-block">Submit</button>
+                            </div>
+
+
+                        </form>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+        </div>
+</div>
+<!-- /.error-content -->
+</div>
+<!-- /.error-page -->
+</section>
+{% endblock %}
