@@ -1,19 +1,23 @@
-# app/__init__.py
 from flask import Flask, render_template
-from .config import Config
+from .config import get_config_class
 from .db import db
 from .routes import register_routes
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 from flask_wtf import CSRFProtect
 from .services.auth_services import load_user
+import os
 
 bcrypt = Bcrypt()
 login_manager = LoginManager()
 csrf = CSRFProtect()
 
-def create_app(config_class=Config):
+def create_app():
     app = Flask(__name__)
+
+    # Determine the appropriate configuration
+    config_class = get_config_class()
+    print(f"Using configuration: {config_class.__name__}")
     app.config.from_object(config_class)
 
     # Initialize extensions
@@ -30,9 +34,10 @@ def create_app(config_class=Config):
 
     # Register blueprints/routes
     register_routes(app)
-    
+
+    # Error handler for 404 errors
     @app.errorhandler(404)
     def page_not_found(error):
-        return render_template('page_not_found.html', error=error),404
+        return render_template('page_not_found.html', error=error), 404
 
     return app
