@@ -1,136 +1,84 @@
-Project Setup and Running Instructions
-Setting Up the Project
-Install Python and XAMPP
+# Project Setup and Running Instructions
 
-Ensure Python and XAMPP are installed on your system.
+## Setting Up the Project
 
-Export the Project
+1. **Install Python and XAMPP**
 
-Copy or move the project directory to C:\xampp\htdocs.
+   Ensure Python and XAMPP are installed on your system.
 
-Running the Project
-Install Python
+2. **Export the Project**
 
-Make sure Python is installed on your system.
+   Copy or move the project directory to `C:\xampp\htdocs`.
 
-Create a Virtual Environment
+## Running the Project
 
-Navigate to the root directory of your project and run:
+1. **Install Python**
 
-bash
-Copy code
-py -3 -m venv .venv
-Activate the Virtual Environment
+   Make sure Python is installed on your system.
 
-Activate the virtual environment with:
+2. **Create a Virtual Environment**
 
-bash
-Copy code
-.venv\Scripts\activate
-Your command line should look like this: (.venv) C:\xampp\htdocs\GScheduler-main>
+   Navigate to the root directory of your project and run:
 
-Install Dependencies
+   py -3 -m venv .venv
 
-Install the required packages using:
+3. **Activate the Virtual Environment**
 
-bash
-Copy code
-pip install -r requirements.txt
-Run the Project
+   Activate the virtual environment with:
 
-Start the Flask application with:
+   .venv\Scripts\activate
 
-bash
-Copy code
-flask run
-Setting Up XAMPP Database
-Open XAMPP Control Panel
+   Your command line should look like this: `(.venv) C:\xampp\htdocs\GScheduler-main>`
 
-Launch the XAMPP Control Panel.
+4. **Install Dependencies**
 
-Start Apache and MySQL
+   Install the required packages using:
 
-Click "Start" for both Apache and MySQL services.
+   pip install -r requirements.txt
 
-Access phpMyAdmin
+5. **Run the Project**
 
-Open your browser and navigate to http://localhost/phpmyadmin.
+   Start the Flask application with:
 
-Import the Database
+   flask run
 
-Use the import feature in phpMyAdmin to load the Gscheduler.sql file into the database.
+## Setting Up XAMPP Database
 
-Environment Setup
-Create a .env File
+1. **Open XAMPP Control Panel**
 
-In the root directory of your project, create a file named .env.
+   Launch the XAMPP Control Panel.
 
-Add Environment Variables
+2. **Start Apache and MySQL**
 
-Open the .env file and add the necessary environment variables. Here is an example configuration:
+   Click "Start" for both Apache and MySQL services.
 
-plaintext
-Copy code
-# .env
+3. **Access phpMyAdmin**
 
-# Flask configuration
-FLASK_ENV=development
-SECRET_KEY=your-secret-key
+   Open your browser and navigate to [http://localhost/phpmyadmin](http://localhost/phpmyadmin).
 
-# Database configuration
-DATABASE_URL=mysql+pymysql://user:password@localhost/dbname
+4. **Import the Database**
 
-# Session configuration
-SESSION_COOKIE_NAME=your_session_cookie_name
-SESSION_COOKIE_SECURE=True
-SESSION_COOKIE_HTTPONLY=True
+   Use the import feature in phpMyAdmin to load the `Gscheduler.sql` file into the database.
 
-# Cache configuration
-CACHE_TYPE=simple
-CACHE_DEFAULT_TIMEOUT=300
+## Environment Setup
 
-# CSRF configuration
-CSRF_ENABLED=True
-Note: Remove any unnecessary or duplicate entries and use only the relevant variables for your setup.
+1. **Create a `.env` File**
 
-Use the .env File
+   In the root directory of your project, create a file named `.env`.
 
-Ensure your application is configured to load environment variables from the .env file. You can use the python-dotenv package to achieve this:
+2. **Add Environment Variables**
 
-python
-Copy code
-from dotenv import load_dotenv
-import os
+   Open the `.env` file and add the necessary environment variables. Here is an example configuration:
 
-# Load environment variables from .env file
-load_dotenv()
+   # .env
 
-# Example of setting configuration
-app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
-Add .env to .gitignore
+   # Flask configuration
+   FLASK_ENV=development
+   SECRET_KEY=your-secret-key
 
-To prevent the .env file from being committed to version control, ensure it is listed in your .gitignore file:
+   # Database configuration
+   DATABASE_URL=mysql+pymysql://user:password@localhost/dbname
 
-bash
-Copy code
-# .gitignore
-.env
-Provide a Template File
+## Framework Type
 
-Include a .env.example file with placeholder values. This file should be committed to version control as a reference for other developers:
-
-plaintext
-Copy code
-# .env.example
-
-# Flask configuration
-FLASK_ENV=development
-SECRET_KEY=your_secret_key_here
-
-# Database configuration
-DATABASE_URL=mysql+pymysql://user:password@localhost/dbname
-New developers should copy .env.example to .env and replace the placeholder values with their actual configuration settings.
-
-Framework Type
 This project follows the MVC (Model-View-Controller) architectural pattern.
