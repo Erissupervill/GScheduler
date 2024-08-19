@@ -1,12 +1,12 @@
 # app/__init__.py
-from flask import Flask
+from flask import Flask, render_template
 from .config import Config
-from .db import init_db, db
+from .db import db
 from .routes import register_routes
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 from flask_wtf import CSRFProtect
-from .services.auth_services import load_user  # Import the load_user function
+from .services.auth_services import load_user
 
 bcrypt = Bcrypt()
 login_manager = LoginManager()
@@ -17,7 +17,7 @@ def create_app(config_class=Config):
     app.config.from_object(config_class)
 
     # Initialize extensions
-    db.init_app(app)  # Initialize db with app
+    db.init_app(app)
     bcrypt.init_app(app)
     login_manager.init_app(app)
     csrf.init_app(app)
@@ -30,5 +30,9 @@ def create_app(config_class=Config):
 
     # Register blueprints/routes
     register_routes(app)
+    
+    @app.errorhandler(404)
+    def page_not_found(error):
+        return render_template('page_not_found.html', error=error),404
 
     return app

@@ -6,10 +6,11 @@ routes_bp = Blueprint('routes', __name__)
 def index():
     return redirect(url_for("auth_routes.login"))
 
-@routes_bp.errorhandler(404)
+
 def page_not_found(error):
     print(error)
-    return render_template("page_not_found.html", error=error), 404
+    return render_template("page_not_found.html"), 404
+
 
 # Register blueprints
 def register_routes(app):
