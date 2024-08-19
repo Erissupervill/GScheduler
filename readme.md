@@ -72,7 +72,7 @@
 
    # Flask configuration
       <!-- #FLASK_APP = __init__.py -->
-      FLASK_ENV = development
+      FLASK_ENV = production
 
       SECRET_KEY=your-secret-key
       DATABASE_URL=mysql+mysqldb://root:@localhost/gscheduler
@@ -81,7 +81,7 @@
       SESSION_COOKIE_HTTPONLY=True
       CACHE_TYPE=simple
       CACHE_DEFAULT_TIMEOUT=300
-      CSRF_ENABLED = True
+      CSRF_ENABLED = True  
       
 ## Run the Project
 
