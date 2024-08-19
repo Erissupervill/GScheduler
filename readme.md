@@ -18,7 +18,9 @@
 
 2. **Create a Virtual Environment**
 
-   Navigate to the root directory of your project and run:
+   Open Command Prompt
+
+   Navigate to the root directory of your project and run
 
    py -3 -m venv .venv
 
@@ -28,6 +30,8 @@
 
    .venv\Scripts\activate
 
+   `NOTE: Make sure to run the code in command prompt and not in powershell`
+
    Your command line should look like this: `(.venv) C:\xampp\htdocs\GScheduler-main>`
 
 4. **Install Dependencies**
@@ -35,12 +39,6 @@
    Install the required packages using:
 
    pip install -r requirements.txt
-
-5. **Run the Project**
-
-   Start the Flask application with:
-
-   flask run
 
 ## Setting Up XAMPP Database
 
@@ -84,6 +82,11 @@
       CACHE_TYPE=simple
       CACHE_DEFAULT_TIMEOUT=300
       CSRF_ENABLED = True
+      
+## Run the Project
+
+1. **Run the project**
+   flask run
 
 ## Framework Type
 
