@@ -25,3 +25,21 @@ class Config:
     # Security configuration
     # SECURITY_PASSWORD_SALT = os.environ.get("SECURITY_PASSWORD_SALT", 'your-password-salt')
     CSRF_ENABLED = os.environ.get("CSRF_ENABLED", 'True') == 'True'
+    
+class DevelopmentConfig(Config):
+    DEBUG = True
+    ENV = 'development'
+    BASE_DIR = os.path.abspath(os.path.dirname('gscheduler'))
+    SQLALCHEMY_DATABASE_URI = f'sqlite:///{os.path.join(BASE_DIR,'my_database.db')}'
+    print(SQLALCHEMY_DATABASE_URI)
+
+    
+class ProductionConfig(Config):
+    debug = False
+    env = 'production'
+    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL', 'mysql+mysqldb://root:@localhost/gscheduler')
+    
+def get_config_class():
+    if os.getenv('FLASK_ENV') == 'development':
+        return DevelopmentConfig
+    return ProductionConfig
