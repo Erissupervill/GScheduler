@@ -1,0 +1,157 @@
+<!-- Main Sidebar Container -->
+
+<!-- Brand Logo -->
+<a href="/" class="brand-link text-center">
+    <span class="brand-text font-weight-light">{{ current_user.roleName}}</span>
+</a>
+
+<!-- Sidebar -->
+<div class="sidebar">
+
+    <!-- Sidebar Menu -->
+    <nav class="mt-2">
+        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+            
+            <!-- Common Dashboard Link -->
+            <li class="nav-item">
+                <a href="/{{ role_name }}/Dashboard" class="nav-link">
+                    <i class="nav-icon fas fa-tachometer-alt"></i>
+                    <p>
+                        Dashboard 
+                    </p>
+                </a>
+            </li>
+
+            <!-- If User is Admin -->
+            {% if current_user.role_id == 1 %}
+                <li class="nav-item">
+                    <a href="/Admin/Users" class="nav-link">
+                        <i class="nav-icon far fa-file"></i>
+                        <p>
+                            Users List
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/Admin/Create/User" class="nav-link">
+                        <i class="nav-icon far fa-file"></i>
+                        <p>
+                            Create User
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/Admin/Logs/User" class="nav-link">
+                        <i class="nav-icon far fa-file"></i>
+                        <p>
+                            Audit Logs
+                        </p>
+                    </a>
+                </li>
+                <!-- If user is Staff -->
+            {% elif current_user.role_id == 2 %}
+                <li class="nav-item">
+                    <a href="/Staff/Reservation" class="nav-link">
+                        <i class="nav-icon far fa-calendar"></i>
+                        <p>
+                            Reservation
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/Staff/Reservation/Pending" class="nav-link">
+                        <i class="nav-icon far fa-file"></i>
+                        <p>
+                            Pending Reservation
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/Staff/Reservation/Accepted" class="nav-link">
+                        <i class="nav-icon far fa-file"></i>
+                        <p>
+                            Accepted Reservation
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/Staff/Reservation/Cancelled" class="nav-link">
+                        <i class="nav-icon far fa-file"></i>
+                        <p>
+                            Cancelled Reservation
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/Staff/Feedbacks" class="nav-link">
+                        <i class="nav-icon far fa-file"></i>
+                        <p>
+                            Feedbacks
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/Staff/Logs/Audit" class="nav-link">
+                        <i class="nav-icon far fa-file"></i>
+                        <p>
+                            Audit Logs
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/Staff/Logs/User" class="nav-link">
+                        <i class="nav-icon far fa-file"></i>
+                        <p>
+                            User Logs
+                        </p>
+                    </a>
+                </li>
+                <!-- if user is customer -->
+            {% elif current_user.role_id == 3 %}
+                <li class="nav-item">
+                    <a href="/User/Reservation" class="nav-link">
+                        <i class="nav-icon far fa-file"></i>
+                        <p>
+                            Reservation
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/User/Reservation/Status" class="nav-link">
+                        <i class="nav-icon far fa-file"></i>
+                        <p>
+                            Reservation Status
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/User/Feedbacks" class="nav-link">
+                        <i class="nav-icon far fa-file"></i>
+                        <p>
+                            Feedbacks
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/User/WriteFeedbacks" class="nav-link">
+                        <i class="nav-icon far fa-file"></i>
+                        <p>
+                            Write Feedback
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/User/Logs" class="nav-link">
+                        <i class="nav-icon far fa-file"></i>
+                        <p>
+                            User Logs
+                        </p>
+                    </a>
+                </li>
+            {% endif %}
+
+        </ul>
+    </nav>
+    <!-- /.sidebar-menu -->
+</div>
+<!-- /.sidebar -->

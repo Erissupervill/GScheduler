@@ -1,9 +1,10 @@
-from flask import Flask, render_template
+from flask import Flask, flash, redirect, render_template, url_for
+from sqlalchemy import null
 from .config import get_config_class
 from .db import db
 from .routes import register_routes
 from flask_bcrypt import Bcrypt
-from flask_login import LoginManager
+from flask_login import LoginManager, current_user
 from flask_wtf import CSRFProtect
 from .services.auth_services import load_user
 import os
@@ -25,6 +26,13 @@ def create_app():
     bcrypt.init_app(app)
     login_manager.init_app(app)
     csrf.init_app(app)
+    
+    @app.context_processor
+    def inject_user():
+        if current_user.is_authenticated:
+            role_name = current_user.role.roleName if current_user.role else 'No Role Assigned'
+            return {'role_name': role_name}
+        return {'role_name': 'test'}
 
     # Configure login view
     login_manager.login_view = "auth_routes.login"

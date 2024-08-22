@@ -10,9 +10,12 @@ class User(db.Model, UserMixin):
     email_address = db.Column(db.String(150), nullable=False, unique=True)
     password_hash = db.Column(db.String(150), nullable=False)
     phone_number = db.Column(db.String(255), nullable=False)
-    role_id = db.Column(db.String(255), nullable=False)
+    role_id = db.Column(db.Integer, db.ForeignKey('userrole.roleID'), nullable=False)
     last_login = db.Column(db.DateTime, nullable=True)  # Use DateTime type
     logs = db.relationship('Logs', backref='user', lazy=True, cascade="all, delete-orphan")
+    
+    # def __repr__(self):
+    #     return f'<User {self.username}, Email{self.email_address}, role{self.role_id}>'
 
     def get_id(self):
         return str(self.user_id)
@@ -20,6 +23,12 @@ class User(db.Model, UserMixin):
     def update_last_login(self):
         self.last_login = datetime.datetime.now()
         db.session.commit()
+
+class UserRole(db.Model):
+    __tablename__ = "userrole"
+    roleID = db.Column(db.Integer, primary_key=True)
+    roleName = db.Column(db.String(150), nullable = False)
+    users = db.relationship('User', backref='role', lazy=True)
         
 class Logs(db.Model):
     LogID = db.Column(db.Integer, primary_key=True)

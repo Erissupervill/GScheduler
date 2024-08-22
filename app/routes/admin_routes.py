@@ -1,12 +1,11 @@
 from flask import Blueprint, flash, render_template, redirect, request, url_for
-from flask_login import login_required
+from flask_login import current_user, login_required
 from app import db,bcrypt
 from app.forms import RegistrationForm
 from app.models import User
 from app.services.admin_services import check_email, count_by_role, count_total_users, create_user, load_user, logs_list, users_list
 
 admin_routes_bp = Blueprint("admin_routes", __name__, url_prefix="/Admin")
-
 
 @admin_routes_bp.route("/")
 def index():
