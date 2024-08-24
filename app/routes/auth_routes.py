@@ -30,7 +30,7 @@ def user_register():
         email = form.email.data
         phone_num = form.phone_number.data
         password = form.password.data
-        role_id = 2
+        role_id = 3
         
         if User.query.filter_by(email_address=email).first():
             flash('Email already exists', 'danger')
@@ -38,10 +38,17 @@ def user_register():
         
         hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
         user = User(username=username, email_address=email, password_hash=hashed_password, phone_number=phone_num, role_id=role_id)
-        db.session.add(user)
-        db.session.commit()
-        flash('User successfully created', 'success')
-        return redirect(url_for('auth_routes.login'))
+        try:
+            db.session.add(user)
+            db.session.commit()
+            flash('User successfully created', 'success')
+            return redirect(url_for('auth_routes.login'))
+        except Exception as e:
+            db.session.rollback()  # Rollback in case of error
+            flash('An error occurred while creating the user.', 'danger')
+            print(e)
+    else:
+        print(form.errors)
         
     return render_template('auth/customer_register.html', form=form, title="Register")
 

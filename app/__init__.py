@@ -32,7 +32,7 @@ def create_app():
         if current_user.is_authenticated:
             role_name = current_user.role.roleName if current_user.role else 'No Role Assigned'
             return {'role_name': role_name}
-        return {'role_name': 'test'}
+        return {'role_name': 'Customer'}
 
     # Configure login view
     login_manager.login_view = "auth_routes.login"

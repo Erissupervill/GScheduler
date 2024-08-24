@@ -39,6 +39,7 @@ class ProductionConfig(Config):
     SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL', 'mysql+mysqldb://root:@localhost/gscheduler')
     
 def get_config_class():
+    print(os.getenv('FLASK_ENV'))
     if os.getenv('FLASK_ENV') == 'development':
         return DevelopmentConfig
     return ProductionConfig

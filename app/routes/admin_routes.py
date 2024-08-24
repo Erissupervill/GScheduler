@@ -69,9 +69,13 @@ def CreateUser():
             flash('Email already exists', 'danger')
             return redirect(url_for('auth_routes.user_register'))
         hashed_password = bcrypt.generate_password_hash(data['password']).decode('utf-8')
-        user = create_user(data['username'], data['email'], hashed_password, data['phone_number'], data['role_id'])        
-        flash('User successfully created', 'success')
-        return redirect(url_for('admin_routes.CreateUser'))
+        user = create_user(data['username'], data['email'], hashed_password, data['phone_number'], data['role_id'])
+        if user:   
+            flash('User successfully created', 'success')
+            return redirect(url_for('admin_routes.CreateUser'))
+        else:
+            flash('Cannot create user', 'danger')
+            return redirect(url_for('admin_routes.CreateUser'))
         # else:
         #     flash('Email already exists', 'danger')
         #     return redirect(url_for('admin_routes.CreateUser'))

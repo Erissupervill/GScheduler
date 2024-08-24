@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2>Create Reservation</h2>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+            <label for="reservation_date_time">Date and Time</label>
+            <input type="datetime-local" class="form-control" id="reservation_date_time" name="reservation_date_time" required>
+        </div>
+        <div class="form-group">
+            <label for="table_id">Table</label>
+            <select class="form-control" id="table_id" name="table_id" required>
+                {% for table in tables %}
+                <option value="{{ table.table_id }}">{{table.table_id}}{{ table.location }} (Capacity: {{ table.capacity }})</option>
+                {% endfor %}
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Reserve</button>
+    </form>
+</div>
+{% endblock %}
