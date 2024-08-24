@@ -1,4 +1,4 @@
-from flask import Blueprint, flash, render_template, redirect, request, url_for
+from flask import Blueprint, flash, logging, render_template, redirect, request, url_for
 from flask_login import current_user, login_required
 from app import db,bcrypt
 from app.forms import RegistrationForm
@@ -50,6 +50,63 @@ def UserList():
         print(f"Error occurred: {e}")
         return "An error occurred while fetching user data"
     
+@admin_routes_bp.route("/Logs/User")
+@login_required
+def UserLogs():
+    try:
+        get_all_logs = logs_list()
+        if get_all_logs:
+            return render_template('/admin/user_logs.html', items = get_all_logs)
+        else:
+            return render_template('/admin/user_logs.html', note = "No Data Found")
+    except Exception as e:
+        print(f"Error occurred: {e}")
+        return "An error occurred while fetching user data"
+    
+@admin_routes_bp.route('/handle_user_action/<int:user_id>', methods=['POST'])
+def handle_user_action(user_id):
+    user = load_user(user_id)
+    if not user:
+        flash('User not found', 'error')
+        logging.error(f"User with ID {user_id} not found")
+        return redirect(url_for('admin_routes.UserList'))
+
+    action = request.form.get('action')
+
+    if action == 'update':
+        first_name = request.form.get('first_name')
+        last_name = request.form.get('last_name')
+        username = request.form.get('username')
+        email_address = request.form.get('email_address')
+        phone_number = request.form.get('phone_number')
+        password = request.form.get('password')
+        
+        if first_name:
+            user.first_name = first_name
+        if last_name:
+            user.last_name = last_name
+        if username:
+            user.username = username
+        if email_address:
+            user.email_address = email_address
+        if phone_number:
+            user.phone_number = phone_number
+        if password:
+            user.password_hash = bcrypt.generate_password_hash(password)
+
+        db.session.commit()
+        flash('User updated successfully', 'success')
+        
+    elif action == 'delete':
+        db.session.delete(user)
+        db.session.commit()
+        flash('User deleted successfully', 'success')
+        
+    else:
+        flash('Unknown action', 'error')
+
+    return redirect(url_for('admin_routes.UserList'))
+
 @admin_routes_bp.route("/Create/User",methods=['GET','POST'])
 def CreateUser():
   
@@ -81,44 +138,13 @@ def CreateUser():
         #     return redirect(url_for('admin_routes.CreateUser'))
     return render_template("admin/create_user.html",form=form)
 
-
+@admin_routes_bp.route("/Feedbacks")
+@login_required
+def Feedbacks():
+    return render_template("/admin/feedbacks.html")
 
 @admin_routes_bp.route("/Logs/Audit")
 @login_required
 def AuditLogs():
     return render_template("/admin/audit.html", title="Audit Logs")
 
-@admin_routes_bp.route("/Logs/User")
-@login_required
-def UserLogs():
-    try:
-        get_all_logs = logs_list()
-        if get_all_logs:
-            return render_template('/admin/user_logs.html', items = get_all_logs)
-        else:
-            return render_template('/admin/user_logs.html', note = "No Data Found")
-    except Exception as e:
-        print(f"Error occurred: {e}")
-        return "An error occurred while fetching user data"
-    
-@admin_routes_bp.route('/handle_user_action/<int:user_id>', methods=['POST'])
-def handle_user_action(user_id):
-    user = load_user(user_id)
-    if not user:
-        flash('User not found', 'error')
-        return redirect(url_for('admin_routes.UserLogs'))  # Redirect to the user list page
-
-    action = request.form.get('action')
-
-    if action == 'update':
-        # Handle the update logic here
-        flash('User updated successfully', 'success')
-    elif action == 'delete':
-        # Handle the delete logic here
-        db.session.delete(user)
-        db.session.commit()
-        flash('User deleted successfully', 'success')
-    else:
-        flash('Unknown action', 'error')
-
-    return redirect(url_for('admin_routes.UserList'))

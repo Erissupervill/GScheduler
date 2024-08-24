@@ -6,7 +6,7 @@ from app.forms import ReservationForm
 from app.models import Reservation, RestaurantTable
 from app.services.reservation_services import get_reservations
 
-user_routes_bp = Blueprint("user_routes", __name__, url_prefix="/User")
+user_routes_bp = Blueprint("user_routes", __name__, url_prefix="/Customer")
 
 
 @user_routes_bp.route("/")
@@ -15,10 +15,10 @@ def index():
 
 
 # user
-@user_routes_bp.route("/Dashboard")
+@user_routes_bp.route("/Notification")
 @login_required
-def Dashboard():
-    return render_template("/customer/dashboard.html")
+def Notification():
+    return render_template("/customer/notification.html")
 
 @user_routes_bp.route("/create/reserve", methods=['GET', 'POST'])
 @login_required

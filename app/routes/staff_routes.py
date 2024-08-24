@@ -3,7 +3,7 @@ from flask_login import current_user, login_required
 
 from app import db
 from app.models import Reservation
-from app.services.reservation_services import get_reservations
+from app.services.reservation_services import count_by_status, get_cancelled_reservation, get_confirmed_reservation, get_pending_reservation, get_rejected_reservation, get_reservations
 
 staff_routes_bp = Blueprint("staff_routes", __name__, url_prefix="/Staff")
 
@@ -16,7 +16,23 @@ def index():
 @staff_routes_bp.route("/Dashboard")
 @login_required
 def Dashboard():
-    return render_template("/staff/dashboard.html",title="Dashboard")
+    try:
+        pending = count_by_status("Pending")
+        rejected = count_by_status("Rejected")
+        cancelled = count_by_status("Cancelled")
+        reservations = {
+                'pending': pending,
+                'rejected': rejected,
+                'cancelled': cancelled
+            }
+        
+        
+        return render_template("/staff/dashboard.html",
+                            title="Dashboard",
+                            reservations = reservations)
+    except Exception as e:
+        print(f"Error Occurred: {e}")
+        return "An error has occurred while fetching user data"
 
 
 @staff_routes_bp.route("/Reservation")
@@ -55,25 +71,28 @@ def update_reservation(reservation_id):
 
     return redirect(url_for('staff_routes.pending_reservations'))
 
+@staff_routes_bp.route("/Reservation/Accepted")
+@login_required
+def AcceptedReservation():
+    reservations = get_confirmed_reservation()
+    return render_template("/staff/accepted_reservation.html",reservations=reservations, title="Accepted Reservation")
 
 @staff_routes_bp.route('/pending-reservations')
 @login_required
 def pending_reservations():
-    reservations = Reservation.query.filter_by(status='Pending').all()
+    reservations = get_pending_reservation()
     return render_template('staff/pending_reservation.html', reservations=reservations)
 
-
-@staff_routes_bp.route("/Reservation/Accepted")
+@staff_routes_bp.route("/Reservation/Rejected")
 @login_required
-def AcceptedReservation():
-    reservations = Reservation.query.filter_by(status='Confirmed').all()
-    return render_template("/staff/accepted_reservation.html",reservations=reservations, title="Accepted Reservation")
-
+def RejectedReservation():
+    reservations = get_rejected_reservation()
+    return render_template("/staff/rejected_reservation.html",reservations=reservations, title="Cancelled Reservation")
 
 @staff_routes_bp.route("/Reservation/Cancelled")
 @login_required
 def CancelledReservation():
-    reservations = Reservation.query.filter_by(status='Rejected').all()
+    reservations = get_cancelled_reservation()
     return render_template("/staff/cancelled_reservation.html",reservations=reservations, title="Cancelled Reservation")
 
 
