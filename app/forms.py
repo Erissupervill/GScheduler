@@ -12,14 +12,17 @@ class RegistrationForm(FlaskForm):
     submit = SubmitField('Sign Up')
     
 class LoginForm(FlaskForm):
-    username = StringField('Username', validators=[DataRequired(),Length(min=2, max=10)])
+    email_address = StringField('Email', validators=[DataRequired(),Email()])
     password = PasswordField('Password', validators=[DataRequired(),Length(min=2, max=10)])
     submit = SubmitField('Register')
     
 class ReservationForm(FlaskForm):
-    reservation_date_time = DateTimeField('Reservation Date and Time', format='%Y-%m-%dT%H:%M', validators=[DataRequired()])
-    table_id = StringField('Table', validators=[DataRequired()])
+    reservation_date = DateTimeField('Reservation Date', format='%Y-%m-%d', validators=[DataRequired()])
+    reservation_time = DateTimeField('Reservation Time', format='%H:%M', validators=[DataRequired()])
+    number_of_guests = StringField('Number of Guests', validators=[DataRequired()])
+    branch_id = StringField('Branch',validators=[DataRequired()])
     submit = SubmitField('Reserve')
+
     
 class UserForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(min=2, max=10)])

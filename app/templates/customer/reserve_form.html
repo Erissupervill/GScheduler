@@ -1,22 +1,79 @@
 {% extends 'customer/base.html' %}
 {% block content %}
-<div class="container">
-    <h2>Create Reservation</h2>
-    <form method="POST">
-        {{ form.hidden_tag() }}
-        <div class="form-group">
-            <label for="reservation_date_time">Date and Time</label>
-            <input type="datetime-local" class="form-control" id="reservation_date_time" name="reservation_date_time" required>
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <div class="content-header">
+          <div class="container-fluid">
+            <div class="row mb-2">
+              <div class="col-sm-6">
+                <h1 class="m-0">Create Reservation</h1>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="form-group">
-            <label for="table_id">Table</label>
-            <select class="form-control" id="table_id" name="table_id" required>
-                {% for table in tables %}
-                <option value="{{ table.table_id }}">{{table.table_id}}{{ table.location }} (Capacity: {{ table.capacity }})</option>
-                {% endfor %}
-            </select>
+  
+        <!-- Main content -->
+        <div class="content">
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="card">
+                  <div class="card-header">
+                    <h3 class="card-title">Reservation Form</h3>
+                  </div>
+                  <div class="card-body">
+            
+                    
+                    <form method="post">
+                      {{ form.hidden_tag() }}
+  
+                      <div class="form-group">
+                        <label for="reservation_date">Reservation Date</label>
+                        <input type="date" name="reservation_date" id="reservation_date" class="form-control" value="{{ form.reservation_date.data }}" placeholder="Select reservation date">
+                        {% for error in form.reservation_date.errors %}
+                        <div class="invalid-feedback d-block">{{ error }}</div>
+                        {% endfor %}
+                      </div>
+
+                      <div class="form-group">
+                        <label for="reservation_time">Reservation Time</label>
+                        <input type="time" name="reservation_time" id="reservation_time" class="form-control" value="{{ form.reservation_time.data }}" placeholder="Select reservation time">
+                        {% for error in form.reservation_time.errors %}
+                        <div class="invalid-feedback d-block">{{ error }}</div>
+                        {% endfor %}
+                      </div>
+  
+                      <div class="form-group">
+                        <label for="number_of_guests">Number of Guests</label>
+                        <input type="number" name="number_of_guests" id="number_of_guests" class="form-control" value="{{ form.number_of_guests.data }}" placeholder="Enter number of guests">
+                        {% for error in form.number_of_guests.errors %}
+                        <div class="invalid-feedback d-block">{{ error }}</div>
+                        {% endfor %}
+                      </div>
+  
+                      <div class="form-group">
+                        <label for="branch_id">Branch </label>
+                        <select name="branch_id" id="branch_id" class="form-control">
+                          {% for branch in branches %}
+                            <option value="{{ branch.branch_id }}" {% if form.branch_id.data == branch.branch_id %}selected{% endif %}>
+                             {{branch.location}} {{ branch.name }} 
+                            </option>
+                          {% endfor %}
+                        </select>
+                        {% for error in form.branch_id.errors %}
+                        <div class="invalid-feedback d-block">{{ error }}</div>
+                        {% endfor %}
+                      </div>
+                      <div class="form-group">
+                        <button type="submit" class="btn btn-primary">Reserve</button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-        <button type="submit" class="btn btn-primary">Reserve</button>
-    </form>
-</div>
+    </div>
 {% endblock %}

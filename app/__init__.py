@@ -1,7 +1,9 @@
-from flask import Flask, flash, redirect, render_template, url_for
-from sqlalchemy import null
-from .config import get_config_class
-from .db import db
+# app/__init__.py
+from flask import Flask, render_template
+
+from app.config import get_config_class
+from app.logging_config import setup_logging
+from .db import init_db
 from .routes import register_routes
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, current_user
@@ -16,28 +18,32 @@ csrf = CSRFProtect()
 def create_app():
     app = Flask(__name__)
 
-    # Determine the appropriate configuration
+    # Load configuration
     config_class = get_config_class()
     print(f"Using configuration: {config_class.__name__}")
     app.config.from_object(config_class)
 
+    # Initialize logger
+    setup_logging(app)
+
     # Initialize extensions
-    db.init_app(app)
+    init_db(app)
     bcrypt.init_app(app)
     login_manager.init_app(app)
     csrf.init_app(app)
-    
+
+    # Set up context processor
     @app.context_processor
     def inject_user():
         if current_user.is_authenticated:
-            role_name = current_user.role.roleName if current_user.role else 'No Role Assigned'
+            role_name = current_user.role.role_name if current_user.role else 'No Role Assigned'
             return {'role_name': role_name}
         return {'role_name': 'Customer'}
 
     # Configure login view
     login_manager.login_view = "auth_routes.login"
 
-    # Set up the user_loader callback
+    # Set up user_loader callback
     login_manager.user_loader(load_user)
 
     # Register blueprints/routes

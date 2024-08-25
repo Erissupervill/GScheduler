@@ -1,7 +1,8 @@
 # app/routes.py
 from flask import Blueprint, render_template, redirect, url_for, flash
 from flask_login import current_user, logout_user
-from app import db, bcrypt
+from app import bcrypt
+from app.db import db
 from app.forms import RegistrationForm, LoginForm
 from app.models import User
 from app.services.auth_services import authenticate_user
@@ -14,7 +15,7 @@ def base_on_user_role():
     elif current_user.role_id == 2:
         return redirect(url_for('staff_routes.Dashboard'))
     elif current_user.role_id == 3:
-        return redirect(url_for('user_routes.Dashboard'))
+        return redirect(url_for('user_routes.notification'))
     else:
         flash('Current user has no role, kindly contact us.', 'danger')
         return redirect(url_for('auth_routes.login'))
@@ -59,9 +60,9 @@ def login():
 
     form = LoginForm()
     if form.validate_on_submit():
-        username = form.username.data
+        email_address = form.email_address.data
         password = form.password.data
-        user = authenticate_user(username, password, bcrypt)
+        user = authenticate_user(email_address, password, bcrypt)
         if user:
             flash('Login Successful', 'success')
             return base_on_user_role()

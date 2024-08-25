@@ -6,7 +6,7 @@
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1 class="m-0">Pending Reservations</h1>
+                <h1 class="m-0">Accepted Reservations</h1>
             </div><!-- /.col -->
         </div><!-- /.row -->
     </div><!-- /.container-fluid -->
@@ -15,7 +15,7 @@
             <section class="content">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Pending Reservations</h3>
+                        <h3 class="card-title">Accepted Reservations</h3>
                     </div>
                     <!-- /.card-header -->
                     <div class="card-body">
@@ -41,15 +41,17 @@
                                                 <th>Customer Name</th>
                                                 <th>Time and Date</th>
                                                 <th>Total Guests</th>
+                                                <th>Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {% for reservation in reservations %}
                                                 <tr>
-                                                    <td>{{ reservation.reservation_id }}</td>
+                                                    <td>{{ loop.index }}</td>
                                                     <td>{{ reservation.customer.username }}</td>
-                                                    <td>{{ reservation.reservation_date_time.strftime('%Y-%m-%d %H:%M') }}</td>
-                                                    <td>{{ reservation.table.capacity }}</td>
+                                                    <td>{{ reservation.reservation_date.strftime('%Y-%m-%d %H:%M') }}</td>
+                                                    <td>{{ reservation.number_of_guests }}</td>
+                                                    <td><button type="submit" name="submit" class="btn btn-primary">Complete</td>
                                                 </tr>
                                             {% endfor %}
                                         </tbody>
@@ -59,6 +61,7 @@
                                                 <th>Customer Name</th>
                                                 <th>Time and Date</th>
                                                 <th>Total Guests</th>
+                                                <th>Action</th>
                                             </tr>
                                         </tfoot>
                                     </table>

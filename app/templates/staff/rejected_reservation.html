@@ -46,7 +46,7 @@
                                         <tbody>
                                             {% for reservation in reservations %}
                                                 <tr>
-                                                    <td>{{ reservation.reservation_id }}</td>
+                                                    <td>{{ loop.index }}</td>
                                                     <td>{{ reservation.customer.username }}</td>
                                                     <td>{{ reservation.reservation_date_time.strftime('%Y-%m-%d %H:%M') }}</td>
                                                     <td>{{ reservation.table.capacity }}</td>

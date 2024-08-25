@@ -1,6 +1,7 @@
-from flask import Blueprint, flash, logging, render_template, redirect, request, url_for
+from flask import Blueprint, current_app, flash, logging, render_template, redirect, request, url_for
 from flask_login import current_user, login_required
-from app import db,bcrypt
+from app.db import db
+from app import bcrypt
 from app.forms import RegistrationForm
 from app.models import User
 from app.services.admin_services import check_email, count_by_role, count_total_users, create_user, load_user, logs_list, users_list
@@ -9,9 +10,9 @@ admin_routes_bp = Blueprint("admin_routes", __name__, url_prefix="/Admin")
 
 @admin_routes_bp.route("/")
 def index():
-    return redirect(url_for("auth_routes_bp.login"))  # Ensure correct function
+    return redirect(url_for("auth_routes_bp.login"))
 
-# Admin
+# Admin Dashboard
 @admin_routes_bp.route("/Dashboard")
 @login_required
 def Dashboard():
@@ -21,130 +22,148 @@ def Dashboard():
         staff = count_by_role(2)
         user = count_by_role(3)
         stats = {
-                'all': total_user,
-                'admin': admin,
-                'staff': staff,
-                'user': user
-            }
-        
-        
+            'all': total_user,
+            'admin': admin,
+            'staff': staff,
+            'user': user
+        }
+
         return render_template("/admin/dashboard.html",
-                            title="Dashboard",
-                            stats = stats)
+                               title="Dashboard",
+                               stats=stats)
     except Exception as e:
-        print(f"Error Occurred: {e}")
-        return "An error has occurred while fetching user data"
+        logging.error(f"Error occurred in Dashboard: {e}")
+        flash("An error occurred while fetching user data", "danger")
+        return redirect(url_for("admin_routes.Dashboard"))
 
-# User Action
-
+# User List
 @admin_routes_bp.route("/Users")
+@login_required
 def UserList():
-    try:    
+    try:
         get_all_user = users_list()
-        
         if get_all_user:
             return render_template("admin/users_list.html", users=get_all_user)
         else:
-            return "No users found"
+            flash("No users found", "warning")
+            return render_template("admin/users_list.html", users=[])
     except Exception as e:
-        print(f"Error occurred: {e}")
-        return "An error occurred while fetching user data"
-    
+        logging.error(f"Error occurred in UserList: {e}")
+        flash("An error occurred while fetching user data", "danger")
+        return redirect(url_for("admin_routes.Dashboard"))
+
+# User Logs
 @admin_routes_bp.route("/Logs/User")
 @login_required
 def UserLogs():
     try:
         get_all_logs = logs_list()
         if get_all_logs:
-            return render_template('/admin/user_logs.html', items = get_all_logs)
+            return render_template('/admin/user_logs.html', items=get_all_logs)
         else:
-            return render_template('/admin/user_logs.html', note = "No Data Found")
+            flash("No logs found", "warning")
+            return render_template('/admin/user_logs.html', items=[])
     except Exception as e:
-        print(f"Error occurred: {e}")
-        return "An error occurred while fetching user data"
-    
+        logging.error(f"Error occurred in UserLogs: {e}")
+        flash("An error occurred while fetching logs", "danger")
+        return redirect(url_for("admin_routes.Dashboard"))
+
+
+
 @admin_routes_bp.route('/handle_user_action/<int:user_id>', methods=['POST'])
+@login_required
 def handle_user_action(user_id):
-    user = load_user(user_id)
-    if not user:
-        flash('User not found', 'error')
-        logging.error(f"User with ID {user_id} not found")
-        return redirect(url_for('admin_routes.UserList'))
+    try:
+        user = load_user(user_id)
+        if not user:
+            flash('User not found', 'error')
+            current_app.logger.error(f"User with ID {user_id} not found")
+            return redirect(url_for('admin_routes.UserList'))
 
-    action = request.form.get('action')
+        action = request.form.get('action')
 
-    if action == 'update':
-        first_name = request.form.get('first_name')
-        last_name = request.form.get('last_name')
-        username = request.form.get('username')
-        email_address = request.form.get('email_address')
-        phone_number = request.form.get('phone_number')
-        password = request.form.get('password')
+        if action == 'update':
+            first_name = request.form.get('first_name')
+            last_name = request.form.get('last_name')
+            username = request.form.get('username')
+            email_address = request.form.get('email_address')
+            phone_number = request.form.get('phone_number')
+            password = request.form.get('password')
+            
+            if first_name:
+                user.first_name = first_name
+            if last_name:
+                user.last_name = last_name
+            if username:
+                user.username = username
+            if email_address:
+                user.email_address = email_address
+            if phone_number:
+                user.phone_number = phone_number
+            if password:
+                user.password_hash = bcrypt.generate_password_hash(password).decode('utf-8')
+
+            db.session.commit()
+            flash('User updated successfully', 'success')
+            current_app.logger.info(f"User with ID {user_id} updated successfully")
+        elif action == 'delete':
+            db.session.delete(user)
+            db.session.commit()
+            flash('User deleted successfully', 'success')
+            current_app.logger.info(f"User with ID {user_id} deleted successfully")
+        else:
+            flash('Unknown action', 'error')
+            current_app.logger.error(f"Unknown action '{action}' attempted for user with ID {user_id}")
         
-        if first_name:
-            user.first_name = first_name
-        if last_name:
-            user.last_name = last_name
-        if username:
-            user.username = username
-        if email_address:
-            user.email_address = email_address
-        if phone_number:
-            user.phone_number = phone_number
-        if password:
-            user.password_hash = bcrypt.generate_password_hash(password)
-
-        db.session.commit()
-        flash('User updated successfully', 'success')
-        
-    elif action == 'delete':
-        db.session.delete(user)
-        db.session.commit()
-        flash('User deleted successfully', 'success')
-        
-    else:
-        flash('Unknown action', 'error')
-
+    except Exception as e:
+        current_app.logger.error(f"Error occurred in handle_user_action: {e}")
+        flash("An error occurred while handling the user action", "danger")
+    
     return redirect(url_for('admin_routes.UserList'))
 
-@admin_routes_bp.route("/Create/User",methods=['GET','POST'])
+
+# Create User
+@admin_routes_bp.route("/Create/User", methods=['GET', 'POST'])
+@login_required
 def CreateUser():
-  
     form = RegistrationForm()
-        
+    
     if form.validate_on_submit():
-        data = {
-            'username': form.username.data,
-            'email': form.email.data,
-            'phone_number': form.phone_number.data,
-            'password': form.password.data,
-            'role_id': form.role.data
-        }
+        try:
+            data = {
+                'username': form.username.data,
+                'email': form.email.data,
+                'phone_number': form.phone_number.data,
+                'password': form.password.data,
+                'role_id': form.role.data
+            }
 
-        
-        if check_email(data['email']):
-            flash('Email already exists', 'danger')
-            return redirect(url_for('auth_routes.user_register'))
-        hashed_password = bcrypt.generate_password_hash(data['password']).decode('utf-8')
-        user = create_user(data['username'], data['email'], hashed_password, data['phone_number'], data['role_id'])
-        if user:   
-            flash('User successfully created', 'success')
-            return redirect(url_for('admin_routes.CreateUser'))
-        else:
-            flash('Cannot create user', 'danger')
-            return redirect(url_for('admin_routes.CreateUser'))
-        # else:
-        #     flash('Email already exists', 'danger')
-        #     return redirect(url_for('admin_routes.CreateUser'))
-    return render_template("admin/create_user.html",form=form)
+            if check_email(data['email']):
+                flash('Email already exists', 'danger')
+                return redirect(url_for('admin_routes.CreateUser'))
 
+            hashed_password = bcrypt.generate_password_hash(data['password']).decode('utf-8')
+            user = create_user(data['username'], data['email'], hashed_password, data['phone_number'], data['role_id'])
+            if user:   
+                flash('User successfully created', 'success')
+                return redirect(url_for('admin_routes.CreateUser'))
+            else:
+                flash('Cannot create user', 'danger')
+        except Exception as e:
+            # app.logging.if(f"Error occurred in CreateUser: {e}")
+            flash(" An error occurred while creating the user:", 'danger')
+            print(e)
+    
+    return render_template("admin/create_user.html", form=form)
+
+# Feedbacks
 @admin_routes_bp.route("/Feedbacks")
 @login_required
 def Feedbacks():
     return render_template("/admin/feedbacks.html")
 
+# Audit Logs
 @admin_routes_bp.route("/Logs/Audit")
 @login_required
 def AuditLogs():
     return render_template("/admin/audit.html", title="Audit Logs")
-

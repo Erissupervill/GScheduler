@@ -94,10 +94,10 @@
                 </a>
             </li>
 
-            <!-- If user is Customer -->
+            <!-- If user is User -->
             {% elif current_user.role_id == 3 %}
             <li class="nav-item">
-                <a href="/Customer/Notification" class="nav-link">
+                <a href="/User/Notification" class="nav-link">
                     <i class="nav-icon fas fa-bell"></i>
                     <p>
                         Notification
@@ -105,7 +105,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a href="/Customer/create/reserve" class="nav-link">
+                <a href="/User/create/reserve" class="nav-link">
                     <i class="nav-icon fas fa-table"></i>
                     <p>
                         Create Reservation
@@ -113,7 +113,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a href="/Customer/Reservation/Status" class="nav-link">
+                <a href="/User/Reservation/Status" class="nav-link">
                     <i class="nav-icon fas fa-info-circle"></i>
                     <p>
                         Reservation Status
@@ -121,7 +121,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a href="/Customer/WriteFeedbacks" class="nav-link">
+                <a href="/User/WriteFeedbacks" class="nav-link">
                     <i class="nav-icon fas fa-pencil-alt"></i>
                     <p>
                         Write Feedback

@@ -1,9 +1,9 @@
-from flask import Blueprint, flash, render_template, redirect, request, url_for
+from flask import Blueprint, flash, jsonify, render_template, redirect, request, url_for
 from flask_login import current_user, login_required
 
-from app import db
-from app.models import Reservation
-from app.services.reservation_services import count_by_status, get_cancelled_reservation, get_confirmed_reservation, get_pending_reservation, get_rejected_reservation, get_reservations
+from app.db import db
+from app.models import ReservationStatus
+from app.services.reservation_services import count_by_status, get_cancelled_reservation, get_confirmed_reservation, get_guest_reservation, get_pending_reservation, get_rejected_reservation, get_reservations
 
 staff_routes_bp = Blueprint("staff_routes", __name__, url_prefix="/Staff")
 
@@ -17,10 +17,12 @@ def index():
 @login_required
 def Dashboard():
     try:
+        confirmed = count_by_status("Confirmed")
         pending = count_by_status("Pending")
         rejected = count_by_status("Rejected")
         cancelled = count_by_status("Cancelled")
         reservations = {
+                'confirmed': confirmed,
                 'pending': pending,
                 'rejected': rejected,
                 'cancelled': cancelled
@@ -37,7 +39,7 @@ def Dashboard():
 
 @staff_routes_bp.route("/Reservation")
 @login_required
-def ReservationRoute():
+def ReservationAll():
     reservations = get_reservations()
     return render_template("/staff/Reservation.html", reservations=reservations)
 
@@ -50,15 +52,15 @@ def PendingReservation():
 @staff_routes_bp.route('/update/reservation/<int:reservation_id>', methods=['POST'])
 @login_required
 def update_reservation(reservation_id):
-    reservation = Reservation.query.get_or_404(reservation_id)
+    reservation = get_guest_reservation(reservation_id)
 
     if request.method == 'POST':
         action = request.form.get('action')
 
         if action == 'accept':
-            reservation.status = 'Confirmed'
+            reservation.status = ReservationStatus.CONFIRMED
         elif action == 'reject':
-            reservation.status = 'Rejected'
+            reservation.status = ReservationStatus.REJECTED
 
         reservation.updated_by = current_user.user_id
 
@@ -86,8 +88,9 @@ def pending_reservations():
 @staff_routes_bp.route("/Reservation/Rejected")
 @login_required
 def RejectedReservation():
+    
     reservations = get_rejected_reservation()
-    return render_template("/staff/rejected_reservation.html",reservations=reservations, title="Cancelled Reservation")
+    return render_template("/staff/rejected_reservation.html",reservations=reservations, title="Rejected Reservation")
 
 @staff_routes_bp.route("/Reservation/Cancelled")
 @login_required
