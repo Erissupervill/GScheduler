@@ -23,10 +23,10 @@ def dashboard():
     try:
         # Fetch counts for different reservation statuses
         counts = {
-            'confirmed': count_by_status(ReservationStatus.CONFIRMED.value),
-            'pending': count_by_status(ReservationStatus.PENDING.value),
-            'rejected': count_by_status(ReservationStatus.REJECTED.value),
-            'cancelled': count_by_status(ReservationStatus.CANCELLED.value),
+            'confirmed': count_by_status(ReservationStatus.CONFIRMED),
+            'pending': count_by_status(ReservationStatus.PENDING),
+            'rejected': count_by_status(ReservationStatus.REJECTED),
+            'cancelled': count_by_status(ReservationStatus.CANCELLED),
         }
         
         # Fetch all branches and calculate available capacity
@@ -65,12 +65,12 @@ def update_reservation(reservation_id):
 
         if action == 'accept':
             branch = reservation.branch
-            current_guests = sum(r.number_of_guests for r in branch.reservations if r.status == ReservationStatus.CONFIRMED.value)
+            current_guests = sum(r.number_of_guests for r in branch.reservations if r.status == ReservationStatus.CONFIRMED)
             if (current_guests + reservation.number_of_guests) > branch.capacity:
                 flash('Cannot confirm reservation. Exceeds branch capacity.', 'danger')
                 return redirect(url_for('staff_routes.pending_reservations'))
 
-            reservation.status = ReservationStatus.CONFIRMED.value
+            reservation.status = ReservationStatus.CONFIRMED
 
         elif action == 'reject':
             return redirect(url_for('staff_routes.reject_reservation_form', reservation_id=reservation_id))
@@ -114,7 +114,7 @@ def reject_reservation():
 
     reservation = get_reservation_by_id(reservation_id)
     if reservation:
-        reservation.status = ReservationStatus.REJECTED.value
+        reservation.status = ReservationStatus.REJECTED
         reservation.status_comment = rejection_reason
         reservation.updated_by = current_user.user_id  # Ensure you use the correct field
         db.session.commit()
@@ -145,7 +145,7 @@ def complete_reservation(reservation_id):
     try:
         reservation = get_reservation_by_id(reservation_id)
         if reservation:
-            reservation.status = ReservationStatus.COMPLETED.value
+            reservation.status = ReservationStatus.COMPLETED
             reservation.updated_by = current_user.id
             db.session.commit()
             flash('Reservation status updated to Completed!', 'success')
