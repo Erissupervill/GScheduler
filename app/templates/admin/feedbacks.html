@@ -1,160 +1,145 @@
-{% extends 'staff/base.html' %}
+{% extends 'base.html' %}
 {% block content %}
 
-<!-- Content Header (Page header) -->
 <div class="content-header">
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1 class="m-0">Feedbacks</h1>
+                <h1 class="m-0">Feedback Management</h1>
+            </div>
+        </div>
+    </div>
 
-            </div><!-- /.col -->
-        </div><!-- /.row -->
-    </div><!-- /.container-fluid -->
     <section class="content">
         <div class="container-fluid">
             <section class="content">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Feedbacks</h3>
+                        <h3 class="card-title">Feedback List</h3>
                     </div>
-                    <!-- /.card-header -->
                     <div class="card-body">
-                        <div id="example1_wrapper" class="dataTables_wrapper dt-bootstrap4">
-                            <div class="row">
-                                <div class="col-sm-12 col-md-6">
-                                    <div class="dt-buttons btn-group flex-wrap"> <button
-                                            class="btn btn-secondary buttons-copy buttons-html5" tabindex="0"
-                                            aria-controls="example1" type="button"><span>Copy</span></button> <button
-                                            class="btn btn-secondary buttons-csv buttons-html5" tabindex="0"
-                                            aria-controls="example1" type="button"><span>CSV</span></button> <button
-                                            class="btn btn-secondary buttons-excel buttons-html5" tabindex="0"
-                                            aria-controls="example1" type="button"><span>Excel</span></button> <button
-                                            class="btn btn-secondary buttons-pdf buttons-html5" tabindex="0"
-                                            aria-controls="example1" type="button"><span>PDF</span></button> <button
-                                            class="btn btn-secondary buttons-print" tabindex="0"
-                                            aria-controls="example1" type="button"><span>Print</span></button>
-                                        <div class="btn-group"><button
-                                                class="btn btn-secondary buttons-collection dropdown-toggle buttons-colvis"
-                                                tabindex="0" aria-controls="example1" type="button" aria-haspopup="true"
-                                                aria-expanded="false"><span>Column visibility</span><span
-                                                    class="dt-down-arrow"></span></button></div>
-                                    </div>
-                                </div>
-                                <div class="col-sm-12 col-md-6">
-                                    <div id="example1_filter" class="dataTables_filter"><label>Search:<input
-                                                type="search" class="form-control form-control-sm" placeholder=""
-                                                aria-controls="example1"></label></div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    <table id="example1" class="table table-bordered table-striped dataTable dtr-inline"
-                                        aria-describedby="example1_info">
-                                        <thead>
-                                            <tr>
-                                                <th class="sorting sorting_asc" tabindex="0" aria-controls="example1"
-                                                    rowspan="1" colspan="1" aria-sort="ascending"
-                                                    aria-label="Rendering engine: activate to sort column descending">
-                                                    ID</th>
-                                                <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1"
-                                                    colspan="1" aria-label="Browser: activate to sort column ascending">
-                                                    User</th>
-                                                    <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1"
-                                                    colspan="1"
-                                                    aria-label="Engine version: activate to sort column ascending">
-                                                    Rating</th>
-                                                <th class="sorting" tabindex="0" aria-controls="example1" rowspan="2"
-                                                    colspan="2"
-                                                    aria-label="Engine version: activate to sort column ascending">
-                                                    Message</th>
-                                                    <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1"
-                                                    colspan="1"
-                                                    aria-label="Platform(s): activate to sort column ascending">
-                                                    Time and Date</th>
-                                                <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1"
-                                                    colspan="1"
-                                                    aria-label="CSS grade: activate to sort column ascending">Action
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <table id="example1" class="table table-bordered table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>User</th>
+                                            <th>Rating</th>
+                                            <th>Message</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for feedback in feedbacks %}
+                                        <tr>
+                                            <td>{{ feedback.feedback_id }}</td>
+                                            <td>{{ feedback.user.first_name }} {{ feedback.user.last_name }}</td>
+                                            <td>{{ feedback.rating }}</td>
+                                            <td>{{ feedback.message }}</td>
+                                            <td>
+                                                <div class="btn-group" role="group">
+                                                    <!-- Button to Open the Modal -->
+                                                    <button type="button" class="btn btn-primary" data-toggle="modal"
+                                                        data-target="#feedbackModal"
+                                                        data-feedback-id="{{ feedback.feedback_id }}"
+                                                        data-feedback-rating="{{ feedback.rating }}"
+                                                        data-feedback-message="{{ feedback.message }}">
+                                                        View
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
 
-                                            <tr class="odd">
-                                                <td class="dtr-control sorting_1" tabindex="0">1</td>
-                                                <td>Marc Joseph Real</td>
-                                                <td >5</td>
-                                                <td rowspan="2" colspan="2">Staffs very acommodating</td>
-                                                <td>July 24, 2024</td>
-                                                <td><a href="#">Show more</a></td>
-                                            </tr>
 
-                                        </tbody>
-                                        <tfoot>
-                                            <th tabindex="0" aria-controls="example1" rowspan="1" colspan="1"
-                                                aria-sort="ascending"
-                                                aria-label="Rendering engine: activate to sort column descending">
-                                                ID</th>
-                                            <th tabindex="0" aria-controls="example1" rowspan="1" colspan="1"
-                                                aria-label="Browser: activate to sort column ascending">
-                                                User</th>
-                                            <th tabindex="0" aria-controls="example1" rowspan="1" colspan="1"
-                                                aria-label="Platform(s): activate to sort column ascending">
-                                                Rating</th>
-                                                <th tabindex="0" aria-controls="example1" rowspan="2" colspan="2"
-                                                aria-label="Platform(s): activate to sort column ascending">
-                                                Message</th>
-                                                <th tabindex="0" aria-controls="example1" rowspan="1" colspan="1"
-                                                aria-label="Platform(s): activate to sort column ascending">
-                                                Time and Date</th>
-                                            <th tabindex="0" aria-controls="example1" rowspan="1" colspan="1"
-                                                aria-label="CSS grade: activate to sort column ascending">Action
-                                            </th>
-                                            </tr>
-                                        </tfoot>
-                                    </table>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-sm-12 col-md-5">
-                                    <div class="dataTables_info" id="example1_info" role="status" aria-live="polite">
-                                        Showing 1 to 10 of 57 entries</div>
-                                </div>
-                                <div class="col-sm-12 col-md-7">
-                                    <div class="dataTables_paginate paging_simple_numbers" id="example1_paginate">
-                                        <ul class="pagination">
-                                            <li class="paginate_button page-item previous disabled"
-                                                id="example1_previous"><a href="#" aria-controls="example1"
-                                                    data-dt-idx="0" tabindex="0" class="page-link">Previous</a></li>
-                                            <li class="paginate_button page-item active"><a href="#"
-                                                    aria-controls="example1" data-dt-idx="1" tabindex="0"
-                                                    class="page-link">1</a></li>
-                                            <li class="paginate_button page-item "><a href="#" aria-controls="example1"
-                                                    data-dt-idx="2" tabindex="0" class="page-link">2</a></li>
-                                            <li class="paginate_button page-item "><a href="#" aria-controls="example1"
-                                                    data-dt-idx="3" tabindex="0" class="page-link">3</a></li>
-                                            <li class="paginate_button page-item "><a href="#" aria-controls="example1"
-                                                    data-dt-idx="4" tabindex="0" class="page-link">4</a></li>
-                                            <li class="paginate_button page-item "><a href="#" aria-controls="example1"
-                                                    data-dt-idx="5" tabindex="0" class="page-link">5</a></li>
-                                            <li class="paginate_button page-item "><a href="#" aria-controls="example1"
-                                                    data-dt-idx="6" tabindex="0" class="page-link">6</a></li>
-                                            <li class="paginate_button page-item next" id="example1_next"><a href="#"
-                                                    aria-controls="example1" data-dt-idx="7" tabindex="0"
-                                                    class="page-link">Next</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
+                                        {% endfor %}
+                                        <!-- end modal -->
+
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
-                    <!-- /.card-body -->
                 </div>
-                <!-- /.card-body -->
+            </section>
         </div>
+    </section>
 </div>
-<!-- /.error-content -->
+<!-- Feedback Modal -->
+<div class="modal fade" id="feedbackModal" tabindex="-1" role="dialog" aria-labelledby="feedbackModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="feedbackModalLabel">Feedback Details</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form method="POST" id="feedbackForm">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <input type="hidden" id="feedbackId" name="feedback_id">
+                    <label for="rating">Rating</label>
+                    <div class="form-group">
+                        <div class="rate">
+                            <input type="radio" id="star5" name="rating" value="5" />
+                            <label for="star5" title="5 stars">★</label>
+                            <input type="radio" id="star4" name="rating" value="4" />
+                            <label for="star4" title="4 stars">★</label>
+                            <input type="radio" id="star3" name="rating" value="3" />
+                            <label for="star3" title="3 stars">★</label>
+                            <input type="radio" id="star2" name="rating" value="2" />
+                            <label for="star2" title="2 stars">★</label>
+                            <input type="radio" id="star1" name="rating" value="1" />
+                            <label for="star1" title="1 star">★</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Message</label>
+                        <textarea id="message" class="form-control" rows="4" name="message" required></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" name="action" value="update" class="btn btn-primary">Update</button>
+                        <button type="submit" name="action" value="delete" class="btn btn-danger">Delete</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
-<!-- /.error-page -->
-</section>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        $('#feedbackModal').on('show.bs.modal', event => {
+            const button = $(event.relatedTarget); // Button that triggered the modal
+            const feedbackId = button.data('feedback-id');
+            const feedbackRating = button.data('feedback-rating');
+            const feedbackMessage = button.data('feedback-message');
+
+            const modal = $(event.target);
+            modal.find('form').attr('action', `/Admin/Feedbacks/${feedbackId}`);
+            modal.find('#feedbackId').val(feedbackId);
+            modal.find('#message').val(feedbackMessage);
+
+            // Uncheck all radio buttons first
+            modal.find('input[name="rating"]').prop('checked', false);
+
+            // Check the radio button that matches the feedback rating
+            const defaultRadio = modal.find(`input[name="rating"][value="${feedbackRating}"]`);
+            if (defaultRadio.length) {
+                defaultRadio.prop('checked', true);
+            } else {
+                console.warn(`Radio button with value ${feedbackRating} not found.`);
+            }
+        });
+    });
+
+
+</script>
+
+
+
 {% endblock %}

@@ -13,7 +13,7 @@ def base_on_user_role():
     if current_user.role_id == 1:
         return redirect(url_for('admin_routes.Dashboard'))
     elif current_user.role_id == 2:
-        return redirect(url_for('staff_routes.Dashboard'))
+        return redirect(url_for('staff_routes.dashboard'))
     elif current_user.role_id == 3:
         return redirect(url_for('user_routes.notification'))
     else:

@@ -4,7 +4,8 @@ from flask_login import current_user, login_required
 from app.db import db
 from app.forms import ReservationForm
 from app.models import Branch, CustomerReservation, ReservationStatus  # Updated model imports
-from app.services.reservation_services import get_reservations, get_user_reservations, take_user_reservations
+from app.services.feedback_services import create_feedback
+from app.services.reservation_services import get_reservation_by_id, get_reservations, get_user_reservations, take_user_reservations
 
 user_routes_bp = Blueprint("user_routes", __name__, url_prefix="/User")
 
@@ -81,20 +82,69 @@ def reservation_status():
     print(reservations)
     return render_template("/customer/reservation_status.html", reservations=reservations)
 
+@user_routes_bp.route('/cancel_reservation', methods=['POST'])
+@login_required
+def cancel_reservation():
+    reservation_id = request.form.get('reservation_id')
+    cancellation_reason = request.form.get('cancellation_reason')
+
+    print(f"Received reservation_id: {reservation_id}")  # Debug statement
+    print(f"Received cancellation_reason: {cancellation_reason}")  # Debug statement
+
+    try:
+        reservation_id = int(reservation_id)
+    except ValueError:
+        flash('Invalid reservation ID', 'error')
+        return redirect(url_for('user_routes.reservation_status'))
+
+    reservation = get_reservation_by_id(reservation_id)
+    if reservation:
+        reservation.status = ReservationStatus.CANCELLED.value
+        reservation.status_comment = cancellation_reason
+        reservation.updated_by = current_user.user_id
+        db.session.commit()
+        flash('Reservation cancelled successfully', 'success')
+    else:
+        flash('Reservation not found', 'error')
+
+    return redirect(url_for('user_routes.reservation_status'))
+
+
 # Customer Feedback
 @user_routes_bp.route("/Feedbacks")
 @login_required
 def customer_feedback():
     return render_template("/customer/feedbacks.html")
 
-# Write Feedback
-@user_routes_bp.route("/WriteFeedbacks")
-@login_required
-def write_feedbacks():
-    return render_template("/customer/write_feedbacks.html")
 
 # User Logs
 @user_routes_bp.route("/Logs")
 @login_required
 def user_logs():
     return render_template("/customer/user_logs.html")
+
+@user_routes_bp.route("/WriteFeedbacks", methods=['POST'])
+@login_required
+def write_feedbacks():
+    rating = request.form.get('rating')
+    message = request.form.get('message')
+    
+    print(rating)
+    print(message)
+
+    if not rating or not message:
+        flash('All fields are required.', 'danger')
+        return redirect(url_for('user_routes.notification'))
+
+    try:
+        create_feedback(
+            user_id=current_user.user_id,
+            rating=int(rating),
+            message=message
+        )
+        flash('Feedback created successfully', 'success')
+    except Exception as e:
+        flash('An error occurred while creating feedback. Please try again.', 'danger')
+        print(f"Error: {e}")
+
+    return redirect(url_for('user_routes.notification'))

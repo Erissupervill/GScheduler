@@ -78,10 +78,26 @@
                 </a>
             </li>
             <li class="nav-item">
+                <a href="/Staff/Reservation/Completed" class="nav-link">
+                    <i class="nav-icon fas fa-times-circle"></i>
+                    <p>
+                        Completed Reservation
+                    </p>
+                </a>
+            </li>
+            <li class="nav-item">
                 <a href="/Staff/Reservation/Accepted" class="nav-link">
                     <i class="nav-icon fas fa-check-circle"></i>
                     <p>
                         Accepted Reservation
+                    </p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/Staff/Reservation/Rejected" class="nav-link">
+                    <i class="nav-icon fas fa-times-circle"></i>
+                    <p>
+                        Rejected Reservation
                     </p>
                 </a>
             </li>
@@ -121,13 +137,14 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a href="/User/WriteFeedbacks" class="nav-link">
+                <a href="/User/WriteFeedbacks" class="nav-link" data-toggle="modal" data-target="#createFeedbackModal">
                     <i class="nav-icon fas fa-pencil-alt"></i>
                     <p>
                         Write Feedback
                     </p>
                 </a>
             </li>
+            
             {% endif %}
 
         </ul>
@@ -135,3 +152,4 @@
     <!-- /.sidebar-menu -->
 </div>
 <!-- /.sidebar -->
+ 

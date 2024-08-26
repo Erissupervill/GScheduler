@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import DateTimeField, DateTimeLocalField, SelectField, StringField, PasswordField, SubmitField
+from wtforms import DateTimeField, DateTimeLocalField, RadioField, SelectField, StringField, PasswordField, SubmitField, TextAreaField
 from wtforms.validators import DataRequired, Email, EqualTo, Length
 
 class RegistrationForm(FlaskForm):
@@ -22,6 +22,10 @@ class ReservationForm(FlaskForm):
     number_of_guests = StringField('Number of Guests', validators=[DataRequired()])
     branch_id = StringField('Branch',validators=[DataRequired()])
     submit = SubmitField('Reserve')
+    
+class FeedbackForm(FlaskForm):
+    rating = RadioField('Rating', choices=[('1', '1 star'), ('2', '2 stars'), ('3', '3 stars'), ('4', '4 stars'), ('5', '5 stars')], validators=[DataRequired()])
+    message = TextAreaField('Message', validators=[DataRequired()])
 
     
 class UserForm(FlaskForm):

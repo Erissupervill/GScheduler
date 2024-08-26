@@ -2,9 +2,11 @@ from flask import Blueprint, current_app, flash, logging, render_template, redir
 from flask_login import current_user, login_required
 from app.db import db
 from app import bcrypt
-from app.forms import RegistrationForm
+from app.forms import FeedbackForm, RegistrationForm
 from app.models import User
 from app.services.admin_services import check_email, count_by_role, count_total_users, create_user, load_user, logs_list, users_list
+from app.services.feedback_services import get_feedback_by_id, get_feedbacks
+from app.utils.decorators import role_required  # Import the custom decorator
 
 admin_routes_bp = Blueprint("admin_routes", __name__, url_prefix="/Admin")
 
@@ -15,6 +17,7 @@ def index():
 # Admin Dashboard
 @admin_routes_bp.route("/Dashboard")
 @login_required
+@role_required(1)  # Admin role
 def Dashboard():
     try:
         total_user = count_total_users()
@@ -29,16 +32,21 @@ def Dashboard():
         }
 
         return render_template("/admin/dashboard.html",
-                               title="Dashboard",
+                               title="Admin Dashboard",
                                stats=stats)
     except Exception as e:
-        logging.error(f"Error occurred in Dashboard: {e}")
+        # Log the exception and provide a fallback response
+        current_app.logger.error(f"An error occurred while fetching user data: {e}")
         flash("An error occurred while fetching user data", "danger")
-        return redirect(url_for("admin_routes.Dashboard"))
+        # Redirect to a safe page, such as the dashboard or home page
+        return redirect(url_for('admin_routes.Dashboard'))
+       
+  
 
 # User List
 @admin_routes_bp.route("/Users")
 @login_required
+@role_required(1)  # Admin role
 def UserList():
     try:
         get_all_user = users_list()
@@ -55,6 +63,7 @@ def UserList():
 # User Logs
 @admin_routes_bp.route("/Logs/User")
 @login_required
+@role_required(1)  # Admin role
 def UserLogs():
     try:
         get_all_logs = logs_list()
@@ -68,10 +77,9 @@ def UserLogs():
         flash("An error occurred while fetching logs", "danger")
         return redirect(url_for("admin_routes.Dashboard"))
 
-
-
 @admin_routes_bp.route('/handle_user_action/<int:user_id>', methods=['POST'])
 @login_required
+@role_required(1)  # Admin role
 def handle_user_action(user_id):
     try:
         user = load_user(user_id)
@@ -121,10 +129,10 @@ def handle_user_action(user_id):
     
     return redirect(url_for('admin_routes.UserList'))
 
-
 # Create User
 @admin_routes_bp.route("/Create/User", methods=['GET', 'POST'])
 @login_required
+@role_required(1)  # Admin role
 def CreateUser():
     form = RegistrationForm()
     
@@ -150,8 +158,7 @@ def CreateUser():
             else:
                 flash('Cannot create user', 'danger')
         except Exception as e:
-            # app.logging.if(f"Error occurred in CreateUser: {e}")
-            flash(" An error occurred while creating the user:", 'danger')
+            flash("An error occurred while creating the user:", 'danger')
             print(e)
     
     return render_template("admin/create_user.html", form=form)
@@ -159,11 +166,65 @@ def CreateUser():
 # Feedbacks
 @admin_routes_bp.route("/Feedbacks")
 @login_required
+@role_required(1)  # Admin role
 def Feedbacks():
-    return render_template("/admin/feedbacks.html")
+    feedbacks = get_feedbacks()
+    return render_template("admin/feedbacks.html", feedbacks=feedbacks)
 
 # Audit Logs
 @admin_routes_bp.route("/Logs/Audit")
 @login_required
+@role_required(1)  # Admin role
 def AuditLogs():
-    return render_template("/admin/audit.html", title="Audit Logs")
+    return render_template("/admin/audit.html", title="Admin Audit Logs")
+
+
+
+@admin_routes_bp.route("/Feedbacks/<int:feedback_id>", methods=['GET', 'POST'])
+@login_required
+@role_required(1)  # Admin role
+def feedback_detail(feedback_id):
+    feedback = get_feedback_by_id(feedback_id)
+    
+    if feedback is None:
+        flash('Feedback not found', 'danger')
+        return redirect(url_for('admin_routes.Feedbacks'))
+    
+    form = FeedbackForm(request.form)
+    
+    if request.method == 'POST':
+        if form.validate_on_submit():
+            action = request.form.get('action')
+            if action == 'update':
+                feedback.rating = form.rating.data
+                feedback.message = form.message.data
+                feedback.updated_by = current_user.user_id
+                try:
+                    db.session.commit()
+                    flash('Feedback updated successfully', 'success')
+                except Exception as e:
+                    db.session.rollback()
+                    current_app.logger.error(f"Error updating feedback: {e}")
+                    flash('An error occurred while updating the feedback', 'danger')
+            elif action == 'delete':
+                try:
+                    db.session.delete(feedback)
+                    db.session.commit()
+                    flash('Feedback deleted successfully', 'success')
+                except Exception as e:
+                    db.session.rollback()
+                    current_app.logger.error(f"Error deleting feedback: {e}")
+                    flash('An error occurred while deleting the feedback', 'danger')
+            else:
+                flash('Unknown action', 'danger')
+        else:
+            print(request.form)
+            flash('Form validation failed', 'danger')
+        
+        return redirect(url_for('admin_routes.Feedbacks'))
+    
+    # Populate form with current feedback details
+    form.rating.data = feedback.rating
+    form.message.data = feedback.message
+
+    return render_template("admin/feedback_detail.html", feedback=feedback, form=form)

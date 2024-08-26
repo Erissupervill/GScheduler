@@ -1,12 +1,12 @@
 {% extends 'base.html' %}
-{% block content %}
 
+{% block content %}
 <!-- Content Header (Page header) -->
 <div class="content-header">
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1 class="m-0">Accepted Reservations</h1>
+                <h1 class="m-0">Completed Reservations</h1>
             </div><!-- /.col -->
         </div><!-- /.row -->
     </div><!-- /.container-fluid -->
@@ -16,7 +16,7 @@
     <div class="container-fluid">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">Accepted Reservations</h3>
+                <h3 class="card-title">Completed Reservations</h3>
             </div>
             <!-- /.card-header -->
             <div class="card-body">
@@ -30,7 +30,8 @@
                     </div>
                     <div class="row">
                         <div class="col-sm-12">
-                            <table id="example1" class="table table-bordered table-striped dataTable dtr-inline" aria-describedby="example1_info">
+                            <table id="example1" class="table table-bordered table-striped dataTable dtr-inline"
+                                aria-describedby="example1_info">
                                 <thead>
                                     <tr>
                                         <th>ID</th>
@@ -44,20 +45,32 @@
                                 </thead>
                                 <tbody>
                                     {% for reservation in reservations %}
-                                        <tr>
-                                            <td>{{ loop.index }}</td>
-                                            <td>{{ reservation.customer.username }}</td>
-                                            <td>{{ reservation.branch.location }} {{ reservation.branch.name }}</td>
-                                            <td>{{ reservation.reservation_date.strftime('%Y-%m-%d') }}</td>
-                                            <td>{{ reservation.reservation_time.strftime('%H:%M') }}</td>
-                                            <td>{{ reservation.number_of_guests }}</td>
-                                            <td>
-                                                <form action="{{ url_for('staff_routes.complete_reservation', reservation_id=reservation.reservation_id) }}" method="post">
-                                                    <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
-                                                    <button type="submit" class="btn btn-success">Complete</button>
-                                                </form>
-                                            </td>
-                                        </tr>
+                                    <tr>
+                                        <td>{{ loop.index }}</td>
+                                        <td>{{ reservation.customer.username }}</td>
+                                        <td>{{ reservation.branch.location }} {{ reservation.branch.name }}</td>
+                                        <td>{{ reservation.reservation_date.strftime('%Y-%m-%d') }}</td>
+                                        <td>{{ reservation.reservation_time.strftime('%H:%M') }}</td>
+                                        <td>{{ reservation.number_of_guests }}</td>
+                                        <td>
+                                            <button type="button" class="btn btn-info" data-toggle="modal"
+                                                data-target="#viewReservationModal"
+                                                data-customer="{{ reservation.customer.username }}"
+                                                data-location="{{ reservation.branch.location }} {{ reservation.branch.name }}"
+                                                data-date="{{ reservation.reservation_date.strftime('%Y-%m-%d') }}"
+                                                data-time="{{ reservation.reservation_time.strftime('%H:%M') }}"
+                                                data-guests="{{ reservation.number_of_guests }}"
+                                                data-status="{{ reservation.status }}"
+                                                data-comment="{{ reservation.status_comment }}"
+                                                data-created-at="{{ reservation.created_at.strftime('%Y-%m-%d %H:%M:%S') }}"
+                                                data-updated-at="{{ reservation.updated_at.strftime('%Y-%m-%d %H:%M:%S') }}"
+                                                data-updated-by-firstname="{{ reservation.updater.first_name }}" 
+                                                data-updated-by-lastname="{{ reservation.updater.last_name }}">
+                                                View
+                                            </button>
+
+                                        </td>
+                                    </tr>
                                     {% endfor %}
                                 </tbody>
                                 <tfoot>
@@ -82,5 +95,9 @@
         <!-- /.card -->
     </div>
 </section>
+
+{% include 'view_reservation.html' %}
+
+
 
 {% endblock %}

@@ -1,67 +1,71 @@
-{% extends 'Customer/base.html' %}
-{% block content %}
-
-<!-- Content Header (Page header) -->
-<div class="content-header">
-    <div class="container-fluid">
-        <div class="row mb-2">
-            <div class="col-sm-6">
-                <h1 class="m-0">Feedback</h1>
-
-            </div><!-- /.col -->
-        </div><!-- /.row -->
-    </div><!-- /.container-fluid -->
-    <section class="content">
-        <div class="container-fluid">
-            <section class="content">
-                <div class="card card-warning">
-                    <div class="card-header">
-                        <h3 class="card-title">Create Feedback</h3>
+<!-- Feedback Modal -->
+<div class="modal fade" id="createFeedbackModal" tabindex="-1" role="dialog" aria-labelledby="feedbackModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="feedbackModalLabel">Feedback Details</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form method="POST" id="feedbackForm">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <input type="hidden" id="feedbackId" name="feedback_id">
+                    <label for="rating">Rating</label>
+                    <div class="form-group">
+                        <div class="rate">
+                            <input type="radio" id="star5" name="rating" value="5" />
+                            <label for="star5" title="5 stars">★</label>
+                            <input type="radio" id="star4" name="rating" value="4" />
+                            <label for="star4" title="4 stars">★</label>
+                            <input type="radio" id="star3" name="rating" value="3" />
+                            <label for="star3" title="3 stars">★</label>
+                            <input type="radio" id="star2" name="rating" value="2" />
+                            <label for="star2" title="2 stars">★</label>
+                            <input type="radio" id="star1" name="rating" value="1" />
+                            <label for="star1" title="1 star">★</label>
+                        </div>
                     </div>
-                    <!-- /.card-header -->
-                    <div class="card-body">
-                        <form>
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    <!-- text input -->
-                                    <div class="form-group">
-                                        <label>Title</label>
-                                        <input type="text" class="form-control" placeholder="Enter ...">
-                                    </div>
-                                </div>
-
-                            </div>
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    <!-- textarea -->
-                                    <div class="form-group">
-                                        <label>Message:</label>
-                                        <textarea class="form-control" rows="3" placeholder="Enter ..."></textarea>
-                                    </div>
-                                </div>
-
-                            </div>
-
-                            <div class="form-group">
-                                <label for="exampleSelectRounded0">Rating</label>
-                                <select class="custom-select rounded-0" id="exampleSelectRounded0">
-                                    <option>1</option>
-                                    <option>2</option>
-                                    <option>3</option>
-                                    <option>4</option>
-                                    <option>5</option>
-                                </select>
-                            </div>
-
-                            <button class="btn btn-small btn-primary" type="">Submit</button>
-                        </form>
+                    <div class="form-group">
+                        <label for="message">Message</label>
+                        <textarea id="message" class="form-control" rows="4" name="message" required></textarea>
                     </div>
-                    <!-- /.card-body -->
-                </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </form>
+            </div>
         </div>
+    </div>
 </div>
-<!-- /.error-content -->
-</div>
-<!-- /.error-page -->
-</section>
-{% endblock %}
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+    $('#createFeedbackModal').on('show.bs.modal', (event) => {
+        const button = $(event.relatedTarget); // Button that triggered the modal
+        const feedbackId = button.data('feedback-id');
+        const feedbackRating = button.data('feedback-rating');
+        const feedbackMessage = button.data('feedback-message');
+
+        const modal = $(event.target);
+        modal.find('form').attr('action', `/User/WriteFeedbacks`);
+        modal.find('#feedbackId').val(feedbackId);
+        modal.find('#message').val(feedbackMessage);
+
+        // Uncheck all radio buttons first
+        modal.find('input[name="rating"]').prop('checked', false);
+
+        // Check the radio button that matches the feedback rating
+        const defaultRadio = modal.find(`input[name="rating"][value="${feedbackRating}"]`);
+        if (defaultRadio.length) {
+            defaultRadio.prop('checked', true);
+        } else {
+            console.warn(`Radio button with value ${feedbackRating} not found.`);
+        }
+    });
+});
+
+</script>

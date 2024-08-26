@@ -1,4 +1,4 @@
-{% extends 'staff/base.html' %}
+{% extends 'base.html' %}
 {% block content %}
 
 <!-- Content Header (Page header) -->
@@ -76,7 +76,30 @@
                     </div>
                     <!-- ./col -->
                 </div>
-            
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Branch Capacities</h3>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Branch Name</th>
+                                    <th>Available Capacity</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for branch in branches %}
+                                <tr>
+                                    <td>{{branch.location}}, {{ branch.name }}</td>
+                                    <td>{{ branch_capacities[branch.name] }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
         </div>
         <!-- /.error-content -->
 </div>

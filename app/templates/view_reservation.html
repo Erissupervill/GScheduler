@@ -1,0 +1,76 @@
+<!-- Modal -->
+<div class="modal fade" id="viewReservationModal" tabindex="-1" role="dialog"
+    aria-labelledby="viewReservationModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="viewReservationModalLabel">Reservation Details</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Reservation details go here -->
+                <dl class="row">
+                    <dt class="col-sm-4">Customer Name:</dt>
+                    <dd class="col-sm-8" id="modalCustomerName"></dd>
+                    <dt class="col-sm-4">Location:</dt>
+                    <dd class="col-sm-8" id="modalLocation"></dd>
+                    <dt class="col-sm-4">Date:</dt>
+                    <dd class="col-sm-8" id="modalDate"></dd>
+                    <dt class="col-sm-4">Time:</dt>
+                    <dd class="col-sm-8" id="modalTime"></dd>
+                    <dt class="col-sm-4">Total Guests:</dt>
+                    <dd class="col-sm-8" id="modalGuests"></dd>
+                    <dt class="col-sm-4">Status:</dt>
+                    <dd class="col-sm-8" id="modalStatus"></dd>
+                    <dt class="col-sm-4">Comment:</dt>
+                    <dd class="col-sm-8" id="modalStatusComment"></dd>
+                    <dt class="col-sm-4">Created At:</dt>
+                    <dd class="col-sm-8" id="modalCreatedAt"></dd>
+                    <dt class="col-sm-4">Updated At:</dt>
+                    <dd class="col-sm-8" id="modalUpdatedAt"></dd>
+                    <dt class="col-sm-4">Updated By:</dt>
+                    <dd class="col-sm-8" id="modalUpdatedBy"></dd>
+                </dl>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        $('#viewReservationModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget); // Button that triggered the modal
+            var customer = button.data('customer');
+            var location = button.data('location');
+            var date = button.data('date');
+            var time = button.data('time');
+            var guests = button.data('guests');
+            var status = button.data('status');
+            var comment = button.data('comment');
+            var createdAt = button.data('created-at');
+            var updatedAt = button.data('updated-at');
+            var updatedByFirstName = button.data('updated-by-firstname');  // Updated
+            var updatedByLastName = button.data('updated-by-lastname');    // Updated
+
+            var modal = $(this);
+            modal.find('#modalCustomerName').text(customer);
+            modal.find('#modalLocation').text(location);
+            modal.find('#modalDate').text(date);
+            modal.find('#modalTime').text(time);
+            modal.find('#modalGuests').text(guests);
+            modal.find('#modalStatus').text(status);
+            modal.find('#modalStatusComment').text(comment);
+            modal.find('#modalCreatedAt').text(createdAt);
+            modal.find('#modalUpdatedAt').text(updatedAt);
+            modal.find('#modalUpdatedBy').text(updatedByFirstName + ' ' + updatedByLastName);  // Updated
+        });
+    });
+
+
+</script>
