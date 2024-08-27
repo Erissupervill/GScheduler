@@ -6,7 +6,7 @@
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1 class="m-0">Accepted Reservations</h1>
+                <h1 class="m-0">My Reservations</h1>
             </div><!-- /.col -->
         </div><!-- /.row -->
     </div><!-- /.container-fluid -->
@@ -15,7 +15,7 @@
             <section class="content">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Accepted Reservations</h3>
+                        <h3 class="card-title">My Reservations</h3>
                     </div>
                     <!-- /.card-header -->
                     <div class="card-body">
@@ -26,12 +26,7 @@
                                         <!-- Button for export and other actions -->
                                     </div>
                                 </div>
-                                <div class="col-sm-12 col-md-6">
-                                    <div id="example1_filter" class="dataTables_filter">
-                                        <label>Search:<input type="search" class="form-control form-control-sm"
-                                                placeholder="" aria-controls="example1"></label>
-                                    </div>
-                                </div>
+                           
                             </div>
                             <div class="row">
                                 <div class="col-sm-12">
@@ -52,10 +47,6 @@
                                                 <td>{{ reservation.reservation_date.strftime('%Y-%m-%d') }}</td>
                                                 <td>{{ reservation.number_of_guests }}</td>
                                                 <td>
-                                                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createFeedbackModal">
-                                                        Open Feedback Modal
-                                                    </button>
-                                                    
                                                     <button type="button" class="btn btn-danger" data-toggle="modal"
                                                         data-target="#cancelModal"
                                                         data-reservation-id="{{ reservation.reservation_id }}">
@@ -93,9 +84,9 @@
     aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <form id="cancelForm" method="POST" action="{{ url_for('user_routes.cancel_reservation') }}">
+            <form id="cancelForm" method="POST" action="{{ url_for('user_routes.cancel_reservation_route') }}">
                 <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
-                <input type="text" id="cancelReservationId" name="reservation_id">
+                <input type="hidden" id="cancelReservationId" name="reservation_id">
                 <div class="modal-header">
                     <h5 class="modal-title" id="cancelModalLabel">Cancel Reservation</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">

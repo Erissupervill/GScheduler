@@ -26,23 +26,23 @@
                                             <th>ID</th>
                                             <th>User</th>
                                             <th>Rating</th>
-                                            <th>Message</th>
+                                            <th>Date</th>
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {% for feedback in feedbacks %}
                                         <tr>
-                                            <td>{{ feedback.feedback_id }}</td>
+                                            <td>{{ loop.index }}</td>
                                             <td>{{ feedback.user.first_name }} {{ feedback.user.last_name }}</td>
                                             <td>{{ feedback.rating }}</td>
-                                            <td>{{ feedback.message }}</td>
+                                            <td>{{ feedback.created_at.strftime('%m-%d-%Y') }}</td>
                                             <td>
                                                 <div class="btn-group" role="group">
                                                     <!-- Button to Open the Modal -->
                                                     <button type="button" class="btn btn-primary" data-toggle="modal"
                                                         data-target="#feedbackModal"
-                                                        data-feedback-id="{{ feedback.feedback_id }}"
+                                                        data-feedback-id="{{ feedback.id }}"
                                                         data-feedback-rating="{{ feedback.rating }}"
                                                         data-feedback-message="{{ feedback.message }}">
                                                         View
@@ -111,34 +111,7 @@
 </div>
 
 
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        $('#feedbackModal').on('show.bs.modal', event => {
-            const button = $(event.relatedTarget); // Button that triggered the modal
-            const feedbackId = button.data('feedback-id');
-            const feedbackRating = button.data('feedback-rating');
-            const feedbackMessage = button.data('feedback-message');
 
-            const modal = $(event.target);
-            modal.find('form').attr('action', `/Admin/Feedbacks/${feedbackId}`);
-            modal.find('#feedbackId').val(feedbackId);
-            modal.find('#message').val(feedbackMessage);
-
-            // Uncheck all radio buttons first
-            modal.find('input[name="rating"]').prop('checked', false);
-
-            // Check the radio button that matches the feedback rating
-            const defaultRadio = modal.find(`input[name="rating"][value="${feedbackRating}"]`);
-            if (defaultRadio.length) {
-                defaultRadio.prop('checked', true);
-            } else {
-                console.warn(`Radio button with value ${feedbackRating} not found.`);
-            }
-        });
-    });
-
-
-</script>
 
 
 

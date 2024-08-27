@@ -17,12 +17,10 @@ csrf = CSRFProtect()
 
 def create_app():
     app = Flask(__name__)
-
     # Load configuration
     config_class = get_config_class()
-    print(f"Using configuration: {config_class.__name__}")
     app.config.from_object(config_class)
-
+    
     # Initialize logger
     setup_logging(app)
 

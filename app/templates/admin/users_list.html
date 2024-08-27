@@ -42,12 +42,12 @@
                                             <td>
                                                 <div class="btn-group" role="group">
                                                     <!-- Button to trigger the modal on the left -->
-                                                    <button type="button" class="btn btn-success mr-3" data-toggle="modal" data-target="#modal-default-{{ user.user_id }}">
+                                                    <button type="button" class="btn btn-success mr-3" data-toggle="modal" data-target="#modal-default-{{ user.id }}">
                                                         Update
                                                     </button>
 
                                                     <!-- Form for deleting user on the right -->
-                                                    <form method="POST" action="{{ url_for('admin_routes.handle_user_action', user_id=user.user_id) }}" style="display: inline;">
+                                                    <form method="POST" action="{{ url_for('admin_routes.handle_user_action', id=user.id) }}" style="display: inline;">
                                                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                                         <input type="hidden" name="action" value="delete">
                                                         <button type="submit" class="btn btn-danger">Delete</button>
@@ -57,7 +57,7 @@
                                         </tr>
 
                                         <!-- Modal for updating user details -->
-                                        <div class="modal fade" id="modal-default-{{ user.user_id }}" tabindex="-1" role="dialog" aria-labelledby="modal-default-label" aria-hidden="true">
+                                        <div class="modal fade" id="modal-default-{{ user.id }}" tabindex="-1" role="dialog" aria-labelledby="modal-default-label" aria-hidden="true">
                                             <div class="modal-dialog">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
@@ -67,7 +67,7 @@
                                                         </button>
                                                     </div>
                                                     <div class="modal-body">
-                                                        <form method="POST" action="{{ url_for('admin_routes.handle_user_action', user_id=user.user_id) }}">
+                                                        <form method="POST" action="{{ url_for('admin_routes.handle_user_action', id=user.id) }}">
                                                             <div class="form-group">
                                                                 <label for="first_name">First Name</label>
                                                                 <div class="input-group mb-3">

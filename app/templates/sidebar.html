@@ -17,9 +17,7 @@
             <li class="nav-item">
                 <a href="/{{ role_name }}/Dashboard" class="nav-link">
                     <i class="nav-icon fas fa-tachometer-alt"></i>
-                    <p>
-                        Dashboard
-                    </p>
+                    <p>Dashboard</p>
                 </a>
             </li>
             {% endif %}
@@ -29,122 +27,91 @@
             <li class="nav-item">
                 <a href="/Admin/Users" class="nav-link">
                     <i class="nav-icon fas fa-users"></i>
-                    <p>
-                        Users List
-                    </p>
+                    <p>Users List</p>
                 </a>
             </li>
             <li class="nav-item">
                 <a href="/Admin/Create/User" class="nav-link">
                     <i class="nav-icon fas fa-user-plus"></i>
-                    <p>
-                        Create User
-                    </p>
+                    <p>Create User</p>
                 </a>
             </li>
             <li class="nav-item">
                 <a href="/Admin/Feedbacks" class="nav-link">
                     <i class="nav-icon fas fa-comments"></i>
-                    <p>
-                        Feedbacks
-                    </p>
+                    <p>Feedbacks</p>
                 </a>
             </li>
             <li class="nav-item">
                 <a href="/Admin/Logs/User" class="nav-link">
                     <i class="nav-icon fas fa-file-alt"></i>
-                    <p>
-                        Audit Logs
-                    </p>
+                    <p>Audit Logs</p>
                 </a>
             </li>
-
-            <!-- If user is Staff -->
             {% elif current_user.role_id == 2 %}
+            <!-- If User is Staff -->
             <li class="nav-item">
                 <a href="/Staff/Reservation" class="nav-link">
                     <i class="nav-icon fas fa-calendar-alt"></i>
-                    <p>
-                        Reservation
-                    </p>
+                    <p>Reservation</p>
                 </a>
             </li>
             <li class="nav-item">
                 <a href="/Staff/pending-reservations" class="nav-link">
-                    <i class="nav-icon fas fa-calendar-check"></i>
-                    <p>
-                        Pending Reservation
-                    </p>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="/Staff/Reservation/Completed" class="nav-link">
-                    <i class="nav-icon fas fa-times-circle"></i>
-                    <p>
-                        Completed Reservation
-                    </p>
+                    <i class="nav-icon fas fa-hourglass"></i>
+                    <p>Pending Reservation</p>
                 </a>
             </li>
             <li class="nav-item">
                 <a href="/Staff/Reservation/Accepted" class="nav-link">
                     <i class="nav-icon fas fa-check-circle"></i>
-                    <p>
-                        Accepted Reservation
-                    </p>
+                    <p>Accepted Reservation</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/Staff/Reservation/Completed" class="nav-link">
+                    <i class="nav-icon fas fa-check-double"></i>
+                    <p>Completed Reservation</p>
                 </a>
             </li>
             <li class="nav-item">
                 <a href="/Staff/Reservation/Rejected" class="nav-link">
                     <i class="nav-icon fas fa-times-circle"></i>
-                    <p>
-                        Rejected Reservation
-                    </p>
+                    <p>Rejected Reservation</p>
                 </a>
             </li>
             <li class="nav-item">
                 <a href="/Staff/Reservation/Cancelled" class="nav-link">
                     <i class="nav-icon fas fa-times-circle"></i>
-                    <p>
-                        Cancelled Reservation
-                    </p>
+                    <p>Cancelled Reservation</p>
                 </a>
             </li>
-
-            <!-- If user is User -->
             {% elif current_user.role_id == 3 %}
+            <!-- If User is User -->
             <li class="nav-item">
                 <a href="/User/Notification" class="nav-link">
                     <i class="nav-icon fas fa-bell"></i>
-                    <p>
-                        Notification
-                    </p>
+                    <p>Notification</p>
                 </a>
             </li>
             <li class="nav-item">
                 <a href="/User/create/reserve" class="nav-link">
-                    <i class="nav-icon fas fa-table"></i>
-                    <p>
-                        Create Reservation
-                    </p>
+                    <i class="nav-icon fas fa-calendar-plus"></i>
+                    <p>Create Reservation</p>
                 </a>
             </li>
             <li class="nav-item">
                 <a href="/User/Reservation/Status" class="nav-link">
                     <i class="nav-icon fas fa-info-circle"></i>
-                    <p>
-                        Reservation Status
-                    </p>
+                    <p>Reservation Status</p>
                 </a>
             </li>
             <li class="nav-item">
                 <a href="/User/WriteFeedbacks" class="nav-link" data-toggle="modal" data-target="#createFeedbackModal">
                     <i class="nav-icon fas fa-pencil-alt"></i>
-                    <p>
-                        Write Feedback
-                    </p>
+                    <p>Write Feedback</p>
                 </a>
             </li>
-            
             {% endif %}
 
         </ul>
@@ -152,4 +119,3 @@
     <!-- /.sidebar-menu -->
 </div>
 <!-- /.sidebar -->
- 

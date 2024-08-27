@@ -52,7 +52,7 @@
                                             <td>{{ reservation.reservation_time.strftime('%H:%M') }}</td>
                                             <td>{{ reservation.number_of_guests }}</td>
                                             <td>
-                                                <form action="{{ url_for('staff_routes.complete_reservation', reservation_id=reservation.reservation_id) }}" method="post">
+                                                <form action="{{ url_for('staff_routes.complete_reservation', id=reservation.id) }}" method="post">
                                                     <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
                                                     <button type="submit" class="btn btn-success">Complete</button>
                                                 </form>

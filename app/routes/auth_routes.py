@@ -1,6 +1,5 @@
-# app/routes.py
 from flask import Blueprint, render_template, redirect, url_for, flash
-from flask_login import current_user, logout_user
+from flask_login import current_user, logout_user, login_required
 from app import bcrypt
 from app.db import db
 from app.forms import RegistrationForm, LoginForm
@@ -63,6 +62,7 @@ def login():
         email_address = form.email_address.data
         password = form.password.data
         user = authenticate_user(email_address, password, bcrypt)
+        print(user.__dict__)
         if user:
             flash('Login Successful', 'success')
             return base_on_user_role()
@@ -73,6 +73,7 @@ def login():
     return render_template('auth/login.html', form=form, title="Login")
 
 @auth_routes_bp.route('/logout')
+@login_required
 def logout():
     logout_user()
     flash('Logged out Successfully', 'info')

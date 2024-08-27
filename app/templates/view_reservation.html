@@ -40,37 +40,3 @@
         </div>
     </div>
 </div>
-
-
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        $('#viewReservationModal').on('show.bs.modal', function (event) {
-            var button = $(event.relatedTarget); // Button that triggered the modal
-            var customer = button.data('customer');
-            var location = button.data('location');
-            var date = button.data('date');
-            var time = button.data('time');
-            var guests = button.data('guests');
-            var status = button.data('status');
-            var comment = button.data('comment');
-            var createdAt = button.data('created-at');
-            var updatedAt = button.data('updated-at');
-            var updatedByFirstName = button.data('updated-by-firstname');  // Updated
-            var updatedByLastName = button.data('updated-by-lastname');    // Updated
-
-            var modal = $(this);
-            modal.find('#modalCustomerName').text(customer);
-            modal.find('#modalLocation').text(location);
-            modal.find('#modalDate').text(date);
-            modal.find('#modalTime').text(time);
-            modal.find('#modalGuests').text(guests);
-            modal.find('#modalStatus').text(status);
-            modal.find('#modalStatusComment').text(comment);
-            modal.find('#modalCreatedAt').text(createdAt);
-            modal.find('#modalUpdatedAt').text(updatedAt);
-            modal.find('#modalUpdatedBy').text(updatedByFirstName + ' ' + updatedByLastName);  // Updated
-        });
-    });
-
-
-</script>

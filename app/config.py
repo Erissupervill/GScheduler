@@ -16,18 +16,18 @@ class Config:
     CSRF_ENABLED = os.environ.get("CSRF_ENABLED", 'True') == 'True'
 
 class DevelopmentConfig(Config):
-    debug = True
+    DEBUG = True
     ENV = 'development'
     BASE_DIR = os.path.abspath(os.path.dirname(__file__))
     SQLALCHEMY_DATABASE_URI = f'sqlite:///{os.path.join(BASE_DIR, "my_database.db")}'
 
 class ProductionConfig(Config):
-    debug = True
+    DEBUG = True
     ENV = 'production'
     SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL', 'mysql+mysqldb://root:@localhost/gscheduler')
 
 def get_config_class():
-    print(os.getenv('FLASK_ENV'))
+    print("Flask is running in environment:",os.getenv('FLASK_ENV'))
     if os.getenv('FLASK_ENV') == 'development':
         return DevelopmentConfig
     return ProductionConfig

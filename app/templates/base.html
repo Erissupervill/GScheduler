@@ -60,45 +60,7 @@
         {% include 'footer.html' %}
     </div>
     {% include 'customer/write_feedbacks.html' %}
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            var cancelModal = document.getElementById('cancelModal');
-            var cancelButtons = document.querySelectorAll('button[data-target="#cancelModal"]');
-
-            cancelButtons.forEach(function (button) {
-                button.addEventListener('click', function (event) {
-                    var reservationId = button.getAttribute('data-reservation-id');
-                    console.log('Reservation ID:', reservationId);
-
-                    var cancelReservationIdInput = document.getElementById('cancelReservationId');
-                    cancelReservationIdInput.value = reservationId;
-
-                    cancelModal.classList.add('show');
-                    cancelModal.style.display = 'block';
-                    cancelModal.setAttribute('aria-modal', 'true');
-                    cancelModal.removeAttribute('aria-hidden');
-                });
-            });
-
-            var closeButton = cancelModal.querySelector('.close');
-            closeButton.addEventListener('click', function () {
-                cancelModal.classList.remove('show');
-                cancelModal.style.display = 'none';
-                cancelModal.setAttribute('aria-hidden', 'true');
-                cancelModal.removeAttribute('aria-modal');
-            });
-
-            var closeFooterButton = cancelModal.querySelector('.btn-secondary');
-            closeFooterButton.addEventListener('click', function () {
-                cancelModal.classList.remove('show');
-                cancelModal.style.display = 'none';
-                cancelModal.setAttribute('aria-hidden', 'true');
-                cancelModal.removeAttribute('aria-modal');
-            });
-        });
-
-
-    </script>
+    <script src="{{ url_for('static', filename='js/modals.js') }}"></script>
     <script src="{{ url_for('static', filename='js/star_script.js') }}"></script>
 
     <!-- jQuery -->

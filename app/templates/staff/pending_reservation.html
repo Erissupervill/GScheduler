@@ -45,7 +45,7 @@
                                         <tbody>
                                             {% for reservation in reservations %}
                                             <tr>
-                                                <td>{{ reservation.reservation_id }}</td>
+                                                <td>{{ loop.index }}</td>
                                                 <td>{{ reservation.customer.username }}</td>
                                                 <td>{{ reservation.branch.location }} {{ reservation.branch.name }}</td>
                                                 <td>{{ reservation.reservation_date.strftime('%Y-%m-%d') }}</td>
@@ -53,14 +53,14 @@
                                                 <td>{{ reservation.number_of_guests }}</td>
                                                 <td>
                                                     <form method="POST"
-                                                        action="{{ url_for('staff_routes.update_reservation', reservation_id=reservation.reservation_id) }}">
+                                                        action="{{ url_for('staff_routes.update_reservation', id=reservation.id) }}">
                                                         <input type="hidden" name="csrf_token"
                                                             value="{{ csrf_token() }}">
                                                         <button type="submit" name="action" value="accept"
                                                             class="btn btn-success btn-sm">Accept</button>
                                                         <button type="button" class="btn btn-danger btn-sm"
                                                             data-toggle="modal" data-target="#rejectModal"
-                                                            data-reservation-id="{{ reservation.reservation_id }}">Reject</button>
+                                                            data-reservation-id="{{ reservation.id }}">Reject</button>
                                                     </form>
                                                 </td>
                                             </tr>
@@ -105,7 +105,7 @@
                 <form id="rejectForm" method="POST" action="{{ url_for('staff_routes.reject_reservation') }}">
                     <div class="modal-body">
                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                        <input type="text" id="rejectReservationId" name="reservation_id">
+                        <input type="hidden" id="rejectReservationId" name="reservation_id">
                         <div class="form-group">
                             <label for="rejectionReason">Reason for Rejection:</label>
                             <textarea class="form-control" id="rejectionReason" name="rejection_reason"
@@ -122,49 +122,5 @@
     </div>
 
 
-    <!-- JavaScript to handle modal data population -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // Get the modal element
-            var rejectModal = document.getElementById('rejectModal');
 
-            // Add event listener to buttons that open the modal
-            var rejectButtons = document.querySelectorAll('button[data-target="#rejectModal"]');
-            rejectButtons.forEach(function (button) {
-                button.addEventListener('click', function (event) {
-                    var reservationId = button.getAttribute('data-reservation-id');
-                    console.log('Reservation ID:', reservationId); // Check if the ID is captured correctly
-
-                    // Set the value in the hidden input field inside the modal
-                    var rejectReservationIdInput = document.getElementById('rejectReservationId');
-                    rejectReservationIdInput.value = reservationId;
-
-                    // Open the modal (you can use Bootstrap's modal methods or manually handle it)
-                    rejectModal.classList.add('show');
-                    rejectModal.style.display = 'block';
-                    rejectModal.setAttribute('aria-modal', 'true');
-                    rejectModal.removeAttribute('aria-hidden');
-                });
-            });
-
-            // Add event listener to the close button
-            var closeButton = rejectModal.querySelector('.close');
-            closeButton.addEventListener('click', function () {
-                rejectModal.classList.remove('show');
-                rejectModal.style.display = 'none';
-                rejectModal.setAttribute('aria-hidden', 'true');
-                rejectModal.removeAttribute('aria-modal');
-            });
-
-            // Add event listener to the close button in the modal footer
-            var closeFooterButton = rejectModal.querySelector('.btn-secondary');
-            closeFooterButton.addEventListener('click', function () {
-                rejectModal.classList.remove('show');
-                rejectModal.style.display = 'none';
-                rejectModal.setAttribute('aria-hidden', 'true');
-                rejectModal.removeAttribute('aria-modal');
-            });
-        });
-
-    </script>
     {% endblock %}

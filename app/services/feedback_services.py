@@ -25,21 +25,35 @@ def create_feedback(user_id, rating, message):
         db.session.rollback()
         raise RuntimeError('An error occurred while creating feedback.') from e
 
-def update_feedback(feedback_id, rating=None, message=None):
-    """Update an existing feedback entry."""
-    feedback = Feedback.query.get_or_404(feedback_id)
+# def update_feedback(feedback_id, rating=None, message=None):
+#     """Update an existing feedback entry."""
+#     feedback = Feedback.query.get_or_404(feedback_id)
     
-    if rating is not None:
-        feedback.rating = int(rating)
-    if message is not None:
-        feedback.message = message
-    feedback.updated_at = datetime.utcnow()
+#     if rating is not None:
+#         feedback.rating = int(rating)
+#     if message is not None:
+#         feedback.message = message
+#     feedback.updated_at = datetime.utcnow()
 
-    try:
-        db.session.commit()
-    except Exception as e:
-        db.session.rollback()
-        raise RuntimeError('An error occurred while updating feedback.') from e
+#     try:
+#         db.session.commit()
+#     except Exception as e:
+#         db.session.rollback()
+#         raise RuntimeError('An error occurred while updating feedback.') from e
+
+def update_feedback(id, data):
+    """Update feedback details based on provided data."""
+    feedback = Feedback.query.get(id)
+    if not feedback:
+        raise ValueError("Feedback not found")
+
+    feedback.rating = data.get('rating')
+    feedback.message = data.get('message')
+    feedback.updated_by = data.get('updated_by')
+    
+    db.session.commit()
+    return feedback
+
 
 def delete_feedback(feedback_id):
     """Delete a feedback entry by ID."""

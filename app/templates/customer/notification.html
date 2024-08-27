@@ -6,29 +6,36 @@
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1 class="m-0">Notification</h1>
-
+                <h1 class="m-0">Notifications</h1>
             </div><!-- /.col -->
         </div><!-- /.row -->
     </div><!-- /.container-fluid -->
-    <section class="content">
-        <div class="container-fluid">
-            <section class="content">
-                <div class="card card-primary card-outline">
-                    <div class="card-header">
-                        <h3 class="card-title">Notification</h3>
-                    </div> <!-- /.card-body -->
-                    <div class="card-body">
-                        Your reservation has been confirmed<br>
-                        reference number: CGH120940
-                        </div>
-                    </div><!-- /.card-body -->
-                </div>
+</div>
 
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <!-- Loop through notifications -->
+                {% for notification in notifications %}
+                <div class="card card-primary card-outline mb-3">
+                    <div class="card-header">
+                        <h3 class="card-title">Notification </h3>
+                        <form action="{{ url_for('user_routes.remove_notification', id=notification.id) }}" method="post" style="display: inline;">
+                            <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
+                            <button type="submit" class="btn btn-sm btn-danger float-right">X</button>
+                        </form>
+                    </div>
+                    <div class="card-body">
+                        <p>{{ notification.message }}</p>
+                        <p><strong>Date:</strong> {{ notification.notification_date.strftime('%Y-%m-%d') }}</p>
+                        <p><strong>Time:</strong> {{ notification.notification_time.strftime('%H:%M:%S') }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
         </div>
-</div>
-<!-- /.error-content -->
-</div>
-<!-- /.error-page -->
+    </div>
 </section>
+
 {% endblock %}
