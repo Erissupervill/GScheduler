@@ -1,8 +1,9 @@
 # app/__init__.py
 from flask import Flask, render_template
-
 from app.config import get_config_class
 from app.logging_config import setup_logging
+from app.middleware_logging import register_logging
+from app.ml_model import train_model
 from .db import init_db
 from .routes import register_routes
 from flask_bcrypt import Bcrypt
@@ -51,5 +52,13 @@ def create_app():
     @app.errorhandler(404)
     def page_not_found(error):
         return render_template('page_not_found.html', error=error), 404
+    
+    # Inititialize Logging to database
+    register_logging(app)
+    
+    # # Initialize machine learning model
+    # with app.app_context():
+    #     # Run the model training function
+    #     train_model()
 
     return app

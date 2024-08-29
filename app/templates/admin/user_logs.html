@@ -36,6 +36,10 @@
                                                     aria-label="Rendering engine: activate to sort column descending">
                                                     ID</th>
                                                 <th class="" tabindex="0" aria-controls="example1" rowspan="1"
+                                                    colspan="1"
+                                                    aria-label="Platform(s): activate to sort column ascending">
+                                                    Name</th>
+                                                <th class="" tabindex="0" aria-controls="example1" rowspan="1"
                                                     colspan="1" aria-label="Browser: activate to sort column ascending">
                                                     Action</th>
                                                 <th class="" tabindex="0" aria-controls="example1" rowspan="1"
@@ -53,9 +57,10 @@
                                             {% for item in items %}
                                             <tr class="odd">
                                                 <td class="dtr-control sorting_1" tabindex="0">{{loop.index}}</td>
-                                                <td>{{item.action}}</td>
-                                                <td>{{item.Timestamp}}</td>
-                                                <td>{{item.Description}}</td>
+                                                <td>{{item.User.first_name}} {{item.User.last_name}}</td>
+                                                <td>{{item.Log.action}}</td>
+                                                <td>{{item.Log.timestamp}}</td>
+                                                <td>{{item.Log.description}}</td>
                                             </tr>
                                             {% else %}
                                          
@@ -70,6 +75,10 @@
                                                 aria-sort="ascending"
                                                 aria-label="Rendering engine: activate to sort column descending">
                                                 ID</th>
+                                            <th class="" tabindex="0" aria-controls="example1" rowspan="1"
+                                                colspan="1"
+                                                aria-label="Platform(s): activate to sort column ascending">
+                                                Name</th>
                                             <th tabindex="0" aria-controls="example1" rowspan="1" colspan="1"
                                                 aria-label="Browser: activate to sort column ascending">
                                                 Action</th>

@@ -1,3 +1,6 @@
+from datetime import datetime, timedelta
+import pandas as pd
+from sqlalchemy import func
 from app.db import db
 from app.models import Branch, CustomerReservation, ReservationStatus
 from flask import current_app
@@ -96,7 +99,6 @@ def cancel_reservation(reservation_id, cancellation_reason, updated_by):
     try:
         
         reservation = get_reservation_by_id(reservation_id)
-        print(reservation, "TWES")
         if reservation:
             reservation.status = ReservationStatus.CANCELLED
             reservation.status_comment = cancellation_reason
@@ -108,3 +110,40 @@ def cancel_reservation(reservation_id, cancellation_reason, updated_by):
         db.session.rollback()
         current_app.logger.error(f"Error while canceling reservation with ID={reservation_id}: {e}")
         raise
+
+def get_reservation_data_ml():
+    """Fetch reservation data from the database."""
+    try:
+        reservations = db.session.query(
+            func.date(CustomerReservation.reservation_date).label('date'),
+            func.count(CustomerReservation.id).label('reservation_count')
+        ).group_by(func.date(CustomerReservation.reservation_date)).order_by(func.date(CustomerReservation.reservation_date)).all()
+        return reservations
+    except Exception as e:
+        current_app.logger.error(f'Error fetching reservation data: {e}')
+        return []
+
+def actual_data_ml():
+    """Fetch actual reservation data aggregated by month."""
+    try:
+        # Define the start and end dates for the query
+        end_date = datetime.strptime("2024-06-07", "%Y-%m-%d").date()
+        start_date = datetime.strptime("2024-01-31", "%Y-%m-%d").date()
+
+        # Query the database for reservations within the specified date range
+        actual_data = (db.session.query(
+                func.date_format(CustomerReservation.reservation_date, '%Y-%m').label('month'),
+                func.sum(CustomerReservation.number_of_guests).label('total_guests')
+            )
+            .filter(CustomerReservation.reservation_date.between(start_date, end_date))
+            .group_by(func.date_format(CustomerReservation.reservation_date, '%Y-%m'))
+            .order_by(func.date_format(CustomerReservation.reservation_date, '%Y-%m'))
+            .all())
+        
+        # Format the data for JSON response
+        formatted_data = [{'month': row.month, 'total_guests': row.total_guests} for row in actual_data]
+        
+        return formatted_data
+    except Exception as e:
+        current_app.logger.error(f'Error fetching actual reservation data: {e}')
+        return []

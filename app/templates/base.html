@@ -34,7 +34,7 @@
     <link rel="stylesheet"
         href="{{ url_for('static', filename='adminlte/plugins/summernote/summernote-bs4.min.css') }}">
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
+    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}"> -->
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -95,7 +95,7 @@
     <script src="{{ url_for('static', filename='adminlte/dist/js/pages/dashboard.js') }}"></script>
 
     <!-- Custom JS -->
-    <script src="{{ url_for('static', filename='js/custom.js') }}"></script>
+    <!-- <script src="{{ url_for('static', filename='js/custom.js') }}"></script> -->
     <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap4.min.js"></script>
     <script src="{{ url_for('static', filename='adminlte/plugins/moment/moment.min.js') }}"></script>
@@ -119,57 +119,7 @@
         });
     </script>
     <!-- Chart Initialization Script -->
-    <script>
-        $(function () {
-            // Initialize Line Chart
-            var lineChartCanvas = $('#lineChart').get(0).getContext('2d');
-            var lineChartData = {
-                labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-                datasets: [
-                    {
-                        label: 'Dataset 1',
-                        backgroundColor: 'rgba(60,141,188,0.9)',
-                        borderColor: 'rgba(60,141,188,0.8)',
-                        data: [28, 48, 40, 19, 86, 27, 90],
-                        fill: false
-                    },
-                    {
-                        label: 'Dataset 2',
-                        backgroundColor: 'rgba(210, 214, 222, 1)',
-                        borderColor: 'rgba(210, 214, 222, 1)',
-                        data: [65, 59, 80, 81, 56, 55, 40],
-                        fill: false
-                    }
-                ]
-            };
-
-            var lineChartOptions = {
-                maintainAspectRatio: false,
-                responsive: true,
-                legend: {
-                    display: true
-                },
-                scales: {
-                    xAxes: [{
-                        gridLines: {
-                            display: false
-                        }
-                    }],
-                    yAxes: [{
-                        gridLines: {
-                            display: false
-                        }
-                    }]
-                }
-            };
-
-            new Chart(lineChartCanvas, {
-                type: 'line',
-                data: lineChartData,
-                options: lineChartOptions
-            });
-        });
-    </script>
+    
 </body>
 
 </html>

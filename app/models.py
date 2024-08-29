@@ -112,6 +112,7 @@ class Log(db.Model):
     user_id = db.Column(String, ForeignKey('usertable.user_id'), nullable=False)
     timestamp = db.Column(DateTime, default=datetime.utcnow)
     description = db.Column(Text)
+    browser = db.Column(String(200))
     user = relationship('User', foreign_keys=[user_id], back_populates='logs')
 
 class OTPLog(db.Model):

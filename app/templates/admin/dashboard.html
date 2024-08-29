@@ -10,98 +10,161 @@
             </div><!-- /.col -->
         </div><!-- /.row -->
     </div><!-- /.container-fluid -->
-    <section class="content">
-        <div class="container-fluid">
-            <section class="content">
-                <div class="row">
-                    <div class="col-lg-3 col-6">
-                        <!-- small box -->
-                        <div class="small-box bg-info">
-                            <div class="inner">
-                                <h3>{{stats.all}}</h3>
-
-                                <p>Total Users</p>
-                            </div>
-                            <div class="icon">
-                                <i class="ion ion-person"></i>
-                            </div>
-                           
-                        </div>
-                    </div>
-                    <!-- ./col -->
-                    <div class="col-lg-3 col-6">
-                        <!-- small box -->
-                        <div class="small-box bg-success">
-                            <div class="inner">
-                                <h3>{{stats.user}}</h3>
-
-                                <p>Total Customers</p>
-                            </div>
-                            <div class="icon">
-                                <i class="ion ion-person"></i>
-                            </div>
-                           
-                        </div>
-                    </div>
-                    <!-- ./col -->
-                    <div class="col-lg-3 col-6">
-                        <!-- small box -->
-                        <div class="small-box bg-warning">
-                            <div class="inner">
-                                <h3>{{stats.staff}}</h3>
-
-                                <p>Total Staff</p>
-                            </div>
-                            <div class="icon">
-                                <i class="ion ion-person"></i>
-                            </div>
-                           
-                        </div>
-                    </div>
-                    <!-- ./col -->
-                    <div class="col-lg-3 col-6">
-                        <!-- small box -->
-                        <div class="small-box bg-danger">
-                            <div class="inner">
-                                <h3>{{stats.admin}}</h3>
-
-                                <p>Total Admin</p>
-                            </div>
-                            <div class="icon">
-                                <i class="ion ion-person"></i>
-                            </div>
-                            
-                        </div>
-                    </div>
-                    <!-- ./col -->
-                </div>
-    
-                    <!-- /.card-body -->
-                </div>
-                <div class="card card-info">
-                    <div class="card-header">
-                        <h3 class="card-title">Line Chart</h3>
-
-                        <div class="card-tools">
-                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                                <i class="fas fa-minus"></i>
-                            </button>
-                            <button type="button" class="btn btn-tool" data-card-widget="remove">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="chart">
-                            <canvas id="lineChart"
-                                style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
-                        </div>
-                    </div>
-                    <!-- /.card-body -->
-                </div>
-        </div>
-        <!-- /.error-content -->
 </div>
-<!-- /.error-page -->
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-3 col-6">
+                <!-- small box -->
+                <div class="small-box bg-info">
+                    <div class="inner">
+                        <h3>{{ stats.all }}</h3>
+                        <p>Total Users</p>
+                    </div>
+                    <div class="icon">
+                        <i class="ion ion-person"></i>
+                    </div>
+                </div>
+            </div>
+            <!-- ./col -->
+            <div class="col-lg-3 col-6">
+                <!-- small box -->
+                <div class="small-box bg-success">
+                    <div class="inner">
+                        <h3>{{ stats.user }}</h3>
+                        <p>Total Customers</p>
+                    </div>
+                    <div class="icon">
+                        <i class="ion ion-person"></i>
+                    </div>
+                </div>
+            </div>
+            <!-- ./col -->
+            <div class="col-lg-3 col-6">
+                <!-- small box -->
+                <div class="small-box bg-warning">
+                    <div class="inner">
+                        <h3>{{ stats.staff }}</h3>
+                        <p>Total Staff</p>
+                    </div>
+                    <div class="icon">
+                        <i class="ion ion-person"></i>
+                    </div>
+                </div>
+            </div>
+            <!-- ./col -->
+            <div class="col-lg-3 col-6">
+                <!-- small box -->
+                <div class="small-box bg-danger">
+                    <div class="inner">
+                        <h3>{{ stats.admin }}</h3>
+                        <p>Total Admin</p>
+                    </div>
+                    <div class="icon">
+                        <i class="ion ion-person"></i>
+                    </div>
+                </div>
+            </div>
+            <!-- ./col -->
+        </div>
+
+        <!-- Reservation Prediction Card -->
+        <div class="card card-info">
+            <div class="card-header">
+                <h3 class="card-title">Reservations Prediction</h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                    <button type="button" class="btn btn-tool" data-card-widget="remove">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="chart">
+                    <canvas id="lineChart"
+                        style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
 </section>
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+<script>
+    $(function () {
+        // Initialize Line Chart
+        var lineChartCanvas = $('#lineChart').get(0).getContext('2d');
+
+        // Fetch reservation data from server
+        $.ajax({
+            url: '/Admin/api/reservation_predictions',  // Adjust the URL to your endpoint
+            method: 'GET',
+            success: function (response) {
+                var labels = response.labels || [];  // All labels for the x-axis
+                var actualData = response.actual || [];  // Actual reservation values
+                var predictedData = response.predicted || [];  // Prediction values
+
+                // Data for the chart
+                var lineChartData = {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Actual Reservations',
+                            backgroundColor: 'rgba(0, 123, 255, 0.5)',
+                            borderColor: 'rgba(0, 123, 255, 1)',
+                            data: actualData,
+                            fill: false
+                        },
+                        {
+                            label: 'Predicted Reservations',
+                            backgroundColor: 'rgba(255, 193, 7, 0.5)',
+                            borderColor: 'rgba(255, 193, 7, 1)',
+                            data: predictedData,
+                            fill: false
+                        }
+                    ]
+                };
+
+                var lineChartOptions = {
+                    maintainAspectRatio: false,
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: true
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        },
+                        y: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                };
+
+                new Chart(lineChartCanvas, {
+                    type: 'line',
+                    data: lineChartData,
+                    options: lineChartOptions
+                });
+            },
+            error: function () {
+                console.error('Failed to fetch reservation data.');
+            }
+        });
+    });
+
+</script>
+
+
 {% endblock %}
