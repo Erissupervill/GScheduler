@@ -1,6 +1,5 @@
 {% extends 'base.html' %}
 {% block content %}
-
 <!-- Content Header (Page header) -->
 <div class="content-header">
     <div class="container-fluid">
@@ -15,9 +14,9 @@
 <!-- Main content -->
 <section class="content">
     <div class="container-fluid">
+        <!-- User Statistics -->
         <div class="row">
             <div class="col-lg-3 col-6">
-                <!-- small box -->
                 <div class="small-box bg-info">
                     <div class="inner">
                         <h3>{{ stats.all }}</h3>
@@ -28,9 +27,7 @@
                     </div>
                 </div>
             </div>
-            <!-- ./col -->
             <div class="col-lg-3 col-6">
-                <!-- small box -->
                 <div class="small-box bg-success">
                     <div class="inner">
                         <h3>{{ stats.user }}</h3>
@@ -41,9 +38,7 @@
                     </div>
                 </div>
             </div>
-            <!-- ./col -->
             <div class="col-lg-3 col-6">
-                <!-- small box -->
                 <div class="small-box bg-warning">
                     <div class="inner">
                         <h3>{{ stats.staff }}</h3>
@@ -54,23 +49,19 @@
                     </div>
                 </div>
             </div>
-            <!-- ./col -->
             <div class="col-lg-3 col-6">
-                <!-- small box -->
                 <div class="small-box bg-danger">
                     <div class="inner">
                         <h3>{{ stats.admin }}</h3>
-                        <p>Total Admin</p>
+                        <p>Total Admins</p>
                     </div>
                     <div class="icon">
                         <i class="ion ion-person"></i>
                     </div>
                 </div>
             </div>
-            <!-- ./col -->
         </div>
 
-        <!-- Reservation Prediction Card -->
         <div class="card card-info">
             <div class="card-header">
                 <h3 class="card-title">Reservations Prediction</h3>
@@ -86,10 +77,61 @@
             <div class="card-body">
                 <div class="chart">
                     <canvas id="lineChart"
-                        style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                        style="min-height: 250px; height: 250px; max-height: 250px; min-width:100%; max-width: 100%;"></canvas>
                 </div>
             </div>
         </div>
+
+        <!-- Booking Summaries Report -->
+        <div class="card card-info">
+            <div class="card-header">
+                <h3 class="card-title">Booking Summaries Report</h3>
+            </div>
+            <div class="card-body">
+                <h4>Daily Summary</h4>
+                <table id="dailySummaryTable" class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Total Bookings</th>
+                            <th>Average Group Size</th>
+                            <th>Cancellation Rate</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+                
+
+                <h4>Weekly Summary</h4>
+                <table id="weeklySummaryTable" class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Week</th>
+                            <th>Total Bookings</th>
+                            <th>Average Group Size</th>
+                            <th>Cancellation Rate</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+                <h4>Monthly Summary</h4>
+                <table id="monthlySummaryTable" class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Month</th>
+                            <th>Total Bookings</th>
+                            <th>Average Group Size</th>
+                            <th>Cancellation Rate</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+                
+            </div>
+        </div>
+
+        <!-- Reservation Prediction Card -->
+      
     </div>
 </section>
 
@@ -97,41 +139,227 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
 <script>
     $(function () {
-        // Initialize Line Chart
-        var lineChartCanvas = $('#lineChart').get(0).getContext('2d');
-
-        // Fetch reservation data from server
+        // Fetch daily booking summaries data
         $.ajax({
-            url: '/Admin/api/reservation_predictions',  // Adjust the URL to your endpoint
+            url: '/api/daily_booking_summary',
             method: 'GET',
             success: function (response) {
-                var labels = response.labels || [];  // All labels for the x-axis
-                var actualData = response.actual || [];  // Actual reservation values
-                var predictedData = response.predicted || [];  // Prediction values
+                var dailyData = response || [];
+                var dailyTableBody = $('#dailySummaryTable tbody');
+                console.log(dailyData, "testDATA")
+                dailyData.forEach(function (item) {
+                    var formattedDate = new Date(item.date).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit'
+                    });
+                    dailyTableBody.append(
+                        '<tr>' +
+                        '<td>' + formattedDate + '</td>' +
+                        '<td>' + item.total_bookings + '</td>' +
+                        '<td>' + item.avg_group_size + '</td>' +
+                        '<td>' + item.cancellation_rate + '%</td>' +
+                        '</tr>'
+                    );
+                });
 
-                // Data for the chart
-                var lineChartData = {
-                    labels: labels,
-                    datasets: [
-                        {
-                            label: 'Actual Reservations',
-                            backgroundColor: 'rgba(0, 123, 255, 0.5)',
-                            borderColor: 'rgba(0, 123, 255, 1)',
-                            data: actualData,
-                            fill: false
-                        },
-                        {
-                            label: 'Predicted Reservations',
-                            backgroundColor: 'rgba(255, 193, 7, 0.5)',
-                            borderColor: 'rgba(255, 193, 7, 1)',
-                            data: predictedData,
-                            fill: false
-                        }
-                    ]
+
+
+                var dailyLabels = dailyData.map(function (item) { return item.date; });
+                var dailyBookings = dailyData.map(function (item) { return item.total_bookings; });
+                var dailyChartData = {
+                    labels: dailyLabels,
+                    datasets: [{
+                        label: 'Total Bookings',
+                        data: dailyBookings,
+                        backgroundColor: 'rgba(0, 123, 255, 0.5)',
+                        borderColor: 'rgba(0, 123, 255, 1)',
+                        borderWidth: 1
+                    }]
                 };
+                new Chart($('#dailyChart'), {
+                    type: 'bar',
+                    data: dailyChartData,
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                display: true
+                            }
+                        },
+                        scales: {
+                            x: {
+                                grid: {
+                                    display: false
+                                }
+                            },
+                            y: {
+                                grid: {
+                                    display: false
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        });
 
-                var lineChartOptions = {
-                    maintainAspectRatio: false,
+        // Fetch weekly booking summaries data
+        $.ajax({
+            url: '/api/weekly_booking_summary',
+            method: 'GET',
+            success: function (response) {
+                var weeklyData = response || [];
+                var weeklyTableBody = $('#weeklySummaryTable tbody');
+                weeklyData.forEach(function (item) {
+                    var formattedDate = new Date(item.date).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit'
+                    });
+                    weeklyTableBody.append(
+                        '<tr>' +
+                        '<td>' + 'Week ' + item.week + ' (' + item.year + ')</td>' +
+                        '<td>' + item.total_bookings + '</td>' +
+                        '<td>' + item.avg_group_size + '</td>' +
+                        '<td>' + item.cancellation_rate + '%</td>' +
+                        '</tr>'
+                    );
+                });
+
+                var weeklyLabels = weeklyData.map(function (item) { return 'Week ' + item.week + ' (' + item.year + ')'; });
+                var weeklyBookings = weeklyData.map(function (item) { return item.total_bookings; });
+                var weeklyChartData = {
+                    labels: weeklyLabels,
+                    datasets: [{
+                        label: 'Total Bookings',
+                        data: weeklyBookings,
+                        backgroundColor: 'rgba(40, 167, 69, 0.5)',
+                        borderColor: 'rgba(40, 167, 69, 1)',
+                        borderWidth: 1
+                    }]
+                };
+                new Chart($('#weeklyChart'), {
+                    type: 'bar',
+                    data: weeklyChartData,
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                display: true
+                            }
+                        },
+                        scales: {
+                            x: {
+                                grid: {
+                                    display: false
+                                }
+                            },
+                            y: {
+                                grid: {
+                                    display: false
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        });
+
+        // Fetch monthly booking summaries data
+        $.ajax({
+            url: '/api/monthly_booking_summary',
+            method: 'GET',
+            success: function (response) {
+                var monthlyData = response || [];
+                var monthlyTableBody = $('#monthlySummaryTable tbody');
+                monthlyData.forEach(function (item) {
+                    monthlyTableBody.append(
+                        '<tr>' +
+                        '<td>' + 'Month ' + item.month + ' (' + item.year + ')</td>' +
+                        '<td>' + item.total_bookings + '</td>' +
+                        '<td>' + item.avg_group_size + '</td>' +
+                        '<td>' + item.cancellation_rate + '%</td>' +
+                        '</tr>'
+                    );
+                });
+
+                var monthlyLabels = monthlyData.map(function (item) { return 'Month ' + item.month + ' (' + item.year + ')'; });
+                var monthlyBookings = monthlyData.map(function (item) { return item.total_bookings; });
+                var monthlyChartData = {
+                    labels: monthlyLabels,
+                    datasets: [{
+                        label: 'Total Bookings',
+                        data: monthlyBookings,
+                        backgroundColor: 'rgba(255, 193, 7, 0.5)',
+                        borderColor: 'rgba(255, 193, 7, 1)',
+                        borderWidth: 1
+                    }]
+                };
+                new Chart($('#monthlyChart'), {
+                    type: 'bar',
+                    data: monthlyChartData,
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                display: true
+                            }
+                        },
+                        scales: {
+                            x: {
+                                grid: {
+                                    display: false
+                                }
+                            },
+                            y: {
+                                grid: {
+                                    display: false
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        });
+
+        $.ajax({
+        url: '/api/reservation_predictions',
+        method: 'GET',
+        success: function (response) {
+            var predictionData = response || {};
+            var predictionLabels = predictionData.labels || [];
+            var actualReservations = predictionData.actual || [];
+            var predictedReservations = predictionData.predicted || [];
+            
+            if (predictionLabels.length === 0 || actualReservations.length === 0 || predictedReservations.length === 0) {
+                console.error("Prediction data is incomplete");
+                return;
+            }
+
+            var predictionChartData = {
+                labels: predictionLabels,
+                datasets: [{
+                    label: 'Actual Reservations',
+                    data: actualReservations,
+                    backgroundColor: 'rgba(0, 123, 255, 0.5)',
+                    borderColor: 'rgba(0, 123, 255, 1)',
+                    borderWidth: 1
+                }, {
+                    label: 'Predicted Reservations',
+                    data: predictedReservations,
+                    backgroundColor: 'rgba(255, 193, 7, 0.5)',
+                    borderColor: 'rgba(255, 193, 7, 1)',
+                    borderWidth: 1
+                }]
+            };
+
+            // Initialize the chart
+            var ctx = document.getElementById('lineChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: predictionChartData,
+                options: {
                     responsive: true,
                     plugins: {
                         legend: {
@@ -150,21 +378,14 @@
                             }
                         }
                     }
-                };
-
-                new Chart(lineChartCanvas, {
-                    type: 'line',
-                    data: lineChartData,
-                    options: lineChartOptions
-                });
-            },
-            error: function () {
-                console.error('Failed to fetch reservation data.');
-            }
-        });
+                }
+            });
+        },
+        error: function (xhr, status, error) {
+            console.error("Failed to fetch prediction data: " + error);
+        }
     });
-
+});
 </script>
-
 
 {% endblock %}
