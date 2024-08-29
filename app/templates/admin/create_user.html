@@ -32,16 +32,30 @@
                             {{form.csrf_token}}
 
                             <div class="form-group">
-                                <label for="username">Username</label>
+                                <label for="username">First name</label>
                                 <div class="input-group mb-3">
-                                    <input type="text" name="username" class="form-control" id="username" placeholder="Username">
+                                    <input type="text" name="first_name" class="form-control" id="firstname" placeholder="First Name">
                                     <div class="input-group-append">
                                         <div class="input-group-text">
                                             <span class="fas fa-user"></span>
                                         </div>
                                     </div>
                                 </div>
-                                {% for error in form.username.errors %}
+                                {% for error in form.first_name.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                            <div class="form-group">
+                                <label for="username">Last name</label>
+                                <div class="input-group mb-3">
+                                    <input type="text" name="last_name" class="form-control" id="firstname" placeholder="Last Name">
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">
+                                            <span class="fas fa-user"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% for error in form.last_name.errors %}
                                 <div class="invalid-feedback d-block">{{ error }}</div>
                                 {% endfor %}
                             </div>

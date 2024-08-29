@@ -64,6 +64,26 @@
 
         <div class="card card-info">
             <div class="card-header">
+                <h3 class="card-title">Peak-Time Predictions Report</h3>
+                <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                    <button type="button" class="btn btn-tool" data-card-widget="remove">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="chart">
+                    <canvas id="peakTimeChart"
+                        style="min-height: 250px; height: 250px; max-height: 250px; min-width:100%; max-width: 100%;"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="card card-info">
+            <div class="card-header">
                 <h3 class="card-title">Reservations Prediction</h3>
                 <div class="card-tools">
                     <button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -89,7 +109,7 @@
             </div>
             <div class="card-body">
                 <h4>Daily Summary</h4>
-                <table id="dailySummaryTable" class="table table-bordered">
+                <table id="dailySummaryTable" class="table table-bordered table-striped">
                     <thead>
                         <tr>
                             <th>Date</th>
@@ -100,10 +120,10 @@
                     </thead>
                     <tbody></tbody>
                 </table>
-                
+
 
                 <h4>Weekly Summary</h4>
-                <table id="weeklySummaryTable" class="table table-bordered">
+                <table id="weeklySummaryTable" class="table table-bordered table-striped">
                     <thead>
                         <tr>
                             <th>Week</th>
@@ -115,7 +135,7 @@
                     <tbody></tbody>
                 </table>
                 <h4>Monthly Summary</h4>
-                <table id="monthlySummaryTable" class="table table-bordered">
+                <table id="monthlySummaryTable" class="table table-bordered table-striped">
                     <thead>
                         <tr>
                             <th>Month</th>
@@ -126,18 +146,88 @@
                     </thead>
                     <tbody></tbody>
                 </table>
-                
+
             </div>
         </div>
 
         <!-- Reservation Prediction Card -->
-      
+
     </div>
 </section>
 
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
 <script>
+
+    $(function () {
+
+        // Existing AJAX calls for daily, weekly, and monthly summaries...
+
+        // Fetch peak time predictions data
+        $.ajax({
+            url: '/api/peak_time_predictions',
+            method: 'GET',
+            success: function (response) {
+                var peakTimeData = response || {};
+                var peakTimeLabels = peakTimeData.labels || [];
+                var peakTimePredictions = peakTimeData.predictions || [];
+
+                if (peakTimeLabels.length === 0 || peakTimePredictions.length === 0) {
+                    console.error("Peak time data is incomplete");
+                    return;
+                }
+                var formattedLabels = peakTimeLabels.map(function (hour) {
+                    var hourNumber = parseInt(hour, 10);
+                    return (hourNumber < 10 ? '0' : '') + hourNumber + ':00';  // Format as 'HH:00'
+                });
+                console.log("Formatted Peak Time Labels:", formattedLabels);
+                console.log("Peak Time Predictions:", peakTimePredictions);
+                console.log(peakTimeLabels, "LABELS")
+                var peakTimeChartData = {
+                    labels: formattedLabels,
+                    datasets: [{
+                        label: 'Predicted Peak Times',
+                        data: peakTimePredictions,
+                        backgroundColor: 'rgba(255, 193, 7, 0.5)',
+                        borderColor: 'rgba(255, 193, 7, 1)',
+                        borderWidth: 1
+                    }]
+                };
+
+                // Initialize the chart
+                var ctx = document.getElementById('peakTimeChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'line',
+                    data: peakTimeChartData,
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                display: true
+                            }
+                        },
+                        scales: {
+                            x: {
+                                grid: {
+                                    display: false
+                                }
+                            },
+                            y: {
+                                grid: {
+                                    display: false
+                                }
+                            }
+                        }
+                    }
+                });
+            },
+            error: function (xhr, status, error) {
+                console.error("Failed to fetch peak time data: " + error);
+            }
+        });
+    });
+
+
     $(function () {
         // Fetch daily booking summaries data
         $.ajax({
@@ -146,8 +236,8 @@
             success: function (response) {
                 var dailyData = response || [];
                 var dailyTableBody = $('#dailySummaryTable tbody');
-                console.log(dailyData, "testDATA")
                 dailyData.forEach(function (item) {
+                    var avgGroupSize = parseFloat(item.avg_group_size);
                     var formattedDate = new Date(item.date).toLocaleDateString('en-US', {
                         year: 'numeric',
                         month: '2-digit',
@@ -157,12 +247,15 @@
                         '<tr>' +
                         '<td>' + formattedDate + '</td>' +
                         '<td>' + item.total_bookings + '</td>' +
-                        '<td>' + item.avg_group_size + '</td>' +
-                        '<td>' + item.cancellation_rate + '%</td>' +
+                        '<td>' + avgGroupSize.toFixed(2) + '</td>' +
+                        '<td>' + item.cancellation_rate.toFixed(2) + '%</td>' +
                         '</tr>'
                     );
+                    console.log(item.avg_group_size)
                 });
-
+                $("#dailySummaryTable").DataTable({
+                    "responsive": true, "lengthChange": false, "autoWidth": false,
+                });
 
 
                 var dailyLabels = dailyData.map(function (item) { return item.date; });
@@ -212,6 +305,7 @@
                 var weeklyData = response || [];
                 var weeklyTableBody = $('#weeklySummaryTable tbody');
                 weeklyData.forEach(function (item) {
+                    var avgGroupSize = parseFloat(item.avg_group_size);
                     var formattedDate = new Date(item.date).toLocaleDateString('en-US', {
                         year: 'numeric',
                         month: '2-digit',
@@ -221,12 +315,14 @@
                         '<tr>' +
                         '<td>' + 'Week ' + item.week + ' (' + item.year + ')</td>' +
                         '<td>' + item.total_bookings + '</td>' +
-                        '<td>' + item.avg_group_size + '</td>' +
-                        '<td>' + item.cancellation_rate + '%</td>' +
+                        '<td>' + avgGroupSize.toFixed(2) + '</td>' +
+                        '<td>' + item.cancellation_rate.toFixed(2) + '%</td>' +
                         '</tr>'
                     );
                 });
-
+                $("#weeklySummaryTable").DataTable({
+                    "responsive": true, "lengthChange": false, "autoWidth": false,
+                });
                 var weeklyLabels = weeklyData.map(function (item) { return 'Week ' + item.week + ' (' + item.year + ')'; });
                 var weeklyBookings = weeklyData.map(function (item) { return item.total_bookings; });
                 var weeklyChartData = {
@@ -274,16 +370,19 @@
                 var monthlyData = response || [];
                 var monthlyTableBody = $('#monthlySummaryTable tbody');
                 monthlyData.forEach(function (item) {
+                    var avgGroupSize = parseFloat(item.avg_group_size);
                     monthlyTableBody.append(
                         '<tr>' +
                         '<td>' + 'Month ' + item.month + ' (' + item.year + ')</td>' +
                         '<td>' + item.total_bookings + '</td>' +
-                        '<td>' + item.avg_group_size + '</td>' +
-                        '<td>' + item.cancellation_rate + '%</td>' +
+                        '<td>' + avgGroupSize.toFixed(2) + '</td>' +
+                        '<td>' + item.cancellation_rate.toFixed(2) + '%</td>' +
                         '</tr>'
                     );
                 });
-
+                $("#monthlySummaryTable").DataTable({
+                    "responsive": true, "lengthChange": false, "autoWidth": false,
+                });
                 var monthlyLabels = monthlyData.map(function (item) { return 'Month ' + item.month + ' (' + item.year + ')'; });
                 var monthlyBookings = monthlyData.map(function (item) { return item.total_bookings; });
                 var monthlyChartData = {
@@ -324,68 +423,69 @@
         });
 
         $.ajax({
-        url: '/api/reservation_predictions',
-        method: 'GET',
-        success: function (response) {
-            var predictionData = response || {};
-            var predictionLabels = predictionData.labels || [];
-            var actualReservations = predictionData.actual || [];
-            var predictedReservations = predictionData.predicted || [];
-            
-            if (predictionLabels.length === 0 || actualReservations.length === 0 || predictedReservations.length === 0) {
-                console.error("Prediction data is incomplete");
-                return;
-            }
+            url: '/api/reservation_predictions',
+            method: 'GET',
+            success: function (response) {
+                var predictionData = response || {};
+                var predictionLabels = predictionData.labels || [];
+                var actualReservations = predictionData.actual || [];
+                var predictedReservations = predictionData.predicted || [];
 
-            var predictionChartData = {
-                labels: predictionLabels,
-                datasets: [{
-                    label: 'Actual Reservations',
-                    data: actualReservations,
-                    backgroundColor: 'rgba(0, 123, 255, 0.5)',
-                    borderColor: 'rgba(0, 123, 255, 1)',
-                    borderWidth: 1
-                }, {
-                    label: 'Predicted Reservations',
-                    data: predictedReservations,
-                    backgroundColor: 'rgba(255, 193, 7, 0.5)',
-                    borderColor: 'rgba(255, 193, 7, 1)',
-                    borderWidth: 1
-                }]
-            };
+                if (predictionLabels.length === 0 || actualReservations.length === 0 || predictedReservations.length === 0) {
+                    console.error("Prediction data is incomplete");
+                    return;
+                }
 
-            // Initialize the chart
-            var ctx = document.getElementById('lineChart').getContext('2d');
-            new Chart(ctx, {
-                type: 'line',
-                data: predictionChartData,
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            display: true
-                        }
-                    },
-                    scales: {
-                        x: {
-                            grid: {
-                                display: false
+                var predictionChartData = {
+                    labels: predictionLabels,
+                    datasets: [{
+                        label: 'Actual Reservations',
+                        data: actualReservations,
+                        backgroundColor: 'rgba(0, 123, 255, 0.5)',
+                        borderColor: 'rgba(0, 123, 255, 1)',
+                        borderWidth: 1
+                    }, {
+                        label: 'Predicted Reservations',
+                        data: predictedReservations,
+                        backgroundColor: 'rgba(255, 193, 7, 0.5)',
+                        borderColor: 'rgba(255, 193, 7, 1)',
+                        borderWidth: 1
+                    }]
+                };
+
+                // Initialize the chart
+                var ctx = document.getElementById('lineChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'line',
+                    data: predictionChartData,
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                display: true
                             }
                         },
-                        y: {
-                            grid: {
-                                display: false
+                        scales: {
+                            x: {
+                                grid: {
+                                    display: false
+                                }
+                            },
+                            y: {
+                                grid: {
+                                    display: false
+                                }
                             }
                         }
                     }
-                }
-            });
-        },
-        error: function (xhr, status, error) {
-            console.error("Failed to fetch prediction data: " + error);
-        }
+                });
+            },
+            error: function (xhr, status, error) {
+                console.error("Failed to fetch prediction data: " + error);
+            }
+        });
+
     });
-});
 </script>
 
 {% endblock %}

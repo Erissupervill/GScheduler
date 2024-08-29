@@ -5,11 +5,10 @@ from flask_login import current_user, login_required
 import numpy as np
 import pandas as pd
 from app.forms import FeedbackForm, RegistrationForm
-from app.ml_model import get_historical_data, get_reservation_predictions,  train_model
-from app.models import User
 from app.services.admin_services import (
-    check_email, count_by_role, count_total_users, create_new_user, delete_feedback, fetch_all_users, get_booking_summaries, update_user, delete_user
+    check_email, count_by_role, count_total_users, create_new_user, delete_feedback, fetch_all_users, update_user, delete_user
 )
+from app.services.api_services import get_booking_summaries
 from app.services.feedback_services import  get_feedback_by_id, get_feedbacks, update_feedback
 
 from app.services.logging_services import get_logs
@@ -157,7 +156,8 @@ def CreateUser():
     if form.validate_on_submit():
         try:
             data = {
-                'username': form.username.data,
+                'first_name': form.first_name.data,
+                'last_name': form.last_name.data,
                 'email': form.email.data,
                 'phone_number': form.phone_number.data,
                 'password': form.password.data,

@@ -5,7 +5,8 @@ from flask_login import login_required
 import numpy as np
 from app.db import db
 from app.ml_model import get_historical_data, train_model
-from app.services.admin_services import get_booking_summaries
+from app.services.api_services import get_booking_summaries
+from app.services.api_services import fetch_historical_data
 from app.services.reservation_services import get_reservations
 
 api_routes_bp = Blueprint('api_routes_bp', __name__)
@@ -35,11 +36,15 @@ def reservation_predictions():
         
         # Fetch actual reservations data for the last 7 days
         actual_reservations = get_reservations()
+        
+        # print(actual_reservations.reservation_date)
         actual_data = []
         for date in date_range:
             # Filter reservations for the current date
+          
             daily_reservations = [res for res in actual_reservations if res.reservation_date.strftime('%Y-%m-%d') == date.strftime('%Y-%m-%d')]
-            
+            # for res in actual_reservations:
+            #     print(type(res.reservation_date))
             # Sum the number of guests for the filtered reservations
             daily_sum = sum(res.number_of_guests for res in daily_reservations)
             
@@ -120,3 +125,28 @@ def get_monthly_booking_summary():
     } for item in monthly_summary]
 
     return jsonify(data)
+
+@api_routes_bp.route('/api/peak_time_predictions', methods=['GET'])
+def get_peak_time_predictions():
+    historical_data = fetch_historical_data()
+    peak_times = predict_peak_times(historical_data)  
+    
+    print(historical_data)
+
+    response = {
+        'labels': [str(hour) for hour in range(24)],  # 24-hour format labels
+        'predictions': peak_times
+    }
+    return jsonify(response)
+
+def predict_peak_times(historical_data):
+    # Initialize predictions for each hour (0-23) to zero
+    predictions = [0] * 24
+
+    # Iterate over historical data to populate the predictions list
+    for record in historical_data:
+        hour = record['hour']  # Extract the hour from the record
+        total_bookings = record['total_bookings']  # Extract the total bookings for that hour
+        predictions[hour] = total_bookings  # Update the predictions list at the index corresponding to the hour
+
+    return predictions
