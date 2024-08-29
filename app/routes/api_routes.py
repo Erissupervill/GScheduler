@@ -26,21 +26,18 @@ def reservation_predictions():
         
         model, min_date, last_day, dates, predictions = train_model(df)
         
-        # Get the last 5 days, today, and tomorrow
         end_date = datetime.today()
         start_date = end_date - timedelta(days=6)
         date_range = [start_date + timedelta(days=i) for i in range(7)]
         
-        # Convert dates to string format for labels
         labels = [date.strftime('%Y-%m-%d') for date in date_range]
         
-        # Fetch actual reservations data for the last 7 days
         actual_reservations = get_reservations()
         
         # print(actual_reservations.reservation_date)
         actual_data = []
         for date in date_range:
-            # Filter reservations for the current date
+        
           
             daily_reservations = [res for res in actual_reservations if res.reservation_date.strftime('%Y-%m-%d') == date.strftime('%Y-%m-%d')]
             # for res in actual_reservations:
@@ -59,20 +56,20 @@ def reservation_predictions():
         last_date_ordinal = datetime.today().toordinal()
         future_dates_ordinal = [last_date_ordinal + i for i in range(1, 3)]
         
-        # Predict future reservations
+
         future_predictions = model.predict(np.array(future_dates_ordinal).reshape(-1, 1)).tolist()
         
         print(future_predictions)
         
         # Convert predictions and actual_data to native Python types
-        actual_data = [int(val) for val in actual_data]  # Convert int64 to int
+        actual_data = [int(val) for val in actual_data]  
         combined_predictions = [0] * len(labels) + future_predictions
-        combined_predictions = [float(val) for val in combined_predictions]  # Convert np.float64 to float
+        combined_predictions = [float(val) for val in combined_predictions]  
         
-        # Return JSON response
+       
         return jsonify({
             'labels': dates,
-            'actual': actual_data + [0] * len(future_dates),  # Zeroes for future days
+            'actual': actual_data + [0] * len(future_dates),  
             'predicted': combined_predictions
         })
     except Exception as e:
@@ -145,8 +142,8 @@ def predict_peak_times(historical_data):
 
     # Iterate over historical data to populate the predictions list
     for record in historical_data:
-        hour = record['hour']  # Extract the hour from the record
-        total_bookings = record['total_bookings']  # Extract the total bookings for that hour
-        predictions[hour] = total_bookings  # Update the predictions list at the index corresponding to the hour
+        hour = record['hour']  
+        total_bookings = record['total_bookings']  
+        predictions[hour] = total_bookings  
 
     return predictions
