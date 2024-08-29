@@ -36,7 +36,7 @@ def reservation_predictions():
         if df.empty:
             raise ValueError("Historical data could not be loaded or is empty.")
         
-        model, min_date, last_day, dates, predictions = train_model(df)
+        model, dates, = train_model(df)
         
         # Get the last 5 days, today, and tomorrow
         end_date = datetime.today()
