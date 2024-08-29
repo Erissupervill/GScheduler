@@ -26,7 +26,8 @@ def user_register():
 
     form = RegistrationForm()
     if form.validate_on_submit():
-        username = form.username.data
+        first_name = form.first_name.data
+        last_name = form.last_name.data
         email = form.email.data
         phone_num = form.phone_number.data
         password = form.password.data
@@ -37,7 +38,7 @@ def user_register():
             return redirect(url_for('auth_routes.user_register'))
         
         hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
-        user = User(username=username, email_address=email, password_hash=hashed_password, phone_number=phone_num, role_id=role_id)
+        user = User(first_name=first_name,last_name=last_name, email_address=email, password_hash=hashed_password, phone_number=phone_num, role_id=role_id)
         try:
             db.session.add(user)
             db.session.commit()
@@ -62,7 +63,6 @@ def login():
         email_address = form.email_address.data
         password = form.password.data
         user = authenticate_user(email_address, password, bcrypt)
-        print(user.__dict__)
         if user:
             flash('Login Successful', 'success')
             return base_on_user_role()

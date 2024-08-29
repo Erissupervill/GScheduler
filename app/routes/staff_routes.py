@@ -12,12 +12,14 @@ from app.db import db
 staff_routes_bp = Blueprint("staff_routes", __name__, url_prefix="/Staff")
 
 @staff_routes_bp.route("/")
+@login_required
 def index():
     """Redirect to the login page."""
     return redirect(url_for("auth_routes.login"))
 
 @staff_routes_bp.route("/Dashboard")
 @login_required
+@role_required(2)
 def dashboard():
     """Render the dashboard with reservation counts and branch capacities."""
     try:
@@ -45,6 +47,7 @@ def dashboard():
 
 @staff_routes_bp.route("/Reservation")
 @login_required
+@role_required(2)
 def reservation_all():
     """Render a page with all reservations."""
     try:
@@ -57,17 +60,18 @@ def reservation_all():
 
 @staff_routes_bp.route('/update/reservation/<int:id>', methods=['POST'])
 @login_required
+@role_required(2)
 def update_reservation(id):
     """Update reservation status based on the action provided."""
     try:
         reservation = get_reservation_by_id(id)
         if not reservation:
-            flash('Reservation not found', 'error')
+            flash('Reservation not found', 'danger')
             return redirect(url_for('staff_routes.pending_reservations'))
 
         action = request.form.get('action')
         if not action:
-            flash('Action not specified', 'error')
+            flash('Action not specified', 'danger')
             return redirect(url_for('staff_routes.pending_reservations'))
 
         if action == 'accept':
@@ -95,6 +99,7 @@ def update_reservation(id):
 
 @staff_routes_bp.route('/reject_reservation_form/<int:id>')
 @login_required
+@role_required(2)
 def reject_reservation_form(id):
     """Render a form for rejecting a reservation."""
     try:
@@ -110,12 +115,12 @@ def reject_reservation_form(id):
 
 @staff_routes_bp.route('/reject_reservation', methods=['POST'])
 @login_required
+@role_required(2)
 def reject_reservation():
     """Reject a reservation with a provided reason."""
     try:
         id = int(request.form.get('reservation_id'))
         rejection_reason = request.form.get('rejection_reason')
-        print("dioto na ko rekect", id)
         reservation = get_reservation_by_id(id)
         if reservation:
             reservation.status = ReservationStatus.REJECTED
@@ -137,6 +142,7 @@ def reject_reservation():
 
 @staff_routes_bp.route('/pending-reservations')
 @login_required
+@role_required(2)
 def pending_reservations():
     """Render a page with all pending reservations."""
     try:
@@ -149,6 +155,7 @@ def pending_reservations():
 
 @staff_routes_bp.route("/Reservation/Accepted")
 @login_required
+@role_required(2)
 def accepted_reservation():
     """Render a page with all accepted reservations."""
     try:
@@ -182,6 +189,7 @@ def complete_reservation(id):
 
 @staff_routes_bp.route("/Reservation/Completed")
 @login_required
+@role_required(2)
 def completed_reservation():
     """Render a page with all completed reservations."""
     try:
@@ -194,6 +202,7 @@ def completed_reservation():
 
 @staff_routes_bp.route("/Reservation/Rejected")
 @login_required
+@role_required(2)
 def rejected_reservation():
     """Render a page with all rejected reservations."""
     try:
@@ -206,6 +215,7 @@ def rejected_reservation():
 
 @staff_routes_bp.route("/Reservation/Cancelled")
 @login_required
+@role_required(2)
 def cancelled_reservation():
     """Render a page with all cancelled reservations."""
     try:

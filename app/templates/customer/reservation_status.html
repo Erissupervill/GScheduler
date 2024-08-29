@@ -86,7 +86,6 @@
         <div class="modal-content">
             <form id="cancelForm" method="POST" action="{{ url_for('user_routes.cancel_reservation_route') }}">
                 <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
-                <input type="hidden" id="cancelReservationId" name="reservation_id">
                 <div class="modal-header">
                     <h5 class="modal-title" id="cancelModalLabel">Cancel Reservation</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">

@@ -49,7 +49,7 @@
                                             {% for reservation in reservations %}
                                             <tr>
                                                 <td>{{ loop.index}}</td>
-                                                <td>{{ reservation.customer.username }}</td>
+                                                <td>{{ reservation.customer.first_name }} {{reservation.customer.last_name}}</td>
                                                 <td>{{ reservation.branch.location}} {{reservation.branch.name}}</td>
                                                 <td>{{ reservation.reservation_date.strftime('%Y-%m-%d') }}</td>
                                                 <td>{{ reservation.reservation_time.strftime('%H:%M') }}</td>

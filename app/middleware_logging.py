@@ -68,15 +68,21 @@ def log_request_action():
 
         # Get a user-friendly description for the action
         action_description = ACTION_DESCRIPTIONS.get(request.path, 'Unknown Action')
-
+        
+        # If it's a POST request, check for specific actions
+        if request.method == 'POST':
+            action = request.form.get('action')
+            if action:
+                action_description = f"{action.capitalize()} Action"
+        
         user_agent = request.headers.get('User-Agent')
         browser_info = parse(user_agent)
 
         # Create a new log entry
         new_log = Log(
-            user_id=current_user.id,
+            user_id=current_user.user_id,
             action=action_description,
-            description=f"User {current_user.first_name} {current_user.last_name} accessed {request.path}",
+            description=f"User {current_user.first_name} {current_user.last_name} accessed {request.path} with action: {action_description}",
             browser=f"{browser_info.browser.family} {browser_info.browser.version_string}",
         )
         try:

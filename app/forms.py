@@ -3,7 +3,8 @@ from wtforms import DateTimeField, DateTimeLocalField, RadioField, SelectField, 
 from wtforms.validators import DataRequired, Email, EqualTo, Length
 
 class RegistrationForm(FlaskForm):
-    username = StringField('Username', validators=[DataRequired(), Length(min=2, max=10)])
+    last_name = StringField('Name', validators=[DataRequired(), Length(min=2, max=25)])
+    first_name = StringField('Last Name', validators=[DataRequired(), Length(min=2, max=25)])
     email = StringField('Email', validators=[DataRequired(), Email()])
     phone_number = StringField('Phone Number', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired(),Length(min=2, max=10)])

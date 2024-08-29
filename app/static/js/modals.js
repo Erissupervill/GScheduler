@@ -38,6 +38,7 @@ document.addEventListener('DOMContentLoaded', function () {
 document.addEventListener('DOMContentLoaded', function () {
     $('#viewReservationModal').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget); // Button that triggered the modal
+        var reservation_id = button.data('reservationid');
         var customer = button.data('customer');
         var location = button.data('location');
         var date = button.data('date');
@@ -49,8 +50,9 @@ document.addEventListener('DOMContentLoaded', function () {
         var updatedAt = button.data('updated-at');
         var updatedByFirstName = button.data('updated-by-firstname');  // Updated
         var updatedByLastName = button.data('updated-by-lastname');    // Updated
-
+        console.log("Button Data Attributes:", button.data());
         var modal = $(this);
+        modal.find('#modalReservationID').text(reservation_id);
         modal.find('#modalCustomerName').text(customer);
         modal.find('#modalLocation').text(location);
         modal.find('#modalDate').text(date);

@@ -45,7 +45,11 @@
                                                 <th class="" tabindex="0" aria-controls="example1" rowspan="1"
                                                     colspan="1"
                                                     aria-label="Platform(s): activate to sort column ascending">
-                                                    Time and Date</th>
+                                                    Date</th>
+                                                    <th class="" tabindex="0" aria-controls="example1" rowspan="1"
+                                                    colspan="1"
+                                                    aria-label="Platform(s): activate to sort column ascending">
+                                                    Time</th>
                                                 <th class="" tabindex="0" aria-controls="example1" rowspan="1"
                                                     colspan="1"
                                                     aria-label="Engine version: activate to sort column ascending">
@@ -59,7 +63,8 @@
                                                 <td class="dtr-control sorting_1" tabindex="0">{{loop.index}}</td>
                                                 <td>{{item.User.first_name}} {{item.User.last_name}}</td>
                                                 <td>{{item.Log.action}}</td>
-                                                <td>{{item.Log.timestamp}}</td>
+                                                <td>{{item.Log.timestamp.strftime('%m-%d-%Y')}}</td>
+                                                <td>{{item.Log.timestamp.strftime('%H:%M')}}</td>
                                                 <td>{{item.Log.description}}</td>
                                             </tr>
                                             {% else %}
@@ -84,7 +89,10 @@
                                                 Action</th>
                                             <th tabindex="0" aria-controls="example1" rowspan="1" colspan="1"
                                                 aria-label="Platform(s): activate to sort column ascending">
-                                                Time and Date</th>
+                                                Date</th>
+                                                <th tabindex="0" aria-controls="example1" rowspan="1" colspan="1"
+                                                aria-label="Platform(s): activate to sort column ascending">
+                                                Time</th>
                                             <th tabindex="0" aria-controls="example1" rowspan="1" colspan="1"
                                                 aria-label="Engine version: activate to sort column ascending">
                                                 Description</th>

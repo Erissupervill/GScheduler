@@ -35,10 +35,16 @@
                                         {% for user in users %}
                                         <tr>
                                             <td>{{ loop.index }}</td>
-                                            <td>{{ user.username }}</td>
+                                            <td>{{ user.first_name }} {{ user.last_name }}</td>
                                             <td>{{ user.email_address }}</td>
                                             <td>{{ user.phone_number }}</td>
-                                            <td>{{ user.last_login }}</td>
+                                            <td>
+                                                {% if user.last_login %}
+                                                    {{ user.last_login.strftime('%m-%d-%Y') }}
+                                                {% else %}
+                                                    {{ user.last_login }}
+                                                {% endif %}
+                                            </td>
                                             <td>
                                                 <div class="btn-group" role="group">
                                                     <!-- Button to trigger the modal on the left -->

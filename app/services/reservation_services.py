@@ -49,11 +49,13 @@ def get_user_reservations(user_id):
     except Exception as e:
         current_app.logger.error(f"Error while retrieving reservations for user ID={user_id}: {e}")
         raise
+    
+
 
 def take_user_reservations(user_id):
     """Retrieve and filter reservations for a specific user."""
     try:
-        return db.session.query(CustomerReservation).filter_by(user_id=user_id).all()
+        return db.session.query(CustomerReservation).filter_by(user_id=user_id, status=ReservationStatus.PENDING).all()
     except Exception as e:
         current_app.logger.error(f"Error while taking reservations for user ID={user_id}: {e}")
         raise

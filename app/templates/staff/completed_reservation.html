@@ -47,7 +47,7 @@
                                     {% for reservation in reservations %}
                                     <tr>
                                         <td>{{ loop.index }}</td>
-                                        <td>{{ reservation.customer.username }}</td>
+                                        <td>{{ reservation.customer.first_name }} {{ reservation.customer.last_name }}</td>
                                         <td>{{ reservation.branch.location }} {{ reservation.branch.name }}</td>
                                         <td>{{ reservation.reservation_date.strftime('%Y-%m-%d') }}</td>
                                         <td>{{ reservation.reservation_time.strftime('%H:%M') }}</td>
@@ -55,7 +55,8 @@
                                         <td>
                                             <button type="button" class="btn btn-info" data-toggle="modal"
                                                 data-target="#viewReservationModal"
-                                                data-customer="{{ reservation.customer.username }}"
+                                                data-reservationID="{{ reservation.reservation_id }}"
+                                                data-customer="{{ reservation.customer.first_name }} {{reservation.customer.last_name}}"
                                                 data-location="{{ reservation.branch.location }} {{ reservation.branch.name }}"
                                                 data-date="{{ reservation.reservation_date.strftime('%Y-%m-%d') }}"
                                                 data-time="{{ reservation.reservation_time.strftime('%H:%M') }}"
