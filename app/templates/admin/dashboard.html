@@ -64,6 +64,16 @@
 
         <div class="card card-info">
             <div class="card-header">
+                <h3 class="card-title">Resource Utilization Heatmap</h3>
+            </div>
+            <div class="card-body">
+                <div id="heatmapChart"></div>
+            </div>
+        </div>
+
+
+        <div class="card card-info">
+            <div class="card-header">
                 <h3 class="card-title">Peak-Time Predictions Report</h3>
                 <div class="card-tools">
                     <button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -113,6 +123,7 @@
                     <thead>
                         <tr>
                             <th>Date</th>
+                            <th>Branch</th>
                             <th>Total Bookings</th>
                             <th>Average Group Size</th>
                             <th>Cancellation Rate</th>
@@ -127,6 +138,7 @@
                     <thead>
                         <tr>
                             <th>Week</th>
+                            <th>Branch</th>
                             <th>Total Bookings</th>
                             <th>Average Group Size</th>
                             <th>Cancellation Rate</th>
@@ -139,6 +151,7 @@
                     <thead>
                         <tr>
                             <th>Month</th>
+                            <th>Branch</th>
                             <th>Total Bookings</th>
                             <th>Average Group Size</th>
                             <th>Cancellation Rate</th>
@@ -156,9 +169,67 @@
 </section>
 
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
 <script>
 
+    $(function () {
+        $.ajax({
+            url: '/api/resource_utilization_heatmap',
+            method: 'GET',
+            success: function (response) {
+                const data = response || {};
+                const columns = data.columns || [];
+                const dataRows = data.data || [];
+
+                // Define periods and branches
+                const periods = ['Morning', 'Afternoon', 'Evening'];
+                const branches = [...new Set(dataRows.map(row => row[1]))];
+                const periodIndex = periods.reduce((acc, period, idx) => { acc[period] = idx; return acc; }, {});
+                const branchIndex = branches.reduce((acc, branch, idx) => { acc[branch] = idx; return acc; }, {});
+
+                // Transform data for Plotly
+                const zData = [];
+                for (let y = 0; y < branches.length; y++) {
+                    zData[y] = new Array(periods.length).fill(0); // Initialize with zeros
+                }
+                dataRows.forEach(row => {
+                    zData[branchIndex[row[1]]][periodIndex[row[0]]] = row[2];
+                });
+
+                // Define the heatmap trace
+                const heatmapTrace = {
+                    z: zData,
+                    x: periods,
+                    y: branches,
+                    colorscale: 'YlGnBu', // You can use other color scales as well
+                    type: 'heatmap'
+                };
+
+                // Define the layout
+                const layout = {
+                    title: 'Resource Utilization Heatmap',
+                    xaxis: { title: 'Periods' },
+                    yaxis: { title: 'Branches' },
+                    zaxis: { title: 'Reservations' },
+                    showlegend:false // Remove specific buttons
+                };
+
+                const config = {
+                    displayModeBar: false,
+                    showEditInChartStudio: true,
+                    responsive:true
+                }
+
+                // Plot the heatmap
+                Plotly.newPlot('heatmapChart', [heatmapTrace], layout, config);
+            },
+            error: function (xhr, status, error) {
+                console.error("Failed to fetch heatmap data:", error);
+            }
+        });
+    });
     $(function () {
 
         // Existing AJAX calls for daily, weekly, and monthly summaries...
@@ -180,9 +251,7 @@
                     var hourNumber = parseInt(hour, 10);
                     return (hourNumber < 10 ? '0' : '') + hourNumber + ':00';  // Format as 'HH:00'
                 });
-                console.log("Formatted Peak Time Labels:", formattedLabels);
-                console.log("Peak Time Predictions:", peakTimePredictions);
-                console.log(peakTimeLabels, "LABELS")
+
                 var peakTimeChartData = {
                     labels: formattedLabels,
                     datasets: [{
@@ -246,12 +315,13 @@
                     dailyTableBody.append(
                         '<tr>' +
                         '<td>' + formattedDate + '</td>' +
+                        '<td>' + item.branch + '</td>' +
                         '<td>' + item.total_bookings + '</td>' +
                         '<td>' + avgGroupSize.toFixed(2) + '</td>' +
                         '<td>' + item.cancellation_rate.toFixed(2) + '%</td>' +
                         '</tr>'
                     );
-                    console.log(item.avg_group_size)
+
                 });
                 $("#dailySummaryTable").DataTable({
                     "responsive": true, "lengthChange": false, "autoWidth": false,
@@ -304,6 +374,7 @@
             success: function (response) {
                 var weeklyData = response || [];
                 var weeklyTableBody = $('#weeklySummaryTable tbody');
+
                 weeklyData.forEach(function (item) {
                     var avgGroupSize = parseFloat(item.avg_group_size);
                     var formattedDate = new Date(item.date).toLocaleDateString('en-US', {
@@ -314,6 +385,7 @@
                     weeklyTableBody.append(
                         '<tr>' +
                         '<td>' + 'Week ' + item.week + ' (' + item.year + ')</td>' +
+                        '<td>' + item.branch + '</td>' +
                         '<td>' + item.total_bookings + '</td>' +
                         '<td>' + avgGroupSize.toFixed(2) + '</td>' +
                         '<td>' + item.cancellation_rate.toFixed(2) + '%</td>' +
@@ -369,11 +441,13 @@
             success: function (response) {
                 var monthlyData = response || [];
                 var monthlyTableBody = $('#monthlySummaryTable tbody');
+
                 monthlyData.forEach(function (item) {
                     var avgGroupSize = parseFloat(item.avg_group_size);
                     monthlyTableBody.append(
                         '<tr>' +
                         '<td>' + 'Month ' + item.month + ' (' + item.year + ')</td>' +
+                        '<td>' + item.branch + '</td>' +
                         '<td>' + item.total_bookings + '</td>' +
                         '<td>' + avgGroupSize.toFixed(2) + '</td>' +
                         '<td>' + item.cancellation_rate.toFixed(2) + '%</td>' +

@@ -1,13 +1,19 @@
 from datetime import datetime, timedelta
+from io import BytesIO
 import os
-from flask import Blueprint, current_app, jsonify
+from flask import Blueprint, Response, current_app, jsonify, render_template
 from flask_login import login_required
+from matplotlib import pyplot as plt
 import numpy as np
+import pandas as pd
 from app.db import db
 from app.ml_model import get_historical_data, train_model
-from app.services.api_services import get_booking_summaries
+from app.models import CustomerReservation
+from app.services.api_services import get_booking_summaries, get_table_utilization
 from app.services.api_services import fetch_historical_data
 from app.services.reservation_services import get_reservations
+import seaborn as sns
+import matplotlib.colors as mcolors
 
 api_routes_bp = Blueprint('api_routes_bp', __name__)
 
@@ -59,7 +65,7 @@ def reservation_predictions():
 
         future_predictions = model.predict(np.array(future_dates_ordinal).reshape(-1, 1)).tolist()
         
-        print(future_predictions)
+        # print(future_predictions)
         
         # Convert predictions and actual_data to native Python types
         actual_data = [int(val) for val in actual_data]  
@@ -83,6 +89,7 @@ def get_daily_booking_summary():
     daily_summary = summaries['daily']
     
     data = [{
+        'branch': item.name,
         'date': item.date,
         'total_bookings': item.total_bookings,
         'avg_group_size': item.avg_group_size,
@@ -97,7 +104,9 @@ def get_weekly_booking_summary():
     summaries = get_booking_summaries()
     weekly_summary = summaries['weekly']
     
+        # print(week._asdict())
     data = [{
+        'branch': item.name,
         'week': item.week,
         'year': item.year,
         'total_bookings': item.total_bookings,
@@ -114,6 +123,7 @@ def get_monthly_booking_summary():
     monthly_summary = summaries['monthly']
     
     data = [{
+        'branch': item.name,
         'month': item.month,
         'year': item.year,
         'total_bookings': item.total_bookings,
@@ -128,7 +138,7 @@ def get_peak_time_predictions():
     historical_data = fetch_historical_data()
     peak_times = predict_peak_times(historical_data)  
     
-    print(historical_data)
+    # print(historical_data)
 
     response = {
         'labels': [str(hour) for hour in range(24)],  # 24-hour format labels
@@ -147,3 +157,54 @@ def predict_peak_times(historical_data):
         predictions[hour] = total_bookings  
 
     return predictions
+
+
+@api_routes_bp.route('/api/test')
+def test():
+    return render_template('admin/test.html')
+
+
+def categorize_hour(hour):
+    if 0 <= hour < 12:
+        return 'Morning'
+    elif 12 <= hour < 18:
+        return 'Afternoon'
+    else:
+        return 'Evening'
+
+@api_routes_bp.route('/api/resource_utilization_heatmap', methods=['GET'])
+def resource_utilization_heatmap():
+
+    utilization_data = get_table_utilization()
+    
+  
+    data = []
+    for entry in utilization_data:
+        hour = entry.hour
+        branch_name = entry.name
+        tables_used = entry.reservations
+        hour_category = categorize_hour(hour)
+        print("HOURCATEGORY", entry)
+        data.append([hour_category, branch_name, tables_used])
+    
+    df = pd.DataFrame(data, columns=['Period', 'Branch', 'Reservations'])
+    
+   
+    periods = ['Morning', 'Afternoon', 'Evening']
+    branches = df['Branch'].unique()
+    
+   
+    index = pd.MultiIndex.from_product([periods, branches], names=['Period', 'Branch'])
+    heatmap_data = pd.DataFrame(index=index).reset_index()
+    
+
+    heatmap_data = heatmap_data.merge(df, how='left', on=['Period', 'Branch'])
+    # heatmap_data['Reservations'].fillna(0, inplace=True) 
+    heatmap_data.loc[:, 'Reservations'] = heatmap_data['Reservations'].fillna(0)
+
+    heatmap_json = heatmap_data.to_json(orient='split')
+    response = Response(heatmap_json, mimetype='application/json')
+    response.headers['Content-Type'] = 'application/json'
+    
+    return response
+
