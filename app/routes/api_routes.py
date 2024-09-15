@@ -208,3 +208,13 @@ def resource_utilization_heatmap():
     
     return response
 
+@api_routes_bp.route('/api/firebase-config', methods=['GET', 'POST'])
+def firebase_config():
+    return jsonify({
+        'apiKey': current_app.config['FIREBASE_API_KEY'],
+        'authDomain': current_app.config['FIREBASE_AUTH_DOMAIN'],
+        'projectId': current_app.config['FIREBASE_PROJECT_ID'],
+        'storageBucket': current_app.config['FIREBASE_STORAGE_BUCKET'],
+        'messagingSenderId': current_app.config['FIREBASE_MESSAGING_SENDER_ID'],
+        'appId': current_app.config['FIREBASE_APP_ID'],
+    })

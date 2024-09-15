@@ -1,6 +1,10 @@
-from flask import Blueprint, render_template, redirect, url_for, flash
-from flask_login import current_user, logout_user, login_required
-from app import bcrypt
+from datetime import datetime, timedelta
+import random
+import string
+from flask import Blueprint, app, current_app, render_template, redirect, request, session, url_for, flash
+from flask_login import current_user, login_user, logout_user, login_required
+from flask_mail import Message
+from app import bcrypt, mail
 from app.db import db
 from app.forms import RegistrationForm, LoginForm
 from app.models import User
@@ -38,7 +42,7 @@ def user_register():
             return redirect(url_for('auth_routes.user_register'))
         
         hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
-        user = User(first_name=first_name,last_name=last_name, email_address=email, password_hash=hashed_password, phone_number=phone_num, role_id=role_id)
+        user = User(first_name=first_name, last_name=last_name, email_address=email, password_hash=hashed_password, phone_number=phone_num, role_id=role_id)
         try:
             db.session.add(user)
             db.session.commit()
@@ -53,24 +57,89 @@ def user_register():
         
     return render_template('auth/customer_register.html', form=form, title="Register")
 
+
 @auth_routes_bp.route('/login', methods=['GET', 'POST'])
 def login():
-    if current_user.is_authenticated:
-        return base_on_user_role()
-
     form = LoginForm()
     if form.validate_on_submit():
         email_address = form.email_address.data
         password = form.password.data
         user = authenticate_user(email_address, password, bcrypt)
+
         if user:
-            flash('Login Successful', 'success')
-            return base_on_user_role()
+            # Generate OTP
+            otp = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
+            session['otp'] = otp
+            session['email'] = email_address
+
+            # Send OTP via email
+            msg = Message('Your OTP Code', sender=current_app.config['MAIL_USERNAME'], recipients=[email_address])
+            msg.body = f'Your OTP code is: {otp}'
+            
+            try:
+                mail.send(msg)
+                flash('OTP sent to your email. Please check your inbox.', 'info')
+            except Exception as e:
+                flash('An error occurred while sending the OTP. Please try again later.', 'danger')
+                return redirect(url_for('auth_routes.login'))
+
+            # Redirect to OTP verification page
+            return redirect(url_for('auth_routes.verify_otp'))
+
         else:
             flash('Login unsuccessful. Please check username and password', 'danger')
             return redirect(url_for('auth_routes.login'))
-            
+
     return render_template('auth/login.html', form=form, title="Login")
+
+@auth_routes_bp.route('/verify-otp', methods=['GET', 'POST'])
+def verify_otp():
+    if request.method == 'POST':
+        entered_otp = request.form.get('otp')
+        if entered_otp == session.get('otp'):
+            # OTP verified, log in the user
+            user = User.query.filter_by(email_address=session.get('email')).first()
+            if user:
+                login_user(user)
+                session['otp_verified'] = True
+                session.pop('otp', None)  # Clear OTP from session
+                flash('Login Successful', 'success')
+                return base_on_user_role()
+            else:
+                flash('User not found. Please try again.', 'danger')
+                return redirect(url_for('auth_routes.login'))
+        else:
+            flash('Invalid OTP. Please try again.', 'danger')
+            return redirect(url_for('auth_routes.verify_otp'))
+
+    return render_template('auth/verify_otp.html', title="Verify OTP")
+
+
+
+@auth_routes_bp.route('/resend-otp', methods=['POST'])
+def resend_otp():
+    if not session.get('email'):
+        flash('Session expired. Please log in again.', 'danger')
+        return redirect(url_for('auth_routes.login'))
+
+    # Generate and resend OTP
+    otp = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
+    session['otp'] = otp
+
+    # Send OTP via email
+    msg = Message('Your OTP Code', sender=current_app.config['MAIL_USERNAME'], recipients=[session['email']])
+    msg.body = f'Your OTP code is: {otp}'
+
+    try:
+        mail.send(msg)
+        flash('OTP resent. Please check your email.', 'info')
+    except Exception as e:
+        current_app.logger.error(f'Error sending OTP: {e}')
+        flash('An error occurred while resending the OTP. Please try again later.', 'danger')
+
+    return redirect(url_for('auth_routes.verify_otp'))
+
+
 
 @auth_routes_bp.route('/logout')
 @login_required

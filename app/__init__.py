@@ -1,5 +1,6 @@
-# app/__init__.py
-from flask import Flask, render_template
+import os
+from flask import Flask, render_template, current_app
+from flask_mail import Mail
 from app.config import get_config_class
 from app.logging_config import setup_logging
 from app.middleware_logging import register_logging
@@ -10,18 +11,25 @@ from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, current_user
 from flask_wtf import CSRFProtect
 from .services.auth_services import load_user
-import os
+import firebase_admin
+from firebase_admin import credentials
+from dotenv import load_dotenv
 
 bcrypt = Bcrypt()
 login_manager = LoginManager()
 csrf = CSRFProtect()
+mail = Mail()
 
 def create_app():
     app = Flask(__name__)
+
+    # Load environment variables from .env file
+    load_dotenv()
+
     # Load configuration
     config_class = get_config_class()
     app.config.from_object(config_class)
-    
+    print(os.getenv('MAIL_PASSWORD'))
     # Initialize logger
     setup_logging(app)
 
@@ -30,6 +38,8 @@ def create_app():
     bcrypt.init_app(app)
     login_manager.init_app(app)
     csrf.init_app(app)
+    mail.init_app(app)
+   
 
     # Set up context processor
     @app.context_processor
@@ -53,10 +63,10 @@ def create_app():
     def page_not_found(error):
         return render_template('page_not_found.html', error=error), 404
     
-    # Inititialize Logging to database
+    # Initialize Logging to database
     register_logging(app)
     
-    # # Initialize machine learning model
+    # Initialize machine learning model
     # with app.app_context():
     #     # Run the model training function
     #     train_model()

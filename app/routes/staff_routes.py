@@ -8,19 +8,21 @@ from app.services.reservation_services import (
     get_reservation_by_id, get_reservations, 
     get_reservations_by_status
 )
-from app.utils.decorators import role_required
+from app.utils.decorators import otp_required, role_required
 from app.db import db
 
 staff_routes_bp = Blueprint("staff_routes", __name__, url_prefix="/Staff")
 
 @staff_routes_bp.route("/")
-@login_required
+@login_required 
+@otp_required
 def index():
     """Redirect to the login page."""
     return redirect(url_for("auth_routes.login"))
 
 @staff_routes_bp.route("/Dashboard")
-@login_required
+@login_required 
+@otp_required
 @role_required(2)
 def dashboard():
     """Render the dashboard with reservation counts and branch capacities."""
@@ -48,7 +50,8 @@ def dashboard():
         return redirect(url_for('staff_routes.index'))
 
 @staff_routes_bp.route("/Reservation")
-@login_required
+@login_required 
+@otp_required
 @role_required(2)
 def reservation_all():
     """Render a page with all reservations."""
@@ -61,7 +64,8 @@ def reservation_all():
         return redirect(url_for('staff_routes.index'))
 
 @staff_routes_bp.route('/update/reservation/<int:id>', methods=['POST'])
-@login_required
+@login_required 
+@otp_required
 @role_required(2)
 def update_reservation(id):
     """Update reservation status based on the action provided."""
@@ -110,7 +114,8 @@ def update_reservation(id):
     return redirect(url_for('staff_routes.pending_reservations'))
 
 @staff_routes_bp.route('/reject_reservation_form/<int:id>')
-@login_required
+@login_required 
+@otp_required
 @role_required(2)
 def reject_reservation_form(id):
     """Render a form for rejecting a reservation."""
@@ -126,7 +131,8 @@ def reject_reservation_form(id):
         return redirect(url_for('staff_routes.pending_reservations'))
 
 @staff_routes_bp.route('/reject_reservation', methods=['POST'])
-@login_required
+@login_required 
+@otp_required
 @role_required(2)
 def reject_reservation():
     """Reject a reservation with a provided reason."""
@@ -160,7 +166,8 @@ def reject_reservation():
     return redirect(url_for('staff_routes.pending_reservations'))
 
 @staff_routes_bp.route('/pending-reservations')
-@login_required
+@login_required 
+@otp_required
 @role_required(2)
 def pending_reservations():
     """Render a page with all pending reservations."""
@@ -173,7 +180,8 @@ def pending_reservations():
         return redirect(url_for('staff_routes.index'))
 
 @staff_routes_bp.route("/Reservation/Accepted")
-@login_required
+@login_required 
+@otp_required
 @role_required(2)
 def accepted_reservation():
     """Render a page with all accepted reservations."""
@@ -186,7 +194,8 @@ def accepted_reservation():
         return redirect(url_for('staff_routes.index'))
 
 @staff_routes_bp.route('/complete/reservation/<int:id>', methods=['POST'])
-@login_required
+@login_required 
+@otp_required
 @role_required(2)
 def complete_reservation(id):
     """Mark a reservation as completed."""
@@ -207,7 +216,8 @@ def complete_reservation(id):
     return redirect(url_for('staff_routes.accepted_reservation'))
 
 @staff_routes_bp.route("/Reservation/Completed")
-@login_required
+@login_required 
+@otp_required
 @role_required(2)
 def completed_reservation():
     """Render a page with all completed reservations."""
@@ -222,7 +232,8 @@ def completed_reservation():
         return redirect(url_for('staff_routes.index'))
 
 @staff_routes_bp.route("/Reservation/Rejected")
-@login_required
+@login_required 
+@otp_required
 @role_required(2)
 def rejected_reservation():
     """Render a page with all rejected reservations."""
@@ -235,7 +246,8 @@ def rejected_reservation():
         return redirect(url_for('staff_routes.index'))
 
 @staff_routes_bp.route("/Reservation/Cancelled")
-@login_required
+@login_required 
+@otp_required
 @role_required(2)
 def cancelled_reservation():
     """Render a page with all cancelled reservations."""
@@ -248,7 +260,8 @@ def cancelled_reservation():
         return redirect(url_for('staff_routes.index'))
 
 @staff_routes_bp.route('/reservation/view/<int:reservation_id>', methods=['GET'])
-@login_required
+@login_required 
+@otp_required
 def view_reservation_modal(reservation_id):
     """Return reservation details as JSON for modal view."""
     try:

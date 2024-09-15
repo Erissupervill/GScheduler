@@ -13,7 +13,7 @@ from app.services.feedback_services import  get_feedback_by_id, get_feedbacks, u
 
 from app.services.logging_services import get_logs
 from app.services.reservation_services import actual_data_ml, get_reservations
-from app.utils.decorators import role_required
+from app.utils.decorators import otp_required, role_required
 
 admin_routes_bp = Blueprint("admin_routes", __name__, url_prefix="/Admin")
 
@@ -31,7 +31,8 @@ def index():
 
 
 @admin_routes_bp.route("/Dashboard")
-@login_required
+@login_required 
+@otp_required
 @role_required(1)
 def Dashboard():
     """Render the admin dashboard with user statistics and prediction."""
@@ -70,7 +71,8 @@ def count_all_user_stats():
     }
 
 @admin_routes_bp.route("/Users")
-@login_required
+@login_required 
+@otp_required
 @role_required(1)
 def UserList():
     """Render the list of users."""
@@ -86,7 +88,8 @@ def UserList():
         return redirect(url_for("admin_routes.Dashboard"))
 
 @admin_routes_bp.route("/Logs/User")
-@login_required
+@login_required 
+@otp_required
 @role_required(1)
 def UserLogs():
     """Render the user logs page."""
@@ -106,7 +109,8 @@ def fetch_user_logs():
     return []  # Placeholder for actual log retrieval function
 
 @admin_routes_bp.route('/handle_user_action/<int:id>', methods=['POST'])
-@login_required
+@login_required 
+@otp_required
 @role_required(1)
 def handle_user_action(id):
     """Handle user actions like update or delete."""
@@ -131,7 +135,8 @@ def handle_user_action(id):
         return redirect(url_for('admin_routes.UserList'))
 
 @admin_routes_bp.route('/feedbacks')
-@login_required
+@login_required 
+@otp_required
 @role_required(1)
 def feedback_list():
     """Render the feedback list page."""
@@ -147,7 +152,8 @@ def feedback_list():
         return redirect(url_for('admin_routes.Dashboard'))
 
 @admin_routes_bp.route("/Create/User", methods=['GET', 'POST'])
-@login_required
+@login_required 
+@otp_required
 @role_required(1)
 def CreateUser():
     """Render the user creation form and handle form submissions."""
@@ -179,7 +185,8 @@ def CreateUser():
     return render_template("admin/create_user.html", form=form)
 
 @admin_routes_bp.route("/Feedbacks")
-@login_required
+@login_required 
+@otp_required
 @role_required(1)
 def Feedbacks():
     """Render the feedbacks page."""
@@ -187,14 +194,16 @@ def Feedbacks():
     return render_template("admin/feedbacks.html", feedbacks=feedbacks)
 
 @admin_routes_bp.route("/Logs/Audit")
-@login_required
+@login_required 
+@otp_required
 @role_required(1)
 def AuditLogs():
     """Render the admin audit logs page."""
     return render_template("/admin/audit.html", title="Admin Audit Logs")
 
 @admin_routes_bp.route("/Feedbacks/<int:id>", methods=['GET', 'POST'])
-@login_required
+@login_required 
+@otp_required
 @role_required(1)
 def feedback_detail(id):
     """Render feedback detail and handle updates or deletions."""

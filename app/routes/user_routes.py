@@ -16,6 +16,7 @@ from app.services.reservation_services import (
 
 
 from app.db import db
+from app.utils.decorators import otp_required
 
 user_routes_bp = Blueprint("user_routes", __name__, url_prefix="/User")
 
@@ -25,7 +26,8 @@ def index():
 
 # User Notifications
 @user_routes_bp.route("/Notification")
-@login_required
+@login_required 
+@otp_required
 def notification():
        # Fetch notifications for the current user
     user_id = current_user.user_id  # or however you identify the logged-in user
@@ -45,7 +47,8 @@ def remove_notification(id):
     return redirect(url_for('user_routes.notification'))
 
 @user_routes_bp.route("/create/reserve", methods=['GET', 'POST'])
-@login_required
+@login_required 
+@otp_required
 def reservation_create():
     form = ReservationForm()
 
@@ -91,7 +94,8 @@ def reservation_create():
 
 
 @user_routes_bp.route("/api/branches")
-@login_required
+@login_required 
+@otp_required
 def api_branches():
     branches = Branch.query.all()
     branch_list = [
@@ -103,7 +107,8 @@ def api_branches():
 
 # Reservation Status
 @user_routes_bp.route("/Reservation/Status")
-@login_required
+@login_required 
+@otp_required
 def reservation_status():
     user_id = current_user.user_id
     try:
@@ -115,7 +120,8 @@ def reservation_status():
         return redirect(url_for('user_routes.index'))
 
 @user_routes_bp.route('/cancel_reservation', methods=['POST'])
-@login_required
+@login_required 
+@otp_required
 def cancel_reservation_route():
     reservation_id = request.form.get('reservation_id')
     cancellation_reason = request.form.get('cancellation_reason')
@@ -147,18 +153,21 @@ def cancel_reservation_route():
 
 # Customer Feedback
 @user_routes_bp.route("/Feedbacks")
-@login_required
+@login_required 
+@otp_required
 def customer_feedback():
     return render_template("/customer/feedbacks.html")
 
 # User Logs
 @user_routes_bp.route("/Logs")
-@login_required
+@login_required 
+@otp_required
 def user_logs():
     return render_template("/customer/user_logs.html")
 
 @user_routes_bp.route("/WriteFeedbacks", methods=['POST'])
-@login_required
+@login_required 
+@otp_required
 def write_feedbacks():
     rating = request.form.get('rating')
     message = request.form.get('message')
