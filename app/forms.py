@@ -7,8 +7,8 @@ class RegistrationForm(FlaskForm):
     first_name = StringField('Last Name', validators=[DataRequired(), Length(min=2, max=25)])
     email = StringField('Email', validators=[DataRequired(), Email()])
     phone_number = StringField('Phone Number', validators=[DataRequired()])
-    password = PasswordField('Password', validators=[DataRequired(),Length(min=2, max=10)])
-    confirmpassword = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password'),Length(min=2, max=10)])
+    password = PasswordField('Password', validators=[DataRequired(),Length(min=2, max=25)])
+    confirmpassword = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password'),Length(min=2, max=25)])
     role = StringField('role', validators=[DataRequired()])
     submit = SubmitField('Sign Up')
     

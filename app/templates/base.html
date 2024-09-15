@@ -39,7 +39,18 @@
 
 <body class="hold-transition sidebar-mini layout-fixed">
     <div class="wrapper">
+
+        {% if current_user.role_id == 1%}
         {% include 'admin/header.html' %}
+        {%endif%}
+        {% if current_user.role_id == 2%}
+        {% include 'staff/header.html' %}
+        {%endif%}
+        {% if current_user.role_id == 3%}
+        {% include 'customer/header.html' %}
+        {%endif%}
+
+
 
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
             {% include 'sidebar.html' %}
@@ -119,7 +130,7 @@
         });
     </script>
     <!-- Chart Initialization Script -->
-    
+
 </body>
 
 </html>

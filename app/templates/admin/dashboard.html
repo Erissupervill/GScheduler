@@ -62,17 +62,17 @@
             </div>
         </div>
 
-        <div class="card card-info">
+        <!-- <div class="card card-info">
             <div class="card-header">
                 <h3 class="card-title">Resource Utilization Heatmap</h3>
             </div>
             <div class="card-body">
                 <div id="heatmapChart"></div>
             </div>
-        </div>
+        </div> -->
 
 
-        <div class="card card-info">
+        <!-- <div class="card card-info">
             <div class="card-header">
                 <h3 class="card-title">Peak-Time Predictions Report</h3>
                 <div class="card-tools">
@@ -90,7 +90,7 @@
                         style="min-height: 250px; height: 250px; max-height: 250px; min-width:100%; max-width: 100%;"></canvas>
                 </div>
             </div>
-        </div>
+        </div> -->
 
         <div class="card card-info">
             <div class="card-header">
@@ -174,62 +174,62 @@
 
 <script>
 
-    $(function () {
-        $.ajax({
-            url: '/api/resource_utilization_heatmap',
-            method: 'GET',
-            success: function (response) {
-                const data = response || {};
-                const columns = data.columns || [];
-                const dataRows = data.data || [];
+    // $(function () {
+    //     $.ajax({
+    //         url: '/api/resource_utilization_heatmap',
+    //         method: 'GET',
+    //         success: function (response) {
+    //             const data = response || {};
+    //             const columns = data.columns || [];
+    //             const dataRows = data.data || [];
 
-                // Define periods and branches
-                const periods = ['Morning', 'Afternoon', 'Evening'];
-                const branches = [...new Set(dataRows.map(row => row[1]))];
-                const periodIndex = periods.reduce((acc, period, idx) => { acc[period] = idx; return acc; }, {});
-                const branchIndex = branches.reduce((acc, branch, idx) => { acc[branch] = idx; return acc; }, {});
+    //             // Define periods and branches
+    //             const periods = ['Morning', 'Afternoon', 'Evening'];
+    //             const branches = [...new Set(dataRows.map(row => row[1]))];
+    //             const periodIndex = periods.reduce((acc, period, idx) => { acc[period] = idx; return acc; }, {});
+    //             const branchIndex = branches.reduce((acc, branch, idx) => { acc[branch] = idx; return acc; }, {});
 
-                // Transform data for Plotly
-                const zData = [];
-                for (let y = 0; y < branches.length; y++) {
-                    zData[y] = new Array(periods.length).fill(0); // Initialize with zeros
-                }
-                dataRows.forEach(row => {
-                    zData[branchIndex[row[1]]][periodIndex[row[0]]] = row[2];
-                });
+    //             // Transform data for Plotly
+    //             const zData = [];
+    //             for (let y = 0; y < branches.length; y++) {
+    //                 zData[y] = new Array(periods.length).fill(0); // Initialize with zeros
+    //             }
+    //             dataRows.forEach(row => {
+    //                 zData[branchIndex[row[1]]][periodIndex[row[0]]] = row[2];
+    //             });
 
-                // Define the heatmap trace
-                const heatmapTrace = {
-                    z: zData,
-                    x: periods,
-                    y: branches,
-                    colorscale: 'YlGnBu', // You can use other color scales as well
-                    type: 'heatmap'
-                };
+    //             // Define the heatmap trace
+    //             const heatmapTrace = {
+    //                 z: zData,
+    //                 x: periods,
+    //                 y: branches,
+    //                 colorscale: 'YlGnBu', // You can use other color scales as well
+    //                 type: 'heatmap'
+    //             };
 
-                // Define the layout
-                const layout = {
-                    title: 'Resource Utilization Heatmap',
-                    xaxis: { title: 'Periods' },
-                    yaxis: { title: 'Branches' },
-                    zaxis: { title: 'Reservations' },
-                    showlegend:false // Remove specific buttons
-                };
+    //             // Define the layout
+    //             const layout = {
+    //                 title: 'Resource Utilization Heatmap',
+    //                 xaxis: { title: 'Periods' },
+    //                 yaxis: { title: 'Branches' },
+    //                 zaxis: { title: 'Reservations' },
+    //                 showlegend:false // Remove specific buttons
+    //             };
 
-                const config = {
-                    displayModeBar: false,
-                    showEditInChartStudio: true,
-                    responsive:true
-                }
+    //             const config = {
+    //                 displayModeBar: false,
+    //                 showEditInChartStudio: true,
+    //                 responsive:true
+    //             }
 
-                // Plot the heatmap
-                Plotly.newPlot('heatmapChart', [heatmapTrace], layout, config);
-            },
-            error: function (xhr, status, error) {
-                console.error("Failed to fetch heatmap data:", error);
-            }
-        });
-    });
+    //             // Plot the heatmap
+    //             Plotly.newPlot('heatmapChart', [heatmapTrace], layout, config);
+    //         },
+    //         error: function (xhr, status, error) {
+    //             console.error("Failed to fetch heatmap data:", error);
+    //         }
+    //     });
+    // });
     $(function () {
 
         // Existing AJAX calls for daily, weekly, and monthly summaries...

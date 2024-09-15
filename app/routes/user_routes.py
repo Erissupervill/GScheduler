@@ -30,7 +30,8 @@ def notification():
        # Fetch notifications for the current user
     user_id = current_user.user_id  # or however you identify the logged-in user
     notifications = get_user_notifications(user_id)
-    return render_template('customer/notification.html', notifications=notifications)
+    
+    return render_template('customer/notification.html', notifications=notifications )
 
 @user_routes_bp.route('/remove_notification/<int:id>', methods=['POST'])
 def remove_notification(id):

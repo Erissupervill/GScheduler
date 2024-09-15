@@ -1,6 +1,8 @@
+from datetime import date, datetime
 from flask import Blueprint, current_app, flash, jsonify, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 from app.models import ReservationStatus
+from app.services.notification_services import create_notification
 from app.services.reservation_services import (
     count_by_status, get_branch, 
     get_reservation_by_id, get_reservations, 
@@ -65,6 +67,7 @@ def update_reservation(id):
     """Update reservation status based on the action provided."""
     try:
         reservation = get_reservation_by_id(id)
+        print(reservation.reservation_id)
         if not reservation:
             flash('Reservation not found', 'danger')
             return redirect(url_for('staff_routes.pending_reservations'))
@@ -80,16 +83,25 @@ def update_reservation(id):
             if (current_guests + reservation.number_of_guests) > branch.capacity:
                 flash('Cannot confirm reservation. Exceeds branch capacity.', 'danger')
                 return redirect(url_for('staff_routes.pending_reservations'))
-
+       
+            create_notification(
+            user_id=reservation.user_id,
+            reservation_id = reservation.reservation_id,
+            message=f"Your reservation with ID: {reservation.reservation_id}, has been Confirmed by: {current_user.first_name} {current_user.last_name}",
+            notification_date=datetime.utcnow().date(),
+            notification_time=datetime.utcnow().time()
+            )
+            
             reservation.status = ReservationStatus.CONFIRMED
 
-        elif action == 'reject':
-            return redirect(url_for('staff_routes.reject_reservation_form', id=id))
+            
 
+        elif action == 'reject':
+            redirect(url_for('staff_routes.reject_reservation_form', id=id))
         reservation.updated_by = current_user.user_id
         db.session.commit()
         flash('Reservation updated successfully!', 'success')
-
+            
     except Exception as e:
         db.session.rollback()
         current_app.logger.error(f'Error updating reservation {id}: {e}')
@@ -126,6 +138,13 @@ def reject_reservation():
             reservation.status = ReservationStatus.REJECTED
             reservation.status_comment = rejection_reason
             reservation.updated_by = current_user.user_id
+            create_notification(
+            user_id=reservation.user_id,
+            reservation_id = reservation.reservation_id,
+            message=f"Your reservation with ID {reservation.reservation_id}, has been Rejected by:{current_user.first_name} {current_user.last_name} Rejection Reason:{rejection_reason}",
+            notification_date=datetime.utcnow().date(),
+            notification_time=datetime.utcnow().time()
+            )
             db.session.commit()
             flash('Reservation rejected successfully', 'success')
         else:
@@ -194,6 +213,8 @@ def completed_reservation():
     """Render a page with all completed reservations."""
     try:
         reservations = get_reservations_by_status(ReservationStatus.COMPLETED)
+        for reservation in reservations:
+            print(reservation.__dict__)
         return render_template("staff/completed_reservation.html", reservations=reservations, title="Completed Reservation")
     except Exception as e:
         current_app.logger.error(f'Error fetching completed reservations: {e}')

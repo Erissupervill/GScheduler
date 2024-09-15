@@ -100,7 +100,7 @@ def cancel_reservation(reservation_id, cancellation_reason, updated_by):
     """Cancel a reservation by its ID."""
     try:
         
-        reservation = get_reservation_by_id(reservation_id)
+        reservation = reservation = db.session.query(CustomerReservation).filter_by(reservation_id = reservation_id).first()
         if reservation:
             reservation.status = ReservationStatus.CANCELLED
             reservation.status_comment = cancellation_reason
