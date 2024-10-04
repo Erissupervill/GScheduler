@@ -29,7 +29,7 @@ def create_app():
     # Load configuration
     config_class = get_config_class()
     app.config.from_object(config_class)
-    print(os.getenv('MAIL_PASSWORD'))
+
     # Initialize logger
     setup_logging(app)
 

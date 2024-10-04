@@ -27,9 +27,6 @@ def index():
 #     print(daily_summaries)
 #     return render_template('/admin/daily_test.html')
 
-
-
-
 @admin_routes_bp.route("/Dashboard")
 @login_required 
 @otp_required
@@ -121,6 +118,8 @@ def handle_user_action(id):
                 'first_name': request.form.get('first_name'),
                 'last_name': request.form.get('last_name'),
                 'email': request.form.get('email'),
+                'phone_number':request.form.get('phone_number'),
+                'password':request.form.get('password'),
                 'role': request.form.get('role')
             }
             update_user(id, user_data)
@@ -224,7 +223,7 @@ def feedback_detail(id):
                         'message': str(form.message.data),  # Ensure it's a string
                         'updated_by': str(current_user.user_id)  # Ensure it's an integer
                         }
-                    print(type(data))
+
                     update_feedback(id, data)
                     
                     flash('Feedback updated successfully', 'success')

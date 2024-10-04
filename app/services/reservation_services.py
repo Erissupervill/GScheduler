@@ -26,8 +26,7 @@ def get_reservation_by_id(id):
     try:
         reservation = db.session.query(CustomerReservation).filter_by(id = id).first()
         if reservation is None:
-            print(reservation)
-            print(f"Error while retrieving reservation with ID={id}:")
+
             current_app.logger.error(f"Error while retrieving reservation with ID={id}:")
         return reservation
     except Exception as e:

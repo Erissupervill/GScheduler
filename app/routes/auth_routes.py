@@ -12,6 +12,9 @@ from app.services.auth_services import authenticate_user
 
 auth_routes_bp = Blueprint('auth_routes', __name__, url_prefix='/')
 
+OTP_EXPIRATION_MINUTES = 5
+
+
 def base_on_user_role():
     if current_user.role_id == 1:
         return redirect(url_for('admin_routes.Dashboard'))
@@ -51,9 +54,10 @@ def user_register():
         except Exception as e:
             db.session.rollback()  # Rollback in case of error
             flash('An error occurred while creating the user.', 'danger')
-            print(e)
+            # print(e)
     else:
-        print(form.errors)
+        flash(form.errors)
+        # print(form.errors)
         
     return render_template('auth/customer_register.html', form=form, title="Register")
 
@@ -69,15 +73,16 @@ def login():
         if user:
             # Generate OTP
             otp = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
-            session['otp'] = otp
-            session['email'] = email_address
+            session['otp'] = otp  # Store the OTP in the session
+            session['email'] = email_address  # Store the email in the session
+            session['otp_expiry'] = (datetime.utcnow() + timedelta(minutes=OTP_EXPIRATION_MINUTES)).isoformat()  # Set OTP expiration
 
             # Send OTP via email
             msg = Message('Your OTP Code', sender=current_app.config['MAIL_USERNAME'], recipients=[email_address])
             msg.body = f'Your OTP code is: {otp}'
             
             try:
-                mail.send(msg)
+                mail.send(msg)  # Send the email with OTP
                 flash('OTP sent to your email. Please check your inbox.', 'info')
             except Exception as e:
                 flash('An error occurred while sending the OTP. Please try again later.', 'danger')
@@ -92,19 +97,49 @@ def login():
 
     return render_template('auth/login.html', form=form, title="Login")
 
+
+
 @auth_routes_bp.route('/verify-otp', methods=['GET', 'POST'])
 def verify_otp():
     if request.method == 'POST':
         entered_otp = request.form.get('otp')
-        if entered_otp == session.get('otp'):
-            # OTP verified, log in the user
+        stored_otp = session.get('otp')
+        otp_expiry_str = session.get('otp_expiry')  # Retrieve the expiry as a string
+
+        current_app.logger.info(f'Stored OTP: {stored_otp}, OTP Expiry String: {otp_expiry_str}')  # Log for debugging
+
+        if not stored_otp:
+            flash('No OTP found. Please request a new one.', 'danger')
+            return redirect(url_for('auth_routes.verify_otp'))
+
+        # Check if otp_expiry_str is not None and is a string
+        if otp_expiry_str is None:
+            flash('OTP expiry time not found. Please request a new OTP.', 'danger')
+            return redirect(url_for('auth_routes.verify_otp'))
+
+        # Ensure the value is a string before conversion
+        try:
+            otp_expiry = datetime.fromisoformat(otp_expiry_str)
+        except ValueError as e:
+            flash('Invalid OTP expiry format. Please request a new OTP.', 'danger')
+            current_app.logger.error(f'Error converting otp_expiry: {e}')
+            return redirect(url_for('auth_routes.verify_otp'))
+
+        # Check if OTP has expired
+        if datetime.utcnow() > otp_expiry:
+            flash('OTP expired. Please request a new OTP.', 'danger')
+            return redirect(url_for('auth_routes.verify_otp'))
+
+        # Verify OTP
+        if entered_otp == stored_otp:
             user = User.query.filter_by(email_address=session.get('email')).first()
             if user:
                 login_user(user)
                 session['otp_verified'] = True
                 session.pop('otp', None)  # Clear OTP from session
+                session.pop('otp_expiry', None)  # Clear OTP expiry from session
                 flash('Login Successful', 'success')
-                return base_on_user_role()
+                return base_on_user_role()  # Redirect based on user role
             else:
                 flash('User not found. Please try again.', 'danger')
                 return redirect(url_for('auth_routes.login'))
@@ -113,7 +148,6 @@ def verify_otp():
             return redirect(url_for('auth_routes.verify_otp'))
 
     return render_template('auth/verify_otp.html', title="Verify OTP")
-
 
 
 @auth_routes_bp.route('/resend-otp', methods=['POST'])
@@ -125,6 +159,12 @@ def resend_otp():
     # Generate and resend OTP
     otp = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
     session['otp'] = otp
+
+    # Store otp_expiry as an ISO formatted string
+    session['otp_expiry'] = (datetime.utcnow() + timedelta(minutes=OTP_EXPIRATION_MINUTES)).isoformat()
+
+    # Log OTP for debugging purposes (remove in production)
+    current_app.logger.info(f'Generated OTP: {otp}')
 
     # Send OTP via email
     msg = Message('Your OTP Code', sender=current_app.config['MAIL_USERNAME'], recipients=[session['email']])
@@ -138,8 +178,6 @@ def resend_otp():
         flash('An error occurred while resending the OTP. Please try again later.', 'danger')
 
     return redirect(url_for('auth_routes.verify_otp'))
-
-
 
 @auth_routes_bp.route('/logout')
 @login_required

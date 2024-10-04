@@ -1,7 +1,7 @@
 # app/utils/decorators.py
 
 from functools import wraps
-from flask import redirect, url_for, flash
+from flask import redirect, session,  url_for, flash
 from flask_login import current_user
 
 def role_required(required_role):

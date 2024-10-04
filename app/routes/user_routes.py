@@ -133,7 +133,7 @@ def cancel_reservation_route():
             updated_by=current_user.user_id
         )
         
-        print("THIS IS THE USER ID" , current_user.user_id)
+
         create_notification(
             user_id=current_user.user_id,
             reservation_id = reservation_id,

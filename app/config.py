@@ -18,7 +18,7 @@ class Config:
     LOGGING_FILE = os.environ.get("LOGGING_FILE", 'app.log')
     CSRF_ENABLED = os.environ.get("CSRF_ENABLED", 'True') == 'True'
     
-        # Email settings
+    # Email settings
     MAIL_SERVER = os.environ.get('MAIL_SERVER')
     MAIL_PORT = int(os.environ.get('MAIL_PORT'))
     MAIL_USERNAME = os.environ.get('MAIL_USERNAME')

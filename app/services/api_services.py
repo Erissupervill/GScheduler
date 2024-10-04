@@ -90,7 +90,7 @@ def get_table_utilization():
         func.hour(CustomerReservation.reservation_time), Branch.name
     ).all()
 
-    # Debug output
-    print("Utilization Data:", date_reservation)
+
+
     
     return utilization_data

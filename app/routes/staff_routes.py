@@ -71,7 +71,7 @@ def update_reservation(id):
     """Update reservation status based on the action provided."""
     try:
         reservation = get_reservation_by_id(id)
-        print(reservation.reservation_id)
+
         if not reservation:
             flash('Reservation not found', 'danger')
             return redirect(url_for('staff_routes.pending_reservations'))
@@ -223,8 +223,6 @@ def completed_reservation():
     """Render a page with all completed reservations."""
     try:
         reservations = get_reservations_by_status(ReservationStatus.COMPLETED)
-        for reservation in reservations:
-            print(reservation.__dict__)
         return render_template("staff/completed_reservation.html", reservations=reservations, title="Completed Reservation")
     except Exception as e:
         current_app.logger.error(f'Error fetching completed reservations: {e}')

@@ -17,8 +17,8 @@ def update_user(user_id, data):
         user.last_name = data['last_name']
     if 'username' in data and data['username']:
         user.username = data['username']
-    if 'email_address' in data and data['email_address']:
-        user.email_address = data['email_address']
+    if 'email' in data and data['email']:
+        user.email_address = data['email']
     if 'phone_number' in data and data['phone_number']:
         user.phone_number = data['phone_number']
     if 'password' in data and data['password']:

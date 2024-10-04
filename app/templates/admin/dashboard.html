@@ -92,7 +92,7 @@
             </div>
         </div> -->
 
-        <div class="card card-info">
+        <div class="card card-info responsive">
             <div class="card-header">
                 <h3 class="card-title">Reservations Prediction</h3>
                 <div class="card-tools">
@@ -117,9 +117,9 @@
             <div class="card-header">
                 <h3 class="card-title">Booking Summaries Report</h3>
             </div>
-            <div class="card-body">
+            <div class="card-body table-responsive">
                 <h4>Daily Summary</h4>
-                <table id="dailySummaryTable" class="table table-bordered table-striped">
+                <table id="dailySummaryTable" class="table table-bordered table-striped ">
                     <thead>
                         <tr>
                             <th>Date</th>
@@ -134,7 +134,7 @@
 
 
                 <h4>Weekly Summary</h4>
-                <table id="weeklySummaryTable" class="table table-bordered table-striped">
+                <table id="weeklySummaryTable" class="table table-bordered table-striped ">
                     <thead>
                         <tr>
                             <th>Week</th>
@@ -147,7 +147,7 @@
                     <tbody></tbody>
                 </table>
                 <h4>Monthly Summary</h4>
-                <table id="monthlySummaryTable" class="table table-bordered table-striped">
+                <table id="monthlySummaryTable" class="table table-bordered table-striped ">
                     <thead>
                         <tr>
                             <th>Month</th>
@@ -412,6 +412,7 @@
                     data: weeklyChartData,
                     options: {
                         responsive: true,
+                        maintainAspectRatio: false,  // Allows the chart to resize without fixed ratio
                         plugins: {
                             legend: {
                                 display: true
@@ -474,6 +475,7 @@
                     data: monthlyChartData,
                     options: {
                         responsive: true,
+                        maintainAspectRatio: false,  // Ensures it resizes freely without maintaining a fixed aspect ratio
                         plugins: {
                             legend: {
                                 display: true

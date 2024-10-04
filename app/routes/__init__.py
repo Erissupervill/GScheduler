@@ -1,12 +1,15 @@
 from flask import Blueprint, redirect, render_template, url_for
 
+from app.services.feedback_services import get_feedback_good
+
 
 
 routes_bp = Blueprint('routes', __name__)
 
 @routes_bp.route("/")
 def index():
-    return redirect(url_for("auth_routes.login"))
+    reviews = get_feedback_good()
+    return render_template("frontpage.html",reviews=reviews)
 
 
 def page_not_found(error):

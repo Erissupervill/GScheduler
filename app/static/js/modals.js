@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', function () {
         button.addEventListener('click', function (event) {
            // Check if the ID is captured correctly
            var reservationId = button.getAttribute('data-reservation-id');
-           console.log('Reservation ID:', reservationId);
+
             // Set the value in the hidden input field inside the modal
             var rejectReservationIdInput = document.getElementById('rejectReservationId');
             rejectReservationIdInput.value = reservationId;

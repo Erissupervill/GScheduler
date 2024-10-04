@@ -39,8 +39,7 @@ def reservation_predictions():
         labels = [date.strftime('%Y-%m-%d') for date in date_range]
         
         actual_reservations = get_reservations()
-        
-        # print(actual_reservations.reservation_date)
+    
         actual_data = []
         for date in date_range:
         
@@ -141,7 +140,7 @@ def get_peak_time_predictions():
     # print(historical_data)
 
     response = {
-        'labels': [str(hour) for hour in range(24)],  # 24-hour format labels
+        'labels': [str(hour) for hour in range(24)],  
         'predictions': peak_times
     }
     return jsonify(response)

@@ -10,6 +10,9 @@ def get_feedback_by_id(feedback_id):
     """Retrieve a feedback entry by ID."""
     return Feedback.query.get_or_404(feedback_id)
 
+def get_feedback_good():
+    return Feedback.query.filter(Feedback.rating.between(3, 5)).all()
+
 def create_feedback(user_id, rating, message):
     feedback = Feedback(
         user_id=user_id,

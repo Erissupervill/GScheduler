@@ -19,15 +19,16 @@
                     </div>
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-sm-12">
-                                <table id="example1" class="table table-bordered table-striped">
+                            <div class="col-sm-12 table-responsive">
+                                <table id="example1" class="table table-bordered table-striped ">
                                     <thead>
                                         <tr>
                                             <th>ID</th>
                                             <th>Username</th>
                                             <th>Email</th>
-                                            <th>Phone Number</th>
-                                            <th>Last Login</th>
+                                            <th>Phone number</th>
+                                            <th>Last login</th>
+                                            <th>User role</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -38,6 +39,7 @@
                                             <td>{{ user.first_name }} {{ user.last_name }}</td>
                                             <td>{{ user.email_address }}</td>
                                             <td>{{ user.phone_number }}</td>
+                                            
                                             <td>
                                                 {% if user.last_login %}
                                                     {{ user.last_login.strftime('%m-%d-%Y') }}
@@ -45,6 +47,7 @@
                                                     {{ user.last_login }}
                                                 {% endif %}
                                             </td>
+                                            <td>{{ user.role.role_name }}</td>
                                             <td>
                                                 <div class="btn-group" role="group">
                                                     <!-- Button to trigger the modal on the left -->
@@ -99,7 +102,7 @@
                                                             <div class="form-group">
                                                                 <label for="email_address">Email Address</label>
                                                                 <div class="input-group mb-3">
-                                                                    <input type="email" class="form-control" id="email_address" name="email_address" value="{{ user.email_address }}" required>
+                                                                    <input type="email" class="form-control" id="email_address" name="email" value="{{ user.email_address }}" required>
                                                                     <div class="input-group-append">
                                                                         <div class="input-group-text">
                                                                             <span class="fas fa-envelope"></span>

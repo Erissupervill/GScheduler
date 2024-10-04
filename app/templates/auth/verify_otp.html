@@ -34,11 +34,16 @@
                     <input type="text" id="otp" name="otp" class="form-control" required>
                 </div>
                 <button type="submit" class="btn btn-primary btn-block">Verify</button>
-                <a href="{{ url_for('auth_routes.resend_otp') }}" class="btn btn-link btn-resend">Resend OTP</a>
-               
-                    <a href="{{ url_for('auth_routes.login') }}" class="btn btn-link btn-resend">Back to Login</a>
-                
             </form>
+                
+                <form action="{{ url_for('auth_routes.resend_otp') }}" method="POST" style="display: inline;">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit" class="btn btn-link btn-resend">Resend OTP</button>
+                </form>
+               
+                <a href="{{ url_for('auth_routes.login') }}" class="btn btn-link btn-resend">Back to Login</a>
+                
+            
         </div>
     </div>
 
