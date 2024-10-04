@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<!-- Content Header (Page header) -->
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">Rejected Reservations</h1>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+    <section class="content">
+        <div class="container-fluid">
+            <section class="content">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Rejected Reservations</h3>
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                        <div id="example1_wrapper" class="dataTables_wrapper dt-bootstrap4">
+                            <div class="row">
+                                <div class="col-sm-12 col-md-6">
+                                    <div class="dt-buttons btn-group flex-wrap">
+                                        <!-- Button for export and other actions -->
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-6">
+                        
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12 table-responsive">
+                                    <table id="example1" class="table table-bordered table-striped dataTable dtr-inline"
+                                        aria-describedby="example1_info">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Customer Name</th>
+                                                <th>Location</th>
+                                                <th>Date</th>
+                                                <th>Time</th>
+                                                <th>Total Guests</th>
+                                                <th>Notes</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for reservation in reservations %}
+                                            <tr>
+                                                <td>{{ loop.index}}</td>
+                                                <td>{{ reservation.customer.first_name }} {{reservation.customer.last_name}}</td>
+                                                <td>{{ reservation.branch.location}} {{reservation.branch.name}}</td>
+                                                <td>{{ reservation.reservation_date.strftime('%Y-%m-%d') }}</td>
+                                                <td>{{ reservation.reservation_time.strftime('%H:%M') }}</td>
+                                                <td>{{ reservation.number_of_guests }}</td>
+                                                <td>{{ reservation.status_comment }}</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Customer Name</th>
+                                                <th>Location</th>
+                                                <th>Date</th>
+                                                <th>Time</th>
+                                                <th>Total Guests</th>
+                                                <th>Notes</th>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                            <!-- Pagination controls (if needed) -->
+                        </div>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </section>
+        </div>
+</div>
+</section>
+{% endblock %}

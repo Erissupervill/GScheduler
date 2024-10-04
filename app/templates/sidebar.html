@@ -1,0 +1,121 @@
+<!-- Main Sidebar Container -->
+
+<!-- Brand Logo -->
+<a href="/" class="brand-link text-center">
+    <span class="brand-text font-weight-light">Gscheduler</span>
+</a>
+
+<!-- Sidebar -->
+<div class="sidebar">
+
+    <!-- Sidebar Menu -->
+    <nav class="mt-2">
+        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+
+            <!-- Common Dashboard Link -->
+            {% if current_user.role_id == 1 or current_user.role_id == 2 %}
+            <li class="nav-item">
+                <a href="/{{ role_name }}/Dashboard" class="nav-link">
+                    <i class="nav-icon fas fa-tachometer-alt"></i>
+                    <p>Dashboard</p>
+                </a>
+            </li>
+            {% endif %}
+
+            <!-- If User is Admin -->
+            {% if current_user.role_id == 1 %}
+            <li class="nav-item">
+                <a href="/Admin/Users" class="nav-link">
+                    <i class="nav-icon fas fa-users"></i>
+                    <p>Users List</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/Admin/Create/User" class="nav-link">
+                    <i class="nav-icon fas fa-user-plus"></i>
+                    <p>Create User</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/Admin/Feedbacks" class="nav-link">
+                    <i class="nav-icon fas fa-comments"></i>
+                    <p>Feedbacks</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/Admin/Logs/User" class="nav-link">
+                    <i class="nav-icon fas fa-file-alt"></i>
+                    <p>Audit Logs</p>
+                </a>
+            </li>
+            {% elif current_user.role_id == 2 %}
+            <!-- If User is Staff -->
+            <li class="nav-item">
+                <a href="/Staff/Reservation" class="nav-link">
+                    <i class="nav-icon fas fa-calendar-alt"></i>
+                    <p>Reservation</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/Staff/pending-reservations" class="nav-link">
+                    <i class="nav-icon fas fa-hourglass"></i>
+                    <p>Pending Reservation</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/Staff/Reservation/Accepted" class="nav-link">
+                    <i class="nav-icon fas fa-check-circle"></i>
+                    <p>Accepted Reservation</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/Staff/Reservation/Completed" class="nav-link">
+                    <i class="nav-icon fas fa-check-double"></i>
+                    <p>Completed Reservation</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/Staff/Reservation/Rejected" class="nav-link">
+                    <i class="nav-icon fas fa-times-circle"></i>
+                    <p>Rejected Reservation</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/Staff/Reservation/Cancelled" class="nav-link">
+                    <i class="nav-icon fas fa-times-circle"></i>
+                    <p>Cancelled Reservation</p>
+                </a>
+            </li>
+            {% elif current_user.role_id == 3 %}
+            <!-- If User is User -->
+            <li class="nav-item">
+                <a href="/User/Notification" class="nav-link">
+                    <i class="nav-icon fas fa-bell"></i>
+                    <p>Notification</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/User/create/reserve" class="nav-link">
+                    <i class="nav-icon fas fa-calendar-plus"></i>
+                    <p>Create Reservation</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/User/Reservation/Status" class="nav-link">
+                    <i class="nav-icon fas fa-info-circle"></i>
+                    <p>Reservation Status</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/User/WriteFeedbacks" class="nav-link" data-toggle="modal" data-target="#createFeedbackModal">
+                    <i class="nav-icon fas fa-pencil-alt"></i>
+                    <p>Write Feedback</p>
+                </a>
+            </li>
+            {% endif %}
+
+        </ul>
+    </nav>
+    <!-- /.sidebar-menu -->
+</div>
+<!-- /.sidebar -->

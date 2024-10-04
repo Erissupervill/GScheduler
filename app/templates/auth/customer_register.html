@@ -7,13 +7,11 @@
   <title>{{title}}</title>
 
   <!-- Google Font: Source Sans Pro -->
-  <link rel="stylesheet"
-    href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <!-- Font Awesome -->
   <link rel="stylesheet" href="{{ url_for('static', filename='adminlte/plugins/fontawesome-free/css/all.min.css') }}">
   <!-- icheck bootstrap -->
-  <link rel="stylesheet"
-    href="{{ url_for('static', filename='adminlte/plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='adminlte/plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
   <!-- Theme style -->
   <link rel="stylesheet" href="{{ url_for('static', filename='adminlte/dist/css/adminlte.min.css') }}">
 </head>
@@ -29,246 +27,244 @@
         <p class="login-box-msg">Sign in to start your session</p>
 
         <form method="post">
+          {{ form.csrf_token }}
+          <input type="hidden" name="role" value="3">
 
-          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-          <div class="input-group mb-3">
-            <input type="text" name="username" class="form-control" placeholder="Username" >
-            <div class="input-group-append">
-              <div class="input-group-text">
-                <span class="fas fa-user"></span>
+          <div class="form-group">
+            <label for="username">First Name:</label>
+            <div class="input-group mb-3">
+              <input type="text" name="first_name" id="username" class="form-control" placeholder="Enter first name">
+              <div class="input-group-append">
+                <div class="input-group-text">
+                  <span class="fas fa-user"></span>
+                </div>
               </div>
-            </div>
-            {% for error in form.username.errors %}
-            <div class="invalid-feedback d-block">{{ error }}</div>
-            {% endfor %}
-          </div>
-
-          <div class="input-group mb-3">
-            <input type="text" name="email" class="form-control" placeholder="Email" >
-            <div class="input-group-append">
-              <div class="input-group-text">
-                <span class="fas fa-envelope"></span>
-              </div>
-            </div>
-            {% for error in form.email.errors %}
-            <div class="invalid-feedback d-block">{{ error }}</div>
-            {% endfor %}
-          </div>
-
-          <div class="input-group mb-3">
-            <input type="text" name="phone_number" class="form-control" data-inputmask='"mask": "(99) 99-999-9999"'
-              data-mask placeholder="Phone number ex. (09) 99-999-9999" >
-            <div class="input-group-append">
-              <div class="input-group-text">
-                <span class="fas fa-phone"></span>
-              </div>
-            </div>
-            {% for error in form.phone_number.errors %}
-              <div class="invalid-feedback d-block">{{ error }}</div>
+              {% for error in form.first_name.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
               {% endfor %}
-          </div>
-
-
-          <div class="input-group mb-3">
-            <input type="password" name="password" class="form-control" placeholder="Password">
-            <div class="input-group-append">
-              <div class="input-group-text">
-                <span class="fas fa-lock"></span>
-              </div>
-            
             </div>
-            {% for error in form.password.errors %}
-            <div class="invalid-feedback d-block">{{ error }}</div>
-            {% endfor %}
-          </div>
-          <div class="input-group mb-3">
-            <input type="password" name="confirmpassword" class="form-control" placeholder="Confirm Password" >
-            <div class="input-group-append">
-              <div class="input-group-text">
-                <span class="fas fa-lock"></span>
-              </div>
-             
-            </div>
-            {% for error in form.confirmpassword.errors %}
-            <div class="invalid-feedback d-block">{{ error }}</div>
-            {% endfor %}
           </div>
 
+          <div class="form-group">
+            <label for="username">Last Name:</label>
+            <div class="input-group mb-3">
+              <input type="text" name="last_name" id="username" class="form-control" placeholder="Enter last name">
+              <div class="input-group-append">
+                <div class="input-group-text">
+                  <span class="fas fa-user"></span>
+                </div>
+              </div>
+              {% for error in form.last_name.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+              {% endfor %}
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email:</label>
+            <div class="input-group mb-3">
+              <input type="text" name="email" id="email" class="form-control" placeholder="Enter Email">
+              <div class="input-group-append">
+                <div class="input-group-text">
+                  <span class="fas fa-envelope"></span>
+                </div>
+              </div>
+              {% for error in form.email.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+              {% endfor %}
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="phone_number">Phone Number:</label>
+            <div class="input-group mb-3">
+              <input type="text" name="phone_number" id="phone_number" class="form-control" data-inputmask='"mask": "(99) 99-999-9999"' data-mask placeholder="Phone number ex. (09) 99-999-9999">
+              <div class="input-group-append">
+                <div class="input-group-text">
+                  <span class="fas fa-phone"></span>
+                </div>
+              </div>
+              {% for error in form.phone_number.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+              {% endfor %}
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="password">Password:</label>
+            <div class="input-group mb-3">
+              <input type="password" name="password" id="password" class="form-control" placeholder="Password">
+              <div class="input-group-append">
+                <div class="input-group-text">
+                  <span class="fas fa-lock"></span>
+                </div>
+              </div>
+              {% for error in form.password.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+              {% endfor %}
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="confirmpassword">Confirm Password:</label>
+            <div class="input-group mb-3">
+              <input type="password" name="confirmpassword" id="confirmpassword" class="form-control" placeholder="Confirm Password">
+              <div class="input-group-append">
+                <div class="input-group-text">
+                  <span class="fas fa-lock"></span>
+                </div>
+              </div>
+              {% for error in form.confirmpassword.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+              {% endfor %}
+            </div>
+          </div>
 
           <div class="col-12">
             <button type="submit" class="btn btn-primary btn-block">Sign Up</button>
           </div>
-
-
         </form>
-
 
         <p class="mb-1">
           <a href="/login" class="text-center">Login</a>
         </p>
       </div>
-
     </div>
-  </div>
   </div>
 
   <script src="{{ url_for('static', filename='adminlte/plugins/jquery/jquery.min.js') }}"></script>
   <script src="{{ url_for('static', filename='adminlte/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
   <script src="{{ url_for('static', filename='adminlte/plugins/select2/js/select2.full.min.js') }}"></script>
-  <script
-    src="{{ url_for('static', filename='adminlte/plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='adminlte/plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js') }}"></script>
   <script src="{{ url_for('static', filename='adminlte/plugins/moment/moment.min.js') }}"></script>
   <script src="{{ url_for('static', filename='adminlte/plugins/inputmask/jquery.inputmask.min.js') }}"></script>
   <script src="{{ url_for('static', filename='adminlte/plugins/daterangepicker/daterangepicker.js') }}"></script>
-  <script
-    src="{{ url_for('static', filename='adminlte/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.min.js') }}"></script>
-  <script
-    src="{{ url_for('static', filename='adminlte/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js') }}"></script>
-  <script
-    src="{{ url_for('static', filename='adminlte/plugins/bootstrap-switch/js/bootstrap-switch.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='adminlte/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='adminlte/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='adminlte/plugins/bootstrap-switch/js/bootstrap-switch.min.js') }}"></script>
   <script src="{{ url_for('static', filename='adminlte/plugins/bs-stepper/js/bs-stepper.min.js') }}"></script>
   <script src="{{ url_for('static', filename='adminlte/plugins/dropzone/min/dropzone.min.js') }}"></script>
   <script src="{{ url_for('static', filename='adminlte/dist/js/adminlte.min.js') }}"></script>
 
   <!-- Validation SCRIPT -->
-
-
-
   <script>
     $(function () {
-      //Initialize Select2 Elements
-      $('.select2').select2()
+      // Initialize Select2 Elements
+      $('.select2').select2();
 
-      //Initialize Select2 Elements
+      // Initialize Select2 Elements
       $('.select2bs4').select2({
         theme: 'bootstrap4'
-      })
+      });
 
-      //Datemask dd/mm/yyyy
-      $('#datemask').inputmask('dd/mm/yyyy', { 'placeholder': 'dd/mm/yyyy' })
-      //Datemask2 mm/dd/yyyy
-      $('#datemask2').inputmask('mm/dd/yyyy', { 'placeholder': 'mm/dd/yyyy' })
-      //Money Euro
-      $('[data-mask]').inputmask()
+      // Date mask
+      $('#datemask').inputmask('dd/mm/yyyy', { 'placeholder': 'dd/mm/yyyy' });
+      $('#datemask2').inputmask('mm/dd/yyyy', { 'placeholder': 'mm/dd/yyyy' });
+      $('[data-mask]').inputmask();
 
-      //Date picker
+      // Date picker
       $('#reservationdate').datetimepicker({
         format: 'L'
       });
 
-      //Date and time picker
+      // Date and time picker
       $('#reservationdatetime').datetimepicker({ icons: { time: 'far fa-clock' } });
 
-      //Date range picker
-      $('#reservation').daterangepicker()
-      //Date range picker with time picker
+      // Date range picker
+      $('#reservation').daterangepicker();
       $('#reservationtime').daterangepicker({
         timePicker: true,
         timePickerIncrement: 30,
         locale: {
           format: 'MM/DD/YYYY hh:mm A'
         }
-      })
-      //Date range as a button
-      $('#daterange-btn').daterangepicker(
-        {
-          ranges: {
-            'Today': [moment(), moment()],
-            'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-            'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-            'This Month': [moment().startOf('month'), moment().endOf('month')],
-            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-          },
-          startDate: moment().subtract(29, 'days'),
-          endDate: moment()
+      });
+      $('#daterange-btn').daterangepicker({
+        ranges: {
+          'Today': [moment(), moment()],
+          'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+          'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+          'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+          'This Month': [moment().startOf('month'), moment().endOf('month')],
+          'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
         },
-        function (start, end) {
-          $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'))
-        }
-      )
+        startDate: moment().subtract(29, 'days'),
+        endDate: moment()
+      }, function (start, end) {
+        $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+      });
 
-      //Timepicker
+      // Timepicker
       $('#timepicker').datetimepicker({
         format: 'LT'
-      })
+      });
 
-      //Bootstrap Duallistbox
-      $('.duallistbox').bootstrapDualListbox()
+      // Bootstrap Duallistbox
+      $('.duallistbox').bootstrapDualListbox();
 
-      //Colorpicker
-      $('.my-colorpicker1').colorpicker()
-      //color picker with addon
-      $('.my-colorpicker2').colorpicker()
+      // Colorpicker
+      $('.my-colorpicker1').colorpicker();
+      $('.my-colorpicker2').colorpicker();
 
       $('.my-colorpicker2').on('colorpickerChange', function (event) {
         $('.my-colorpicker2 .fa-square').css('color', event.color.toString());
-      })
+      });
 
       $("input[data-bootstrap-switch]").each(function () {
         $(this).bootstrapSwitch('state', $(this).prop('checked'));
-      })
+      });
+    });
 
-    })
     // BS-Stepper Init
     document.addEventListener('DOMContentLoaded', function () {
-      window.stepper = new Stepper(document.querySelector('.bs-stepper'))
-    })
+      window.stepper = new Stepper(document.querySelector('.bs-stepper'));
+    });
 
     // DropzoneJS Demo Code Start
-    Dropzone.autoDiscover = false
+    Dropzone.autoDiscover = false;
 
-    // Get the template HTML and remove it from the doumenthe template HTML and remove it from the doument
-    var previewNode = document.querySelector("#template")
-    previewNode.id = ""
-    var previewTemplate = previewNode.parentNode.innerHTML
-    previewNode.parentNode.removeChild(previewNode)
+    // Get the template HTML and remove it from the document
+    var previewNode = document.querySelector("#template");
+    previewNode.id = "";
+    var previewTemplate = previewNode.parentNode.innerHTML;
+    previewNode.parentNode.removeChild(previewNode);
 
-    var myDropzone = new Dropzone(document.body, { // Make the whole body a dropzone
-      url: "/target-url", // Set the url
+    var myDropzone = new Dropzone(document.body, {
+      url: "/target-url",
       thumbnailWidth: 80,
       thumbnailHeight: 80,
       parallelUploads: 20,
       previewTemplate: previewTemplate,
-      autoQueue: false, // Make sure the files aren't queued until manually added
-      previewsContainer: "#previews", // Define the container to display the previews
-      clickable: ".fileinput-button" // Define the element that should be used as click trigger to select files.
-    })
+      autoQueue: false,
+      previewsContainer: "#previews",
+      clickable: ".fileinput-button"
+    });
 
     myDropzone.on("addedfile", function (file) {
-      // Hookup the start button
-      file.previewElement.querySelector(".start").onclick = function () { myDropzone.enqueueFile(file) }
-    })
+      file.previewElement.querySelector(".start").onclick = function () { myDropzone.enqueueFile(file); };
+    });
 
-    // Update the total progress bar
     myDropzone.on("totaluploadprogress", function (progress) {
-      document.querySelector("#total-progress .progress-bar").style.width = progress + "%"
-    })
+      document.querySelector("#total-progress .progress-bar").style.width = progress + "%";
+    });
 
     myDropzone.on("sending", function (file) {
-      // Show the total progress bar when upload starts
-      document.querySelector("#total-progress").style.opacity = "1"
-      // And disable the start button
-      file.previewElement.querySelector(".start").setAttribute("disabled", "disabled")
-    })
+      document.querySelector("#total-progress").style.opacity = "1";
+      file.previewElement.querySelector(".start").setAttribute("disabled", "disabled");
+    });
 
-    // Hide the total progress bar when nothing's uploading anymore
     myDropzone.on("queuecomplete", function (progress) {
-      document.querySelector("#total-progress").style.opacity = "0"
-    })
+      document.querySelector("#total-progress").style.opacity = "0";
+    });
 
-    // Setup the buttons for all transfers
-    // The "add files" button doesn't need to be setup because the config
-    // `clickable` has already been specified.
     document.querySelector("#actions .start").onclick = function () {
-      myDropzone.enqueueFiles(myDropzone.getFilesWithStatus(Dropzone.ADDED))
-    }
+      myDropzone.enqueueFiles(myDropzone.getFilesWithStatus(Dropzone.ADDED));
+    };
     document.querySelector("#actions .cancel").onclick = function () {
-      myDropzone.removeAllFiles(true)
-    }
+      myDropzone.removeAllFiles(true);
+    };
     // DropzoneJS Demo Code End
   </script>
-
 
 </body>
 

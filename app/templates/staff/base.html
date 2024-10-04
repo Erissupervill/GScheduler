@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{title}}</title>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/dataTables.bootstrap4.min.css">
 
     <!-- AdminLTE CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='adminlte/dist/css/adminlte.min.css') }}">
@@ -35,10 +36,10 @@
 
 <body class="hold-transition sidebar-mini layout-fixed">
     <div class="wrapper">
-        {% include 'staff/header.html' %}
+        {% include 'admin/header.html' %}
 
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
-            {% include 'staff/sidebar.html' %}
+            {% include 'sidebar.html' %}
         </aside>
 
         <!-- Content Wrapper. Contains page content -->
@@ -85,9 +86,31 @@
     <script src="{{ url_for('static', filename='adminlte/dist/js/adminlte.min.js') }}"></script>
     <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
     <script src="{{ url_for('static', filename='adminlte/dist/js/pages/dashboard.js') }}"></script>
+    
     <!-- Custom JS -->
     <script src="{{ url_for('static', filename='js/custom.js') }}"></script>
-
+    <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.25/js/dataTables.bootstrap4.min.js"></script>
+    <script src="{{ url_for('static', filename='adminlte/plugins/moment/moment.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='adminlte/plugins/inputmask/jquery.inputmask.min.js') }}"></script>
+    <script>
+        $(function () {
+            $("[data-mask]").inputmask();
+            $("#example1").DataTable({
+                "responsive": true, "lengthChange": false, "autoWidth": false,
+                "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+            }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+            $('#example2').DataTable({
+                "paging": true,
+                "lengthChange": false,
+                "searching": false,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true,
+            });
+        });
+    </script>
     <!-- Chart Initialization Script -->
     <script>
         $(function () {

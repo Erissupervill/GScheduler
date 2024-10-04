@@ -1,4 +1,4 @@
-{% extends 'admin/base.html' %}
+{% extends 'base.html' %}
 {% block content %}
 
 <!-- Content Header (Page header) -->
@@ -26,8 +26,8 @@
                                
                             </div>
                             <div class="row">
-                                <div class="col-sm-12">
-                                    <table id="example1" class="table table-bordered table-striped dataTable dtr-inline"
+                                <div class="col-sm-12 table-responsive">
+                                    <table id="example1" class="table table-bordered table-striped dataTable dtr-inline "
                                         aria-describedby="example1_info">
                                         <thead>
                                             <tr>
@@ -36,12 +36,20 @@
                                                     aria-label="Rendering engine: activate to sort column descending">
                                                     ID</th>
                                                 <th class="" tabindex="0" aria-controls="example1" rowspan="1"
+                                                    colspan="1"
+                                                    aria-label="Platform(s): activate to sort column ascending">
+                                                    Name</th>
+                                                <th class="" tabindex="0" aria-controls="example1" rowspan="1"
                                                     colspan="1" aria-label="Browser: activate to sort column ascending">
                                                     Action</th>
                                                 <th class="" tabindex="0" aria-controls="example1" rowspan="1"
                                                     colspan="1"
                                                     aria-label="Platform(s): activate to sort column ascending">
-                                                    Time and Date</th>
+                                                    Date</th>
+                                                    <th class="" tabindex="0" aria-controls="example1" rowspan="1"
+                                                    colspan="1"
+                                                    aria-label="Platform(s): activate to sort column ascending">
+                                                    Time</th>
                                                 <th class="" tabindex="0" aria-controls="example1" rowspan="1"
                                                     colspan="1"
                                                     aria-label="Engine version: activate to sort column ascending">
@@ -53,9 +61,11 @@
                                             {% for item in items %}
                                             <tr class="odd">
                                                 <td class="dtr-control sorting_1" tabindex="0">{{loop.index}}</td>
-                                                <td>{{item.action}}</td>
-                                                <td>{{item.Timestamp}}</td>
-                                                <td>{{item.Description}}</td>
+                                                <td>{{item.User.first_name}} {{item.User.last_name}}</td>
+                                                <td>{{item.Log.action}}</td>
+                                                <td>{{item.Log.timestamp.strftime('%m-%d-%Y')}}</td>
+                                                <td>{{item.Log.timestamp.strftime('%H:%M')}}</td>
+                                                <td>{{item.Log.description}}</td>
                                             </tr>
                                             {% else %}
                                          
@@ -70,12 +80,19 @@
                                                 aria-sort="ascending"
                                                 aria-label="Rendering engine: activate to sort column descending">
                                                 ID</th>
+                                            <th class="" tabindex="0" aria-controls="example1" rowspan="1"
+                                                colspan="1"
+                                                aria-label="Platform(s): activate to sort column ascending">
+                                                Name</th>
                                             <th tabindex="0" aria-controls="example1" rowspan="1" colspan="1"
                                                 aria-label="Browser: activate to sort column ascending">
                                                 Action</th>
                                             <th tabindex="0" aria-controls="example1" rowspan="1" colspan="1"
                                                 aria-label="Platform(s): activate to sort column ascending">
-                                                Time and Date</th>
+                                                Date</th>
+                                                <th tabindex="0" aria-controls="example1" rowspan="1" colspan="1"
+                                                aria-label="Platform(s): activate to sort column ascending">
+                                                Time</th>
                                             <th tabindex="0" aria-controls="example1" rowspan="1" colspan="1"
                                                 aria-label="Engine version: activate to sort column ascending">
                                                 Description</th>

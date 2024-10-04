@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<!-- Content Header (Page header) -->
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">Notifications</h1>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <!-- Loop through notifications -->
+                {% for notification in notifications %}
+                <div class="card card-primary card-outline mb-3">
+                    <div class="card-header">
+                        <h3 class="card-title">Notification </h3>
+                        <form action="{{ url_for('user_routes.remove_notification', id=notification.id) }}"
+                            method="post" style="display: inline;">
+                            <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
+                            <button type="submit" class="btn btn-sm btn-danger float-right">X</button>
+                        </form>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Reservation Details:</strong>
+                            {% if 'by:' in notification.message %}
+                                {{ notification.message.split('by:')[0].split('Reason:')[0].strip() }}
+                            {% else %}
+                                {{ notification.message.split('Reason:')[0].strip() }}
+                            {% endif %}
+                        </p>
+                        {% if 'Confirmed by:' in notification.message %}
+                        <p><strong>Confirmed By:</strong>
+                            {{ notification.message.split('Confirmed by:')[1].strip() }}
+                        </p>
+                        {% endif %}
+                        {% if 'Reason:' in notification.message %}
+                        <p><strong>Reason:</strong>
+                            {{ notification.message.split('Reason:')[1].strip() }}
+                        </p>
+                        {% endif %}
+
+                        {% if 'Rejected by:' in notification.message %}
+                        <p><strong>Rejected By:</strong>
+                            {{ notification.message.split('Rejected by:')[1].split('Rejection Reason:')[0].strip() }}
+                        </p>
+                        {% endif %}
+                        {% if 'Rejection Reason:' in notification.message %}
+                        <p><strong>Reason:</strong>
+
+                            {{ notification.message.split('Rejection Reason:')[1].strip() }}
+
+                            {% else %}
+
+
+                        </p>
+                        {% endif %}
+
+                        <p><strong>Date:</strong> {{ notification.notification_date.strftime('%Y-%m-%d') }}</p>
+                        <p><strong>Time:</strong> {{ notification.notification_time.strftime('%H:%M:%S') }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- Content Header (Page header) -->
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">Completed Reservations</h1>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div><!-- /.content-header -->
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Completed Reservations</h3>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+                <div id="example1_wrapper" class="dataTables_wrapper dt-bootstrap4">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-6">
+                            <div class="dt-buttons btn-group flex-wrap">
+                                <!-- Button for export and other actions -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 table-responsive">
+                            <table id="example1" class="table table-bordered table-striped dataTable dtr-inline table-responsive"
+                                aria-describedby="example1_info">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Customer Name</th>
+                                        <th>Location</th>
+                                        <th>Date</th>
+                                        <th>Time</th>
+                                        <th>Total Guests</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for reservation in reservations %}
+                                    <tr>
+                                        <td>{{ loop.index }}</td>
+                                        <td>{{ reservation.customer.first_name }} {{ reservation.customer.last_name }}</td>
+                                        <td>{{ reservation.branch.location }} {{ reservation.branch.name }}</td>
+                                        <td>{{ reservation.reservation_date.strftime('%Y-%m-%d') }}</td>
+                                        <td>{{ reservation.reservation_time.strftime('%H:%M') }}</td>
+                                        <td>{{ reservation.number_of_guests }}</td>
+                                        <td>
+                                            <button type="button" class="btn btn-info" data-toggle="modal"
+                                                data-target="#viewReservationModal"
+                                                data-reservationID="{{ reservation.reservation_id }}"
+                                                data-customer="{{ reservation.customer.first_name }} {{reservation.customer.last_name}}"
+                                                data-location="{{ reservation.branch.location }} {{ reservation.branch.name }}"
+                                                data-date="{{ reservation.reservation_date.strftime('%Y-%m-%d') }}"
+                                                data-time="{{ reservation.reservation_time.strftime('%H:%M') }}"
+                                                data-guests="{{ reservation.number_of_guests }}"
+                                                data-status="{{ reservation.status }}"
+                                                data-comment="{{ reservation.status_comment }}"
+                                                data-created-at="{{ reservation.created_at.strftime('%Y-%m-%d %H:%M:%S') }}"
+                                                data-updated-at="{{ reservation.updated_at.strftime('%Y-%m-%d %H:%M:%S') }}"
+                                                data-updated-by-firstname="{{ reservation.updater.first_name }}" 
+                                                data-updated-by-lastname="{{ reservation.updater.last_name }}">
+                                                View
+                                            </button>
+
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Customer Name</th>
+                                        <th>Location</th>
+                                        <th>Date</th>
+                                        <th>Time</th>
+                                        <th>Total Guests</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- Pagination controls (if needed) -->
+                </div>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+    </div>
+</section>
+
+{% include 'view_reservation.html' %}
+
+
+
+{% endblock %}
