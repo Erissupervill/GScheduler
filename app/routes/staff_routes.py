@@ -1,6 +1,7 @@
 from datetime import date, datetime
 from flask import Blueprint, current_app, flash, jsonify, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
+from flask_mail import Message
 from app.models import ReservationStatus
 from app.services.notification_services import create_notification
 from app.services.reservation_services import (
@@ -8,6 +9,7 @@ from app.services.reservation_services import (
     get_reservation_by_id, get_reservations, 
     get_reservations_by_status
 )
+from app import mail
 from app.utils.decorators import otp_required, role_required
 from app.db import db
 
@@ -71,7 +73,7 @@ def update_reservation(id):
     """Update reservation status based on the action provided."""
     try:
         reservation = get_reservation_by_id(id)
-
+        
         if not reservation:
             flash('Reservation not found', 'danger')
             return redirect(url_for('staff_routes.pending_reservations'))
@@ -96,8 +98,25 @@ def update_reservation(id):
             notification_time=datetime.utcnow().time()
             )
             
-            reservation.status = ReservationStatus.CONFIRMED
-
+            msg = Message(
+            subject='Your Gscheduler Booking is Confirmed!',
+            sender=current_app.config['MAIL_USERNAME'],
+            recipients=[reservation.customer.email_address])
+            msg.body = (f"Hi {reservation.customer.first_name},\n\n"
+                        f"This email confirms that your booking reservation with Gscheduler for {reservation.reservation_date} at {reservation.reservation_time} has been accepted.\n\n"
+                        f"Booking Details:\n\n"
+                        f"- Date: {reservation.reservation_date}\n"
+                        f"- Time: {reservation.reservation_time}\n"
+                        f"We look forward to seeing you then!\n\n"
+                        f"If you have any questions or need to change your booking, please don't hesitate to reply to this email or call us at GSamgyup 199.\n\n"
+                        f"Thanks!")
+            try:
+                mail.send(msg)
+                reservation.status = ReservationStatus.CONFIRMED
+                flash('Booking confirmation email sent. Please check your inbox.', 'info')
+            except Exception as e:
+                flash('An error occurred while sending the booking confirmation. Please try again later.', 'danger')
+                return redirect(url_for('staff_routes.pending_reservations'))  # Adjust the redirect as needed
             
 
         elif action == 'reject':

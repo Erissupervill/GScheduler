@@ -1,3 +1,4 @@
+/* General Styles */
 *,
 ::before,
 ::after {
@@ -19,12 +20,14 @@ body {
 
 .section-height {
     height: 50vh;
-    overflow: auto;
+    overflow: hidden;
     padding: 2rem 0;
-    /* Add this to ensure content is scrollable if it overflows */
 }
-img{
-    max-height: 400px;
+
+img {
+    max-height: 400px; /* Default max height for larger screens */
+    width: 100%; /* Make images responsive */
+    object-fit: cover; /* Ensure aspect ratio is maintained */
 }
 
 p {
@@ -32,7 +35,7 @@ p {
 }
 
 .white-font {
-    color: whitesmoke
+    color: whitesmoke;
 }
 
 .custom-icon {
@@ -43,7 +46,6 @@ p {
 #navbar {
     position: sticky !important;
     top: 0;
-    /* height: calc(66vh - 56px); */
     padding: 0;
     z-index: 10;
 }
@@ -52,52 +54,35 @@ p {
     text-align: center;
 }
 
-
-
 /* Banner CSS */
-#banner{
-    height: calc(70.1vh - 56px);
+#banner {
+    height: auto;
 }
 
-/* Text Styling */
-#banner .text-left {
-    font-size: 1.5rem;
-    line-height: 1.8;
-    padding: 20px;
-}
-
+.parallax-wrapper{}
 
 .parallax {
-    position: relative;
+    /* position: relative; */
     background: url('../images/banner.jpg');
-    background-attachment: fixed;
+    background-attachment: scroll;
     background-repeat: no-repeat;
-    background-size: contain;
-    background-position: 50% 20%;
+    background-size: cover; /* Changed to cover */
+    background-position:center; /* Center the background */
     width: 100%;
-    height: calc(70vh - 56px);
+    height: 120vh;
     z-index: 1;
 }
 
-
 .p-center {
     text-align: center;
-    /* Center the text */
     margin: 0;
-    /* Remove default margin */
     display: flex;
     justify-content: center;
-    /* Center horizontally */
     align-items: center;
-    /* Center vertically */
     height: 100%;
-    /* Make sure it takes the full height of the parent */
 }
 
-
-
-
-/* REVIEW CSS */
+/* Review CSS */
 #review {
     padding: 50px 0;
 }
@@ -106,7 +91,6 @@ p {
     font-size: 2rem;
     margin-bottom: 0.5rem;
     font-weight: bold;
-    /* color: #333; */
 }
 
 .review-card {
@@ -116,9 +100,6 @@ p {
     padding: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     text-align: center;
-    height: auto;
-    /* margin-bottom: 20px; */
-    /* margin-left: 1px; */
 }
 
 .review-card h5 {
@@ -135,8 +116,8 @@ p {
 
 .stars {
     color: #FFD700;
-    /* Gold color for stars */
     font-size: 1.5rem;
+    width: 100%;
 }
 
 .carousel-control-prev-icon,
@@ -159,148 +140,146 @@ p {
     justify-content: space-between;
 }
 
-.carousel-row{
+.carousel-row {
     display: flex;
     justify-content: space-between;
-    gap:10px;
+    gap: 10px;
 }
-/* Reservation CSS */
-#reservation{
+
+/* Reservation, About, and Contact CSS */
+#reservation,
+#about,
+#contact {
     color: #fafafa;
     background-color: #18181b;
 }
-
-/* About CSS */
-#about {
-    color: #fafafa;
-    background-color: #18181b;
-}
-
-/* Contact CSS */
+#about,
 #contact{
-    color: #fafafa;
-    background-color: #18181b;
+    height: 80vh;
+}
+
+#contact {
     padding: 5rem;
 }
 
-/* FOOTER CSS */
+/* Footer CSS */
 #footer {
     position: relative;
     bottom: 0px;
     width: 100%;
     color: #fafafa;
     background-color: #18181b;
-    height:2rem;
+    height: 2rem;
 }
-
-
 
 /* General Mobile Adjustments */
+@media (max-width: 1024px) {
+    #banner {
+        height: calc(100vh);
+    }
+    .parallax{
+        background-size: contain;
+    }
+    
 
-/* Tablet View - Adjust the height */
-@media (max-width: 1024px) and (min-width: 769px) {
-.parallax {
-background-attachment: scroll; /* Disable parallax for tablet */
-background-size: cover;
-background-position: center;
-height: calc(55vh - 56px); 
-}
-.section-height{
-height: 100vh !important;
-}
+    .section-height {
+        height: auto !important;
+    }
 }
 
-
+/* Medium Phones (481px to 768px) */
 @media (max-width: 768px) {
-/* Adjust the container padding */
-.container {
-padding: 0 10px;
+    /* Adjust the container padding */
+    #banner {
+        height: calc(50.1vh - 56px);
+    }
+    
+    /* .container {
+    } */
+
+    /* Adjust the font sizes */
+    p, h3, h5, .title {
+        font-size: 1rem;
+    }
+
+    .review-card h5 {
+        font-size: 1.1rem;
+    }
+
+    /* Adjust the parallax image */
+    .parallax {
+        background-size: cover;
+        width: 100%;
+        height: calc(50vh - 56px);
+    }
+
+    /* Adjust navbar */
+    .navbar-brand img {
+        height: 40px;
+    }
+
+    .navbar .nav-link {
+        font-size: 0.9rem;
+    }
+
+    /* Adjust the height of sections */
+    .section-height {
+        height: auto; 
+    }
+
+    /* Reduce padding and margins */
+    #reservation, #about, #contact {
+        padding: 2rem 1rem;
+    }
+
+    .p-center {
+        padding: 1rem 0;
+    }
+
+    .carousel-control-prev, .carousel-control-next {
+        display: none; 
+    }
+
+    /* Adjust Review Cards */
+    .review-card {
+        margin-bottom: 15px;
+        padding: 10px;
+    }
 }
 
-/* Adjust the font sizes */
-p, h3, h5, .title {
-font-size: 1rem;
-}
-
-.review-card h5 {
-font-size: 1.1rem;
-}
-
-/* Adjust the parallax image */
-.parallax {
-background-size: cover;
-height: calc(50vh - 56px);
-}
-
-/* Adjust navbar */
-.navbar-brand img {
-height: 40px;
-}
-
-.navbar .nav-link {
-font-size: 0.9rem;
-}
-
-/* Adjust the height of sections */
-.section-height {
-height: auto; 
-}
-
-/* Reduce padding and margins */
-#reservation, #about, #contact {
-padding: 2rem 1rem;
-}
-
-.p-center {
-padding: 1rem 0;
-}
-
-.carousel-control-prev, .carousel-control-next {
-display: none; 
-}
-
-/* Adjust Review Cards */
-.review-card {
-margin-bottom: 15px;
-padding: 10px;
-}
-}
-
-/* Mobile adjustments for smaller screens */
+/* Small Phones (up to 480px) */
 @media (max-width: 480px) {
-img{
-max-height: 200px;
-}
-.parallax {
-background-attachment: scroll;
-background-position: 50% 50%;
-height: 40vh; /* Further reduce height for smaller screens */
-}
+    img {
+        max-height: 200px; /* Set max height for small phones */
+    }
 
-/* Center content for smaller screens */
-.p-center {
-flex-direction: column;
-text-align: center;
-}
+    .parallax {
+        background-attachment: scroll;
+        background-position: 50% 50%;
+        height: 40vh; /* Further reduce height for smaller screens */
+    }
 
-.col-md-6, .col-md-5, .col-md-12 {
-width: 100%;
-margin-bottom: 15px; 
-}
+    /* Center content for smaller screens */
+    .p-center {
+        flex-direction: column;
+        text-align: center;
+    }
 
-/* Adjust button size */
-.btn {
-width: 100%; 
-padding: 10px;
-}
+    .col-md-6, .col-md-5, .col-md-12 {
+        width: 100%;
+        margin-bottom: 15px; 
+    }
 
-/* Reduce spacing for sections */
-section {
-padding: 1rem 0;
-}
+    /* Adjust button size */
+    .btn {
+        width: 100%; 
+        padding: 10px;
+    }
 
-/* Adjust font sizes for smaller screens */
-p, h3, h5, .title {
-font-size: 0.85rem;
-}
+ 
+
+    /* Adjust font sizes for smaller screens */
+    p, h3, h5, .title {
+        font-size: 0.85rem;
+    }
 }

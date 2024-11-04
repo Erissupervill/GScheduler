@@ -43,7 +43,7 @@ def Dashboard():
         
         # Render the dashboard template with the required context
         return render_template("admin/dashboard.html", 
-                               title="Admin Dashboard", 
+                               title="Dashboard", 
                                stats=stats,
                                daily_summaries=daily_summaries,
                                weekly_summaries=weekly_summaries,
@@ -76,9 +76,9 @@ def UserList():
     try:
         users = fetch_all_users()
         if users:
-            return render_template("admin/users_list.html", users=users)
+            return render_template("admin/users_list.html", users=users, title="Users")
         flash("No users found", "warning")
-        return render_template("admin/users_list.html", users=[])
+        return render_template("admin/users_list.html", users=[], title="Users")
     except Exception as e:
         current_app.logger.error('Error occurred in UserList: %s', e)
         flash("An error occurred while fetching user data", "danger")
@@ -93,9 +93,9 @@ def UserLogs():
     try:
         logs = get_logs()
         if logs:
-            return render_template('/admin/user_logs.html', items=logs)
+            return render_template('/admin/user_logs.html', items=logs,title="Logs")
         flash("No logs found", "warning")
-        return render_template('/admin/user_logs.html', items=[])
+        return render_template('/admin/user_logs.html', items=[], title="Logs")
     except Exception as e:
         current_app.logger.error('Error occurred in UserLogs: %s', e)
         flash("An error occurred while fetching logs", "danger")
@@ -142,9 +142,9 @@ def feedback_list():
     try:
         feedbacks = get_feedbacks()
         if feedbacks:
-            return render_template('admin/feedback_list.html', feedbacks=feedbacks)
+            return render_template('admin/feedback_list.html', feedbacks=feedbacks, title="Feedbacks")
         flash("No feedbacks found", "warning")
-        return render_template('admin/feedback_list.html', feedbacks=[])
+        return render_template('admin/feedback_list.html', feedbacks=[], title="Feedbacks")
     except Exception as e:
         current_app.logger.error('Error occurred in feedback_list: %s', e)
         flash("An error occurred while fetching feedbacks", "danger")
@@ -181,7 +181,7 @@ def CreateUser():
             flash("An error occurred while creating the user", 'danger')
             current_app.logger.error('Error creating user: %s', e)
     
-    return render_template("admin/create_user.html", form=form)
+    return render_template("admin/create_user.html", form=form, title="Create User")
 
 @admin_routes_bp.route("/Feedbacks")
 @login_required 
@@ -190,7 +190,7 @@ def CreateUser():
 def Feedbacks():
     """Render the feedbacks page."""
     feedbacks = get_feedbacks()
-    return render_template("admin/feedbacks.html", feedbacks=feedbacks)
+    return render_template("admin/feedbacks.html", feedbacks=feedbacks, title="Feedbacks")
 
 @admin_routes_bp.route("/Logs/Audit")
 @login_required 
@@ -198,7 +198,7 @@ def Feedbacks():
 @role_required(1)
 def AuditLogs():
     """Render the admin audit logs page."""
-    return render_template("/admin/audit.html", title="Admin Audit Logs")
+    return render_template("/admin/audit.html", title="Audit Logs")
 
 @admin_routes_bp.route("/Feedbacks/<int:id>", methods=['GET', 'POST'])
 @login_required 
@@ -251,4 +251,4 @@ def feedback_detail(id):
     form.rating.data = feedback.rating
     form.message.data = feedback.message
 
-    return render_template("admin/feedback_detail.html", feedback=feedback, form=form)
+    return render_template("admin/feedback_detail.html", feedback=feedback, form=form, title="Feedbacks")

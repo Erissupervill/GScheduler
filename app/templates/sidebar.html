@@ -48,6 +48,18 @@
                     <p>Audit Logs</p>
                 </a>
             </li>
+            <li class="nav-item">
+                <a href="/Admin/BranchList" class="nav-link">
+                    <i class="nav-icon fas fa-home"></i>
+                    <p>Branch List</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/User/WriteFeedbacks" class="nav-link" data-toggle="modal" data-target="#createNewBranch">
+                    <i class="nav-icon fas fa-pencil-alt"></i>
+                    <p>Create Branch</p>
+                </a>
+            </li>
             {% elif current_user.role_id == 2 %}
             <!-- If User is Staff -->
             <li class="nav-item">
