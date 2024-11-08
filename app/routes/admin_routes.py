@@ -1,18 +1,21 @@
 from datetime import datetime, timedelta
 import os
+from app import bcrypt
 from flask import Blueprint, current_app, flash, jsonify, render_template, redirect, request, url_for
 from flask_login import current_user, login_required
 import numpy as np
 import pandas as pd
-from app.forms import FeedbackForm, RegistrationForm
+from app.db import db
+from app.forms import BranchForm, FeedbackForm, ProfileForm, RegistrationForm
 from app.services.admin_services import (
     check_email, count_by_role, count_total_users, create_new_user, delete_feedback, fetch_all_users, update_user, delete_user
 )
 from app.services.api_services import get_booking_summaries
+from app.services.branch_services import create_new_branch, delete_branch, update_branch
 from app.services.feedback_services import  get_feedback_by_id, get_feedbacks, update_feedback
 
 from app.services.logging_services import get_logs
-from app.services.reservation_services import actual_data_ml, get_reservations
+from app.services.reservation_services import actual_data_ml, get_branch, get_reservations
 from app.utils.decorators import otp_required, role_required
 
 admin_routes_bp = Blueprint("admin_routes", __name__, url_prefix="/Admin")
@@ -26,6 +29,43 @@ def index():
     
 #     print(daily_summaries)
 #     return render_template('/admin/daily_test.html')
+
+@admin_routes_bp.route("/Profile", methods=['GET', 'POST'])
+@login_required
+@otp_required
+@role_required(1)
+def Profile():
+    form = ProfileForm()
+    
+    if form.validate_on_submit():
+        try:
+            # Update profile fields
+            current_user.first_name = form.first_name.data
+            current_user.last_name = form.last_name.data
+            current_user.email_address = form.email_address.data
+            current_user.phone_number = form.phone_number.data
+
+            # Check if password is provided and update it
+            if form.password.data:
+                current_user.password_hash = bcrypt.generate_password_hash(form.password.data)
+
+            db.session.commit()
+            flash('Profile updated successfully', 'success')
+            return redirect(url_for('admin_routes.Profile'))
+        except Exception as e:
+            db.session.rollback()
+            flash("An error occurred while updating the profile", 'danger')
+            current_app.logger.error('Error updating profile: %s', e)
+
+    # Pre-fill the form with current user data
+    elif request.method == 'GET':
+        form.first_name.data = current_user.first_name
+        form.last_name.data = current_user.last_name
+        form.email_address.data = current_user.email_address
+        form.phone_number.data = current_user.phone_number
+
+    return render_template("profile.html", form=form, title="User Profile")
+
 
 @admin_routes_bp.route("/Dashboard")
 @login_required 
@@ -252,3 +292,69 @@ def feedback_detail(id):
     form.message.data = feedback.message
 
     return render_template("admin/feedback_detail.html", feedback=feedback, form=form, title="Feedbacks")
+
+
+
+@admin_routes_bp.route("/BranchList")
+@login_required 
+@otp_required
+@role_required(1)
+def branch_list():
+    branches = get_branch()
+    return render_template("admin/branch_list.html", branches = branches ,title="Branches")
+
+@admin_routes_bp.route("/CreateBranch", methods=['GET', 'POST'])
+@login_required 
+@otp_required
+@role_required(1)
+def CreateBranch():
+    """Render the user creation form and handle form submissions."""
+    form = BranchForm()
+    
+    if form.validate_on_submit():
+        try:
+            data = {
+                'name': form.name.data,
+                'location': form.location.data,
+                'capacity': form.capacity.data,
+            }
+            create_new_branch(data)
+            flash('Branch successfully created', 'success')
+            return redirect(url_for('admin_routes.CreateBranch'))
+        except ValueError as e:
+            flash(str(e), 'danger')
+        except Exception as e:
+            flash("An error occurred while creating the Branch", 'danger')
+            current_app.logger.error('Error creating Branch: %s', e)
+    
+    return render_template("admin/create_branch.html", form=form, title="Create Branch")
+
+
+
+@admin_routes_bp.route('/handle_branch_action/<int:id>', methods=['POST'])
+@login_required 
+@otp_required
+@role_required(1)
+def handle_branch_action(id):
+    """Handle user actions like update or delete."""
+    try:
+        action = request.form.get('action')
+        if action == 'update':
+            branch_data = {
+                'name': request.form.get('branch_name'),
+                'location': request.form.get('branch_location'),
+                'capacity': request.form.get('branch_capacity'),
+            }
+            import json
+            print(json.dumps(branch_data) + " Abot Hhangggang dito")
+
+            update_branch(id, branch_data)
+            flash('Branch updated successfully.', 'success')
+        elif action == 'delete':
+            delete_branch(id)
+            flash('Branch deleted successfully.', 'success')
+        return redirect(url_for('admin_routes.branch_list'))
+    except Exception as e:
+        current_app.logger.error('Error occurred in handle_branch_action: %s', e)
+        flash("An error occurred while handling the branch action", "danger")
+        return redirect(url_for('admin_routes.branch_list'))

@@ -39,3 +39,23 @@ class UserForm(FlaskForm):
     confirmpassword = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password'),Length(min=2, max=10)])
     role = StringField('role', validators=[DataRequired()])
     submit = SubmitField('Sign Up')
+
+class BranchForm(FlaskForm):
+    name = StringField('name', validators=[DataRequired(), Length(min=2, max=10)])
+    location = StringField('location', validators=[DataRequired(), Length(min=2, max=10)])
+    capacity = StringField('capacity', validators=[DataRequired(), Length(min=2, max=10)])
+    submit = SubmitField('Create')
+
+
+
+class ProfileForm(FlaskForm):
+    first_name = StringField('First Name', validators=[DataRequired(), Length(min=2, max=50)])
+    last_name = StringField('Last Name', validators=[DataRequired(), Length(min=2, max=50)])
+    email_address = StringField('Email', validators=[DataRequired(), Email()])
+    phone_number = StringField('Phone Number', validators=[DataRequired()])
+    
+    # New password fields
+    password = PasswordField('New Password')
+    confirm_password = PasswordField('Confirm New Password', validators=[EqualTo('password')])
+    
+    submit = SubmitField('Update Profile')

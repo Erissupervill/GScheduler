@@ -18,14 +18,19 @@
             <div class="col-md-12">
                 <!-- Loop through notifications -->
                 {% for notification in notifications %}
-                <div class="card card-primary card-outline mb-3">
+                <div class="card card-info ">
                     <div class="card-header">
                         <h3 class="card-title">Notification </h3>
-                        <form action="{{ url_for('user_routes.remove_notification', id=notification.id) }}"
+                        <!-- <form action="{{ url_for('user_routes.remove_notification', id=notification.id) }}"
                             method="post" style="display: inline;">
                             <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
                             <button type="submit" class="btn btn-sm btn-danger float-right">X</button>
-                        </form>
+                        </form> -->
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="remove">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
                     </div>
                     <div class="card-body">
                         <p><strong>Reservation Details:</strong>

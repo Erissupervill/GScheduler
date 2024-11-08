@@ -69,11 +69,13 @@ def login():
         email_address = form.email_address.data
         password = form.password.data
         user = authenticate_user(email_address, password, bcrypt)
-
+  
         if user:
             # Generate OTP
             otp = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
             session['otp'] = otp  # Store the OTP in the session
+            session['first_name'] = user.first_name
+            session['last_name'] = user.last_name
             session['email'] = email_address  # Store the email in the session
             session['otp_expiry'] = (datetime.utcnow() + timedelta(minutes=OTP_EXPIRATION_MINUTES)).isoformat()  # Set OTP expiration
 
