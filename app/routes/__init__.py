@@ -1,4 +1,4 @@
-from flask import Blueprint, redirect, render_template, url_for
+from flask import Blueprint, request, render_template
 
 from app.services.feedback_services import get_feedback_good
 
@@ -8,8 +8,10 @@ routes_bp = Blueprint('routes', __name__)
 
 @routes_bp.route("/")
 def index():
+    user_agent = request.headers.get('User-Agent', '')
+    is_mobile = 'Mobile' in user_agent  # Simple check for mobile
     reviews = get_feedback_good()
-    return render_template("frontpage.html",reviews=reviews)
+    return render_template("frontpage.html",reviews=reviews,is_mobile=is_mobile)
 
 
 def page_not_found(error):

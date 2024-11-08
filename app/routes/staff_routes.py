@@ -1,6 +1,9 @@
 from datetime import date, datetime
+from app import bcrypt
 from flask import Blueprint, current_app, flash, jsonify, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
+from flask_mail import Message
+from app.forms import ProfileForm
 from app.models import ReservationStatus
 from app.services.notification_services import create_notification
 from app.services.reservation_services import (
@@ -8,6 +11,7 @@ from app.services.reservation_services import (
     get_reservation_by_id, get_reservations, 
     get_reservations_by_status
 )
+from app import mail
 from app.utils.decorators import otp_required, role_required
 from app.db import db
 
@@ -19,6 +23,42 @@ staff_routes_bp = Blueprint("staff_routes", __name__, url_prefix="/Staff")
 def index():
     """Redirect to the login page."""
     return redirect(url_for("auth_routes.login"))
+
+@staff_routes_bp.route("/Profile", methods=['GET', 'POST'])
+@login_required
+@otp_required
+@role_required(2)
+def Profile():
+    form = ProfileForm()
+    
+    if form.validate_on_submit():
+        try:
+            # Update profile fields
+            current_user.first_name = form.first_name.data
+            current_user.last_name = form.last_name.data
+            current_user.email_address = form.email_address.data
+            current_user.phone_number = form.phone_number.data
+
+            # Check if password is provided and update it
+            if form.password.data:
+                current_user.password_hash = bcrypt.generate_password_hash(form.password.data)
+
+            db.session.commit()
+            flash('Profile updated successfully', 'success')
+            return redirect(url_for('admin_routes.Profile'))
+        except Exception as e:
+            db.session.rollback()
+            flash("An error occurred while updating the profile", 'danger')
+            current_app.logger.error('Error updating profile: %s', e)
+
+    # Pre-fill the form with current user data
+    elif request.method == 'GET':
+        form.first_name.data = current_user.first_name
+        form.last_name.data = current_user.last_name
+        form.email_address.data = current_user.email_address
+        form.phone_number.data = current_user.phone_number
+
+    return render_template("profile.html", form=form, title="User Profile")
 
 @staff_routes_bp.route("/Dashboard")
 @login_required 
@@ -71,7 +111,7 @@ def update_reservation(id):
     """Update reservation status based on the action provided."""
     try:
         reservation = get_reservation_by_id(id)
-
+        
         if not reservation:
             flash('Reservation not found', 'danger')
             return redirect(url_for('staff_routes.pending_reservations'))
@@ -96,8 +136,25 @@ def update_reservation(id):
             notification_time=datetime.utcnow().time()
             )
             
-            reservation.status = ReservationStatus.CONFIRMED
-
+            msg = Message(
+            subject='Your Gscheduler Booking is Confirmed!',
+            sender=current_app.config['MAIL_USERNAME'],
+            recipients=[reservation.customer.email_address])
+            msg.body = (f"Hi {reservation.customer.first_name},\n\n"
+                        f"This email confirms that your booking reservation with Gscheduler for {reservation.reservation_date} at {reservation.reservation_time} has been accepted.\n\n"
+                        f"Booking Details:\n\n"
+                        f"- Date: {reservation.reservation_date}\n"
+                        f"- Time: {reservation.reservation_time}\n"
+                        f"We look forward to seeing you then!\n\n"
+                        f"If you have any questions or need to change your booking, please don't hesitate to reply to this email or call us at GSamgyup 199.\n\n"
+                        f"Thanks!")
+            try:
+                mail.send(msg)
+                reservation.status = ReservationStatus.CONFIRMED
+                flash('Booking confirmation email sent. Please check your inbox.', 'info')
+            except Exception as e:
+                flash('An error occurred while sending the booking confirmation. Please try again later.', 'danger')
+                return redirect(url_for('staff_routes.pending_reservations'))  # Adjust the redirect as needed
             
 
         elif action == 'reject':

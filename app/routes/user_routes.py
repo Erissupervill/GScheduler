@@ -1,7 +1,8 @@
 from datetime import date, datetime
+from app import bcrypt
 from flask import Blueprint, current_app, flash, jsonify, render_template, redirect, request, url_for
 from flask_login import current_user, login_required
-from app.forms import ReservationForm
+from app.forms import ProfileForm, ReservationForm
 from app.models import Branch, Notification, ReservationStatus
 from app.services.feedback_services import create_feedback
 from app.services.notification_services import create_notification, delete_user_notifications, get_user_notifications
@@ -13,10 +14,8 @@ from app.services.reservation_services import (
     cancel_reservation
 )
 
-
-
 from app.db import db
-from app.utils.decorators import otp_required
+from app.utils.decorators import otp_required, role_required
 
 user_routes_bp = Blueprint("user_routes", __name__, url_prefix="/User")
 
@@ -24,16 +23,51 @@ user_routes_bp = Blueprint("user_routes", __name__, url_prefix="/User")
 def index():
     return redirect(url_for("auth_routes.login"))
 
+@user_routes_bp.route("/Profile", methods=['GET', 'POST'])
+@login_required
+@otp_required
+@role_required(3)
+def Profile():
+    form = ProfileForm()
+    
+    if form.validate_on_submit():
+        try:
+            # Update profile fields
+            current_user.first_name = form.first_name.data
+            current_user.last_name = form.last_name.data
+            current_user.email_address = form.email_address.data
+            current_user.phone_number = form.phone_number.data
+
+            # Check if password is provided and update it
+            if form.password.data:
+                current_user.password_hash = bcrypt.generate_password_hash(form.password.data)
+
+            db.session.commit()
+            flash('Profile updated successfully', 'success')
+            return redirect(url_for('admin_routes.Profile'))
+        except Exception as e:
+            db.session.rollback()
+            flash("An error occurred while updating the profile", 'danger')
+            current_app.logger.error('Error updating profile: %s', e)
+
+    # Pre-fill the form with current user data
+    elif request.method == 'GET':
+        form.first_name.data = current_user.first_name
+        form.last_name.data = current_user.last_name
+        form.email_address.data = current_user.email_address
+        form.phone_number.data = current_user.phone_number
+
+    return render_template("profile.html", form=form, title="User Profile")
+
 # User Notifications
 @user_routes_bp.route("/Notification")
 @login_required 
 @otp_required
+@role_required(3)
 def notification():
-       # Fetch notifications for the current user
-    user_id = current_user.user_id  # or however you identify the logged-in user
+    user_id = current_user.user_id
     notifications = get_user_notifications(user_id)
-    
-    return render_template('customer/notification.html', notifications=notifications )
+    return render_template('customer/notification.html', notifications=notifications, title="User Notifications")
 
 @user_routes_bp.route('/remove_notification/<int:id>', methods=['POST'])
 def remove_notification(id):
@@ -49,6 +83,7 @@ def remove_notification(id):
 @user_routes_bp.route("/create/reserve", methods=['GET', 'POST'])
 @login_required 
 @otp_required
+@role_required(3)
 def reservation_create():
     form = ReservationForm()
 
@@ -90,8 +125,7 @@ def reservation_create():
 
     branches = Branch.query.all()
     form.branch_id.choices = [(branch.branch_id, f"{branch.location} {branch.name}") for branch in branches]
-    return render_template('customer/reserve_form.html', form=form, branches=branches)
-
+    return render_template('customer/reserve_form.html', form=form, branches=branches, title="Create Reservation")
 
 @user_routes_bp.route("/api/branches")
 @login_required 
@@ -104,16 +138,16 @@ def api_branches():
     ]
     return jsonify(branch_list)
 
-
 # Reservation Status
 @user_routes_bp.route("/Reservation/Status")
 @login_required 
 @otp_required
+@role_required(3)
 def reservation_status():
     user_id = current_user.user_id
     try:
         reservations = take_user_reservations(user_id)
-        return render_template("/customer/reservation_status.html", reservations=reservations)
+        return render_template("/customer/reservation_status.html", reservations=reservations, title="Reservation Status")
     except Exception as e:
         current_app.logger.error(f"Error while fetching reservations for user ID={user_id}: {e}")
         flash('An error occurred while fetching your reservations.', 'danger')
@@ -132,8 +166,6 @@ def cancel_reservation_route():
             cancellation_reason=cancellation_reason,
             updated_by=current_user.user_id
         )
-        
-
         create_notification(
             user_id=current_user.user_id,
             reservation_id = reservation_id,
@@ -155,19 +187,22 @@ def cancel_reservation_route():
 @user_routes_bp.route("/Feedbacks")
 @login_required 
 @otp_required
+@role_required(3)
 def customer_feedback():
-    return render_template("/customer/feedbacks.html")
+    return render_template("/customer/feedbacks.html", title="Customer Feedback")
 
 # User Logs
 @user_routes_bp.route("/Logs")
 @login_required 
 @otp_required
+@role_required(3)
 def user_logs():
-    return render_template("/customer/user_logs.html")
+    return render_template("/customer/user_logs.html", title="User Logs")
 
 @user_routes_bp.route("/WriteFeedbacks", methods=['POST'])
 @login_required 
 @otp_required
+@role_required(3)
 def write_feedbacks():
     rating = request.form.get('rating')
     message = request.form.get('message')

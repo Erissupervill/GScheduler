@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+<!-- Font Awesome -->
+<link rel="stylesheet" href="{{ url_for('static', filename='adminlte/plugins/fontawesome-free/css/all.min.css') }}">
+<!-- icheck bootstrap -->
+<link rel="stylesheet"
+    href="{{ url_for('static', filename='adminlte/plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
+<!-- Theme style -->
+<link rel="stylesheet" href="{{ url_for('static', filename='adminlte/dist/css/adminlte.min.css') }}">
+{% block content %}
+
+<!-- Content Header (Page header) -->
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">Create Branch</h1>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+    <section class="content">
+        <div class="container-fluid">
+            <section class="content">
+                <div class="card card-warning">
+                    <div class="card-header">
+                        <h3 class="card-title">Create Branch</h3>
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                        <!-- {% include 'message.html' %} -->
+                        <form method="post">
+                            {{form.csrf_token}}
+
+                            <div class="form-group">
+                                <label for="Name">Name</label>
+                                <div class="input-group mb-3">
+                                    <input type="text" name="name" class="form-control" id="name" placeholder="Branch Name">
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">
+                                            <span class="fas fa-user"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% for error in form.name.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                            <div class="form-group">
+                                <label for="username">Location</label>
+                                <div class="input-group mb-3">
+                                    <input type="text" name="location" class="form-control" id="location" placeholder="Branch Location">
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">
+                                            <span class="fas fa-user"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% for error in form.location.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+                            <div class="form-group">
+                                <label for="username">Capacity</label>
+                                <div class="input-group mb-3">
+                                    <input type="number" name="capacity" class="form-control" id="capacity" placeholder="Branch Capacity">
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">
+                                            <span class="fas fa-user"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% for error in form.location.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-primary btn-block">Submit</button>
+                            </div>
+                        </form>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+            </section>
+        </div>
+    </section>
+</div>
+{% endblock %}

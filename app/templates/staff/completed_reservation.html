@@ -30,7 +30,7 @@
                     </div>
                     <div class="row">
                         <div class="col-sm-12 table-responsive">
-                            <table id="example1" class="table table-bordered table-striped dataTable dtr-inline table-responsive"
+                            <table id="example1" class="table table-bordered table-striped dataTable dtr-inline"
                                 aria-describedby="example1_info">
                                 <thead>
                                     <tr>
@@ -63,8 +63,6 @@
                                                 data-guests="{{ reservation.number_of_guests }}"
                                                 data-status="{{ reservation.status }}"
                                                 data-comment="{{ reservation.status_comment }}"
-                                                data-created-at="{{ reservation.created_at.strftime('%Y-%m-%d %H:%M:%S') }}"
-                                                data-updated-at="{{ reservation.updated_at.strftime('%Y-%m-%d %H:%M:%S') }}"
                                                 data-updated-by-firstname="{{ reservation.updater.first_name }}" 
                                                 data-updated-by-lastname="{{ reservation.updater.last_name }}">
                                                 View
