@@ -93,6 +93,7 @@ ua-parser==0.18.0
 uritemplate==4.1.1
 urllib3==1.26.19
 user-agents==2.2.0
+waitress==3.0.1
 Werkzeug==3.0.3
 WTForms==3.1.2
 zope.interface==7.0.1
