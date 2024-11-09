@@ -72,7 +72,7 @@
 
    # Flask configuration
       <!-- #FLASK_APP = __init__.py -->
-   FLASK_ENV = development
+   FLASK_ENV = production
       FLASK_APP = run.py
       SECRET_KEY=your-secret-key 
       DATABASE_URL=mysql+mysqldb://root:@localhost/gscheduler
