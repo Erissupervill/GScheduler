@@ -72,17 +72,22 @@
 
    # Flask configuration
       <!-- #FLASK_APP = __init__.py -->
-      FLASK_ENV = development
-
-      SECRET_KEY=your-secret-key
+   FLASK_ENV = development
+      FLASK_APP = run.py
+      SECRET_KEY=your-secret-key 
       DATABASE_URL=mysql+mysqldb://root:@localhost/gscheduler
-      SESSION_COOKIE_NAME=your_session_cookie_name
-      SESSION_COOKIE_SECURE=True
-      SESSION_COOKIE_HTTPONLY=True
-      CACHE_TYPE=simple
-      CACHE_DEFAULT_TIMEOUT=300
+      SESSION_COOKIE_NAME=your_session_cookie_name 
+      SESSION_COOKIE_SECURE=True 
+      SESSION_COOKIE_HTTPONLY=True 
+      CACHE_TYPE=simple 
+      CACHE_DEFAULT_TIMEOUT=300 
       CSRF_ENABLED = True
-      
+      MAIL_PORT = 587
+      MAIL_SERVER = smtp.gmail.com
+      MAIL_USE_SSL = False
+      MAIL_USE_TLS = True
+      MAIL_USERNAME = 199gsamgyup@gmail.com
+            
 ## Run the Project
 
 1. **Run the project**
