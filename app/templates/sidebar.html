@@ -24,18 +24,50 @@
 
             <!-- If User is Admin -->
             {% if current_user.role_id == 1 %}
-            <li class="nav-item">
-                <a href="/Admin/Users" class="nav-link">
-                    <i class="nav-icon fas fa-users"></i>
-                    <p>Users List</p>
+            <li class="nav-item menu-open">
+                <a href="#" class="nav-link">
+                    <i class="nav-icon fas fa-users"></i> <!-- Changed to represent users -->
+                    <p>
+                        Users
+                        <i class="fas fa-angle-left right"></i>
+                    </p>
                 </a>
+                <ul class="nav nav-treeview" style="display: block;">
+                    <li class="nav-item">
+                        <a href="/Admin/Create/User" class="nav-link">
+                            <i class="nav-icon fas fa-user-plus"></i> 
+                            <p>Create User</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/Admin/Users" class="nav-link">
+                            <i class="nav-icon fas fa-users-cog"></i>
+                            <p>User List</p> 
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/Admin/Admin" class="nav-link">
+                            <i class="nav-icon fas fa-user-shield"></i> 
+                            <p>Admin List</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/Admin/Staff" class="nav-link">
+                            <i class="nav-icon fas fa-users"></i> 
+                            <p>Staff List</p> 
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/Admin/Customers" class="nav-link">
+                            <i class="nav-icon fas fa-user-tag"></i> 
+                            <p>Customer List</p>
+                        </a>
+                    </li>
+                </ul>
             </li>
-            <li class="nav-item">
-                <a href="/Admin/Create/User" class="nav-link">
-                    <i class="nav-icon fas fa-user-plus"></i>
-                    <p>Create User</p>
-                </a>
-            </li>
+            
+
+       
             <li class="nav-item">
                 <a href="/Admin/Feedbacks" class="nav-link">
                     <i class="nav-icon fas fa-comments"></i>

@@ -17,7 +17,8 @@
         <!-- User Statistics -->
         <div class="row">
             <div class="col-lg-3 col-6">
-                <div class="small-box bg-info">
+                <!-- Box for Total Users -->
+                <a href="{{ url_for('admin_routes.UserList') }}" class="small-box bg-info">
                     <div class="inner">
                         <h3>{{ stats.all }}</h3>
                         <p>Total Users</p>
@@ -25,10 +26,15 @@
                     <div class="icon">
                         <i class="ion ion-person"></i>
                     </div>
-                </div>
+                    <div class="small-box-footer">
+                        <i class="fas fa-arrow-right"></i> View Details
+                    </div>
+                </a>
             </div>
+        
             <div class="col-lg-3 col-6">
-                <div class="small-box bg-success">
+                <!-- Box for Total Customers -->
+                <a href="{{ url_for('admin_routes.CustomerList') }}" class="small-box bg-success">
                     <div class="inner">
                         <h3>{{ stats.user }}</h3>
                         <p>Total Customers</p>
@@ -36,10 +42,15 @@
                     <div class="icon">
                         <i class="ion ion-person"></i>
                     </div>
-                </div>
+                    <div class="small-box-footer">
+                        <i class="fas fa-arrow-right"></i> View Details
+                    </div>
+                </a>
             </div>
+        
             <div class="col-lg-3 col-6">
-                <div class="small-box bg-warning">
+                <!-- Box for Total Staff -->
+                <a href="{{ url_for('admin_routes.StaffList') }}" class="small-box bg-warning">
                     <div class="inner">
                         <h3>{{ stats.staff }}</h3>
                         <p>Total Staff</p>
@@ -47,10 +58,15 @@
                     <div class="icon">
                         <i class="ion ion-person"></i>
                     </div>
-                </div>
+                    <div class="small-box-footer">
+                        <i class="fas fa-arrow-right"></i> View Details
+                    </div>
+                </a>
             </div>
+        
             <div class="col-lg-3 col-6">
-                <div class="small-box bg-danger">
+                <!-- Box for Total Admins -->
+                <a href="{{ url_for('admin_routes.AdminList') }}" class="small-box bg-danger">
                     <div class="inner">
                         <h3>{{ stats.admin }}</h3>
                         <p>Total Admins</p>
@@ -58,9 +74,14 @@
                     <div class="icon">
                         <i class="ion ion-person"></i>
                     </div>
-                </div>
+                    <div class="small-box-footer">
+                        <i class="fas fa-arrow-right"></i> View Details
+                    </div>
+                </a>
             </div>
         </div>
+        
+
 
         <!-- <div class="card card-info">
             <div class="card-header">

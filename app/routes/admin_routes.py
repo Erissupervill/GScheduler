@@ -123,6 +123,57 @@ def UserList():
         current_app.logger.error('Error occurred in UserList: %s', e)
         flash("An error occurred while fetching user data", "danger")
         return redirect(url_for("admin_routes.Dashboard"))
+    
+@admin_routes_bp.route("/Admin")
+@login_required 
+@otp_required
+@role_required(1)
+def AdminList():
+    """Render the list of users."""
+    try:
+        users = fetch_all_users()
+        if users:
+            return render_template("admin/admin_list.html", users=users, title="Admin")
+        flash("No users found", "warning")
+        return render_template("admin/admin_list.html", users=[], title="Admin")
+    except Exception as e:
+        current_app.logger.error('Error occurred in UserList: %s', e)
+        flash("An error occurred while fetching user data", "danger")
+        return redirect(url_for("admin_routes.Dashboard"))
+    
+@admin_routes_bp.route("/Staff")
+@login_required 
+@otp_required
+@role_required(1)
+def StaffList():
+    """Render the list of users."""
+    try:
+        users = fetch_all_users()
+        if users:
+            return render_template("admin/staff_list.html", users=users, title="Staff")
+        flash("No users found", "warning")
+        return render_template("admin/staff_list.html", users=[], title="Staff")
+    except Exception as e:
+        current_app.logger.error('Error occurred in UserList: %s', e)
+        flash("An error occurred while fetching user data", "danger")
+        return redirect(url_for("admin_routes.Dashboard"))
+
+@admin_routes_bp.route("/Customers")
+@login_required 
+@otp_required
+@role_required(1)
+def CustomerList():
+    """Render the list of users."""
+    try:
+        users = fetch_all_users()
+        if users:
+            return render_template("admin/customer_list.html", users=users, title="Customer")
+        flash("No users found", "warning")
+        return render_template("admin/customer_list.html", users=[], title="Customer")
+    except Exception as e:
+        current_app.logger.error('Error occurred in UserList: %s', e)
+        flash("An error occurred while fetching user data", "danger")
+        return redirect(url_for("admin_routes.Dashboard"))
 
 @admin_routes_bp.route("/Logs/User")
 @login_required 

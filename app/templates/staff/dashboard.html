@@ -17,65 +17,74 @@
                 <div class="row">
                     <div class="col-lg-3 col-md-6 col-sm-12">
                         <!-- small box -->
-                        <div class="small-box bg-info">
+                        <a href="{{ url_for('staff_routes.pending_reservations') }}" class="small-box bg-info">
                             <div class="inner">
-                                <h3>{{reservations.pending}}</h3>
-
+                                <h3>{{ reservations.pending }}</h3>
                                 <p>Pending Reservation</p>
                             </div>
                             <div class="icon">
-                                <i class="ion ion-person"></i>
+                                <i class="ion ion-clock"></i> <!-- Pending icon: clock -->
                             </div>
-                          
-                        </div>
+                            <div class="small-box-footer">
+                                <span>View Details</span> <i class="fa fa-arrow-circle-right"></i>
+                            </div>
+                        </a>
                     </div>
                     <!-- ./col -->
+                
                     <div class="col-lg-3 col-md-6 col-sm-12">
                         <!-- small box -->
-                        <div class="small-box bg-success">
+                        <a href="{{ url_for('staff_routes.rejected_reservation') }}" class="small-box bg-danger">
                             <div class="inner">
-                                <h3>{{reservations.rejected}}</h3>
-
+                                <h3>{{ reservations.rejected }}</h3>
                                 <p>Rejected Reservation</p>
                             </div>
                             <div class="icon">
-                                <i class="ion ion-stats-bars"></i>
+                                <i class="ion ion-close-round"></i> <!-- Rejected icon: close -->
                             </div>
-                          
-                        </div>
+                            <div class="small-box-footer">
+                                <span>View Details</span> <i class="fa fa-arrow-circle-right"></i>
+                            </div>
+                        </a>
                     </div>
                     <!-- ./col -->
+                
                     <div class="col-lg-3 col-md-6 col-sm-12">
                         <!-- small box -->
-                        <div class="small-box bg-warning">
+                        <a href="{{ url_for('staff_routes.cancelled_reservation') }}" class="small-box bg-warning">
                             <div class="inner">
-                                <h3>{{reservations.cancelled}}</h3>
-
+                                <h3>{{ reservations.cancelled }}</h3>
                                 <p>Cancelled Reservation</p>
                             </div>
                             <div class="icon">
-                                <i class="fa fa-envelope"></i>
+                                <i class="ion ion-ios-close"></i> <!-- Cancelled icon: close -->
                             </div>
-                           
-                        </div>
+                            <div class="small-box-footer">
+                                <span>View Details</span> <i class="fa fa-arrow-circle-right"></i>
+                            </div>
+                        </a>
                     </div>
                     <!-- ./col -->
+                
                     <div class="col-lg-3 col-md-6 col-sm-12">
                         <!-- small box -->
-                        <div class="small-box bg-danger">
+                        <a href="{{ url_for('staff_routes.accepted_reservation') }}" class="small-box bg-success">
                             <div class="inner">
-                                <h3>{{reservations.confirmed}}</h3>
-
+                                <h3>{{ reservations.confirmed }}</h3>
                                 <p>Confirmed Reservation</p>
                             </div>
                             <div class="icon">
-                                <i class="ion ion-pie-graph"></i>
+                                <i class="ion ion-checkmark-round"></i> <!-- Confirmed icon: check -->
                             </div>
-                            
-                        </div>
+                            <div class="small-box-footer">
+                                <span>View Details</span> <i class="fa fa-arrow-circle-right"></i>
+                            </div>
+                        </a>
                     </div>
                     <!-- ./col -->
                 </div>
+                
+                
                 <div class="card">
                     <div class="card-header">
                         <h3 class="card-title">Branch Capacities</h3>
