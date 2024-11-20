@@ -91,6 +91,7 @@
    MAIL_USE_SSL=False
    MAIL_USE_TLS=True
    MAIL_USERNAME=199gsamgyup@gmail.com
+   MAIL_PASSWORD=ckgt vudy txlc nkbz
             
 ## Run the Project
 
