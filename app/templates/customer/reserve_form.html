@@ -41,17 +41,8 @@
                                         <div class="invalid-feedback d-block">{{ error }}</div>
                                         {% endfor %}
                                     </div>
-
-                                    <div class="form-group">
-                                        <label for="number_of_guests">Number of Guests</label>
-                                        <select name="number_of_guests" id="number_of_guests" class="form-control">
-                                        </select>
-                                        {% for error in form.number_of_guests.errors %}
-                                        <div class="invalid-feedback d-block">{{ error }}</div>
-                                        {% endfor %}
-                                    </div>
-
-                                    <div class="form-group">
+                                    
+                                      <div class="form-group">
                                         <label for="branch_id">Branch</label>
                                         <select name="branch_id" id="branch_id" class="form-control">
                                             {% for branch in branches %}
@@ -64,6 +55,17 @@
                                         <div class="invalid-feedback d-block">{{ error }}</div>
                                         {% endfor %}
                                     </div>
+
+                                    <div class="form-group">
+                                        <label for="number_of_guests">Number of Guests</label>
+                                        <select name="number_of_guests" id="number_of_guests" class="form-control">
+                                        </select>
+                                        {% for error in form.number_of_guests.errors %}
+                                        <div class="invalid-feedback d-block">{{ error }}</div>
+                                        {% endfor %}
+                                    </div>
+
+                                  
                                     <div class="form-group">
                                         <button type="submit" class="btn btn-primary">Reserve</button>
                                     </div>
