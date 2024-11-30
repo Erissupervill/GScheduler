@@ -43,7 +43,7 @@ class UserForm(FlaskForm):
 class BranchForm(FlaskForm):
     name = StringField('name', validators=[DataRequired(), Length(min=2, max=10)])
     location = StringField('location', validators=[DataRequired(), Length(min=2, max=50)])
-    capacity = StringField('capacity', validators=[DataRequired())
+    capacity = StringField('capacity', validators=[DataRequired()])
     submit = SubmitField('Create')
 
 
