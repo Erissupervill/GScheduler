@@ -30,9 +30,9 @@ class FeedbackForm(FlaskForm):
 
     
 class UserForm(FlaskForm):
-    username = StringField('Username', validators=[DataRequired(), Length(min=2, max=10)])
-    first_name = StringField('First name', validators=[DataRequired(), Length(min=2, max=10)])
-    last_name = StringField('Last name', validators=[DataRequired(), Length(min=2, max=10)])
+    username = StringField('Username', validators=[DataRequired(), Length(min=2, max=25)])
+    first_name = StringField('First name', validators=[DataRequired(), Length(min=2, max=25)])
+    last_name = StringField('Last name', validators=[DataRequired(), Length(min=2, max=25)])
     email = StringField('Email', validators=[DataRequired(), Email()])
     phone_number = StringField('Phone Number', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired(),Length(min=2, max=30)])
@@ -41,7 +41,7 @@ class UserForm(FlaskForm):
     submit = SubmitField('Sign Up')
 
 class BranchForm(FlaskForm):
-    name = StringField('name', validators=[DataRequired(), Length(min=2, max=10)])
+    name = StringField('name', validators=[DataRequired(), Length(min=2, max=25)])
     location = StringField('location', validators=[DataRequired(), Length(min=2, max=50)])
     capacity = StringField('capacity', validators=[DataRequired()])
     submit = SubmitField('Create')
