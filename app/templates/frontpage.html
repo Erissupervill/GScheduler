@@ -84,7 +84,7 @@
                         {% for i in range(0, reviews|length) %}
                             <div class="carousel-item {% if i == 0 %}active{% endif %}" data-bs-interval="10000">
                                 <div class="col-12 review-card text-center">
-                                    <h5>{{ reviews[i].user.username }}</h5>
+                                    <h5>{{ reviews[i].user.first_name }} {{ reviews[i].user.last_name }}</h5>
                                     <p>"{{ reviews[i].message }}"</p>
                                     <div class="stars">
                                         {{ '★' * reviews[i].rating }}{{ '☆' * (5 - reviews[i].rating) }}
